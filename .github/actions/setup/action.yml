@@ -9,8 +9,9 @@ runs:
     - name: Complete exact MoonBit installation
       shell: bash
       run: |
+        export MOON_HOME="$(mise where http:moonbit)"
         curl --fail --silent --show-error --location https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
-        MOON_HOME="$(mise where http:moonbit)" bash "$RUNNER_TEMP/install-moonbit.sh" '0.10.17+093cb8f9c'
+        bash "$RUNNER_TEMP/install-moonbit.sh" '0.10.17+093cb8f9c'
         echo "MOON_HOME=$(mise where http:moonbit)" >> "$GITHUB_ENV"
         mise where http:moonbit | sed 's|$|/bin|' >> "$GITHUB_PATH"
         "$(mise where http:moonbit)/bin/moonc" -v
