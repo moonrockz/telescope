@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "title": "Legacy asset copy regression",
+  "description": "A guide references its consumer-owned static asset",
+  "base_path": "/diagrams.mbt/",
+  "site_url": "https://example.test/diagrams.mbt/",
+  "repo_url": "https://example.test/consumer",
+  "source_roots": ["docs", "assets"],
+  "static": [{"from": "assets", "to": "assets"}],
+  "packages": [],
+  "api": []
+}

@@ -1,16 +1,15 @@
 # Release candidate procedure
 
-Candidate 0.1.0 is prepared for review. Publication is not authorized, no release
-PR has been created by this worker, and no workstation publication is allowed.
-Only the owner-approved GitHub Actions release job may publish.
+Candidate 0.1.0 is prepared in [PR 1](https://github.com/moonrockz/telescope/pull/1).
+Publication is not authorized. Only the owner-approved GitHub Actions release job
+may publish.
 
 PR CI qualifies the exact source on Linux x64 and macOS arm64. Each job runs setup
 validation, all-target pure checks, strict native compilation and native tests,
 then builds one native artifact and consumes that same archive in a clean
 consumer. The two platforms cover different executable, filesystem and installer
-risks and both block release. These checks are expected to take several minutes;
-no CI timing measurements exist yet. No nightly-only checks are substituted for
-these release obligations.
+risks and both block release. The first successful run took 2m50s on Linux and
+1m56s on macOS. No nightly-only checks replace these release obligations.
 
 The manual Release candidate workflow defaults `publish` to false. It repeats
 qualification on both platforms, validates both module versions against the CLI
@@ -60,11 +59,9 @@ report. Tasks 7.2 onward remain incomplete until those events actually occur.
 Do not archive this change or close its beads before the coordinator's final
 integration and merge gates.
 
-Workflow design assessment is provisional: coverage and ownership are implemented,
-artifact consumption is explicit, and failure propagation uses direct job
-relationships. Remote run timing, Linux execution, owner/admin gate API happy path and
-actual publishing remain unverified. These unknowns prevent a final build-master
-score or a publication-readiness claim.
+Candidate CI passes on both platforms, including archive consumption and Linux
+browser qualification. Failure propagation uses direct job relationships. The
+owner/admin gate API happy path and actual publication remain unverified.
 
 The approval mechanism follows [GitHub review and environment semantics](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments).
 The credential file follows [MoonBit's package publication contract](https://docs.moonbitlang.com/en/stable/toolchain/moon/package-manage-tour.html).

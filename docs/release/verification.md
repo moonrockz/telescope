@@ -2,8 +2,8 @@
 
 This records the final local, unpublished public-host 0.1.0 candidate on macOS arm64. It does not
 record a release, owner publication approval, a merged release PR or downstream
-adoption. The worktree is awaiting coordinator integration; artifact checksums
-identify this candidate independently of an uncommitted source snapshot.
+adoption. [Implementation PR 1](https://github.com/moonrockz/telescope/pull/1)
+contains the candidate; the checksums below identify the local package inputs.
 
 The compiler was v0.10.17+093cb8f9c, selected through its pinned mise installation
 and explicit MOON_HOME/PATH. Moon's executable build date is 2026-10-21; it is
@@ -67,10 +67,12 @@ Machine evidence is `_build/evidence/consumer-macos-arm64.json`, plus browser
 hashes or output digest manifests were introduced. These archive checksums are
 retained for package integrity and installation.
 
-Linux x64 execution remains pending an actual Actions run. The workflows target
-Ubuntu 24.04 x64 and macOS 15 arm64, and require both native qualifications before
-publication; browser assurance runs once on Linux using the produced CLI.
-Actionlint/YAML checks validate definitions, not a successful remote run or timing.
+The [first successful Actions qualification](https://github.com/moonrockz/telescope/actions/runs/40422349667)
+passed both Linux x64 and macOS arm64 at engine source commit
+`8636c261ae8ea5dd8f52146b7d231813537e8822`. Each platform passed setup,
+engine checks, packaging and isolated candidate installation; Linux also passed
+all 38 browser checks using its produced CLI. The macOS job took 1m56s. These
+are candidate qualifications, with publication disabled.
 The release gate's pure stale/unmerged/wrong-branch tests passed, but its live
 GitHub permission/PR API happy path and actual publication have not run.
 
@@ -82,13 +84,19 @@ approved Actions publication job. Publication remains blocked until an authorize
 owner/admin dispatch identifies the exact main merge SHA, version and merged
 release PR, with the required candidate checks and actual credentials available.
 
-No commit, push, publication, archive, downstream edit or task checkbox update
-was performed by this worker. The coordinator owns tracker/task integration,
-release PR/merge evidence, final diagrams compatibility and all publication or
-published-consumer work. Tasks 7.2 onward remain unverified.
+Publication, merge, archive and real published-consumer work have not occurred.
+Tasks 7.2 onward remain unverified; implementation stories stay open until merge.
 
-The separate actual-diagrams fixture is maintained by another worker and is not
-included in these completed checks. `mise run test:diagrams-consumer` is wired
-with the same pinned wrapper but intentionally excluded from normal check/CI
-because it requires a supplied external checkout. The coordinator must rerun
-setup checks after that worker finishes editing its script and fixtures.
+The separate actual-diagrams fixture now passes through the public host and
+consumer-owned Mermaid/PlantUML providers: 77 routes, 5,376 genuine anchors,
+nine escaped XML code literals, 12 gallery entries and 40 byte-identical
+artifact copies. Internal links and those comparisons pass across root, next,
+v/0.2 and latest supplied trees. Its [report](../../tests/diagrams-consumer/report.json)
+records exact source refs and the source-level prerelease boundary. Existing
+missing API prose generates 3,831 warnings; there are no other warnings. No
+downstream dependency or engine was changed by that test.
+
+`mise run test:diagrams-consumer` uses the pinned wrapper but is excluded from
+normal check/CI because it requires an external checkout. Final `mise run format`
+and `mise run check:setup` passed after the fixture was completed. This proof
+complements the isolated packaged consumer; neither is a real published install.

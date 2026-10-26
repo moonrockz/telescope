@@ -6,10 +6,10 @@ site planning, with reusable native IO in `moonrockz/telescope/host`. The matchi
 assembles consumer-supplied version trees. Consumers own their domain engines
 and reviewed content.
 
-The current **0.1.0 candidate is unpublished**. A clean cached-candidate consumer
-has been qualified on macOS arm64. Linux x64 qualification is configured in
-GitHub Actions and still needs an actual run. Do not use this candidate as a
-published downstream dependency.
+The current **0.1.0 candidate is unpublished**. Clean cached-candidate consumers
+have passed on Linux x64 and macOS arm64 in
+[GitHub Actions](https://github.com/moonrockz/telescope/actions/runs/40422349667).
+Do not use this candidate as a published downstream dependency.
 
 ```sh
 mise trust

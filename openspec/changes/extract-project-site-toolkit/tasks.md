@@ -1,9 +1,10 @@
 # Tasks
 
-Status: Implementation approved. The candidate is unpublished. Local macOS arm64
-library, CLI, isolated packaged-consumer and 38 browser checks pass. Linux CI and
-the actual diagrams compatibility fixture are pending. Publication requires the
-separate owner approval in group 7; downstream adoption remains blocked until
+Status: Implementation approved. The candidate is unpublished. Native engine,
+packaging and isolated-consumer CI pass on Linux x64 and macOS arm64; all 38
+browser checks pass on Linux and locally on macOS. The actual diagrams fixture
+preserves 77 routes, 5,376 anchors and 40 artifact copies. Publication requires
+the separate owner approval in group 7; downstream adoption remains blocked until
 real published-consumer verification succeeds. Stories stay open until merge.
 
 ## 1. Prove an independent packaged consumer
@@ -20,7 +21,7 @@ This is a prerelease proof, not permission for diagrams to adopt the candidate.
 - [x] 1.1 Add the minimal published-module and CLI layout with pinned dependencies and retained source notices; verify public interfaces compile and no consumer engine import enters the package graph.
 - [x] 1.2 Implement one thin path through pure config/content, Rabbita rendering, async host output and CLI build/check; verify a one-page mixed-content fixture builds and checks at both required base paths.
 - [x] 1.3 Package the candidate library and CLI and add `mise run test:consumer` to create a fresh external consumer with an isolated candidate registry/cache; verify recorded package version/source, CLI version and zero local-path/workspace overrides.
-- [ ] 1.4 Document and run the complete candidate-consumer instructions on Linux x64 and macOS arm64, recording platform results and package provenance; verify the test still works with all reference checkouts unavailable.
+- [x] 1.4 Document and run the complete candidate-consumer instructions on Linux x64 and macOS arm64, recording platform results and package provenance; verify the test still works with all reference checkouts unavailable.
 
 ## 2. Extract content, routes and navigation
 
@@ -65,7 +66,7 @@ links, and preview serves the configured base on loopback and shuts down cleanly
 - [x] 4.1 Add staged output promotion and explicit input/output boundaries using async IO; verify two builds have identical file paths and bytes and a failed build leaves the prior output intact.
 - [x] 4.2 Add human and JSON built-output diagnostics for pages, fragments, assets, feeds and base-path escapes; verify broken-link fixtures report all expected origins and exit nonzero.
 - [x] 4.3 Add loopback `serve` with configured base, explicit port, safe resource paths and signal cleanup; verify nested asset requests and that shutdown releases the port without any publication or release fetch.
-- [ ] 4.4 Add meaningful engine `mise run check` and focused CLI tasks, documenting exit codes and build/check/serve usage; verify those commands on both initially supported native platforms and keep `check:setup` distinct.
+- [x] 4.4 Add meaningful engine `mise run check` and focused CLI tasks, documenting exit codes and build/check/serve usage; verify those commands on both initially supported native platforms and keep `check:setup` distinct.
 
 ## 5. Add typed adapters and gallery artifacts
 
@@ -95,10 +96,10 @@ source links, chapter order, search and root/next/v/minor/latest layout. Offline
 assembly consumes supplied trees, leaving tag lookup and deployment to consumers.
 
 - [x] 6.1 Extract optional `moon doc` ingestion using the attributed notebooks fixture and fresh pinned-compiler output; verify item/method anchors, qualified links, doc prose, source file/lines and unsupported-shape diagnostics.
-- [ ] 6.2 Preserve API search entries, chapter order, `api:` references and missing-prose diagnostics; verify focused API fixture comparisons against the recorded diagrams baseline and document module/ref input configuration.
+- [x] 6.2 Preserve API search entries, chapter order, `api:` references and missing-prose diagnostics; verify focused API fixture comparisons against the recorded diagrams baseline and document module/ref input configuration.
 - [x] 6.3 Add the optional supplied-tree assembly adapter and version manifest; verify offline root/next/v/minor/latest output, reserved-prefix rejection, tree-local assets/search and no network or checkout mutation.
 - [x] 6.4 Add version selector and static banners with same-page and missing-page fallback; verify no-release, older-release and next-only-page cases in browser tests and document the consumer release-policy boundary.
-- [ ] 6.5 Run an attributed diagrams-compatibility fixture through both optional adapters; verify the route/anchor manifest and internal links before marking the first release usable, and send results through mailbox `run:run_b3638d9bfa3d`.
+- [x] 6.5 Run an attributed diagrams-compatibility fixture through both optional adapters; verify the route/anchor manifest and internal links before marking the first release usable, and send results through mailbox `run:run_b3638d9bfa3d`.
 
 ## 7. Prepare and publish the first usable distribution
 
@@ -110,6 +111,11 @@ executes it. Dependencies: all earlier groups and explicit publication approval.
 Acceptance: Library and CLI are published at the same actual semantic version
 after owner approval. A clean consumer installs both from real distribution
 sources, verifies checksums and builds/checks without any local overrides.
+
+The workflow, archives, checksums, notices and candidate CI are implemented.
+Task 7.1 remains open for the credential-dependent publication dry run, which the
+pinned Moon CLI refuses without credentials. It runs only in owner-approved
+Actions alongside publication; no local credential was created to bypass it.
 
 - [ ] 7.1 Prepare an owner-gated GitHub Actions release workflow and release PR with semantic version, changelog, supported-platform archives, SHA-256 checksums, registry metadata and complete notices; verify package dry-run, all checks and reproducible candidate installation instructions.
 - [ ] 7.2 Obtain and record explicit Telescope repository-owner approval of publication before executing it; verify the approval identifies the release PR/version and keep publication and downstream readiness blocked if absent.

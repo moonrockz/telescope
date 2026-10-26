@@ -1,0 +1,42 @@
+{
+  "qualification": "source-level prerelease compatibility proof",
+  "published": false,
+  "registry_install": false,
+  "baseline_pages": 77,
+  "baseline_anchors": 5376,
+  "comparison": "Every recorded public page and genuine DOM anchor must remain present; additive anchors are allowed",
+  "retained_escaped_source_literals": 9,
+  "baseline_qualification": "Nine legacy inventory IDs are escaped XML inside code, not DOM anchors; verified against original output and retained as code literals",
+  "gallery_entries": 12,
+  "byte_preserved_artifacts": 40,
+  "internal_links": "passed on built and assembled trees",
+  "trees": [
+    "root",
+    "next",
+    "v/0.2",
+    "latest"
+  ],
+  "version_policy": "Supplied synthetic 0.2 tree tests offline assembly only; no publication or released-install claim",
+  "warnings": {
+    "total": 3831,
+    "missing_api_prose": 3831,
+    "examples": [
+      "API item `Activity.auditing` has no doc prose",
+      "API item `Activity.category_value_ref` has no doc prose",
+      "API item `Activity.completion_quantity` has no doc prose",
+      "API item `Activity.data_input_association` has no doc prose",
+      "API item `Activity.data_output_association` has no doc prose"
+    ],
+    "other": []
+  },
+  "source_ref": "31302b06c3a93cdc93a399884dd785d7337c54b3",
+  "engine_ref": "e0a541033c77590d4c51ecfeb7fb2932e5c478c4",
+  "telescope_version": "0.1.0",
+  "telescope_source": "Copied working source, not an installed distribution",
+  "baseline_source_ref": "31302b06c3a93cdc93a399884dd785d7337c54b3",
+  "preparation_ref": "31302b06c3a93cdc93a399884dd785d7337c54b3",
+  "source_root": "/Users/damian/code/github/moonrockz/diagrams.mbt",
+  "working_tree_status": "M apps/site/fixtures/compatibility/routes.json\n M scripts/site-compatibility.mbtx\n?? openspec/changes/add-bpmn-diagrams-and-animation/\n?? openspec/changes/add-mermaid-zenuml-and-architecture/",
+  "source_unchanged": true,
+  "command": "moonx scripts/test-diagrams-consumer.mbtx --repo-root /Users/damian/code/github/moonrockz/diagrams.mbt"
+}
