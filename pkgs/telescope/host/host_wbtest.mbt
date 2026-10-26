@@ -207,3 +207,86 @@ async test "version assembly preserves offline gallery source and player bytes" 
     )
   }
 }
+
+///|
+async test "explicit static directories preserve stable links and bytes at both bases" {
+  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-static"))
+  defer @fs.rmdir(root, recursive=true)
+  write(
+    root + "/site.json",
+    "{\"title\":\"Example\",\"description\":\"Example\",\"base_path\":\"/\",\"site_url\":\"https://example.test/\",\"repo_url\":\"https://example.test/repo\",\"packages\":[],\"source_roots\":[\"docs\"],\"static\":[{\"from\":\"supplied\",\"to\":\"assets\"}]}",
+  )
+  write(
+    root + "/docs/a.md",
+    "# Static example\n\n![Example](/assets/example.svg)",
+  )
+  let svg = "<svg xmlns='http://www.w3.org/2000/svg'><text>Unchanged</text></svg>"
+  write(root + "/supplied/example.svg", svg)
+  write(root + "/supplied/templates/private.html", "private")
+  for base in ["/", "/example/"] {
+    ignore(build(root, root + "/site.json", root + "/out", base~))
+    assert_eq(check(root + "/out", base), [])
+    assert_eq(@fs.read_file(root + "/out/assets/example.svg").text(), svg)
+    assert_false(@fs.exists(root + "/out/assets/templates/private.html"))
+    assert_true(
+      @fs.read_file(root + "/out/docs/a/index.html")
+      .text()
+      .contains("src=\"" + base + "assets/example.svg\""),
+    )
+  }
+}
+
+///|
+async test "static mappings reject traversal symlinks and generated output collisions" {
+  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-static-boundary"))
+  defer @fs.rmdir(root, recursive=true)
+  write(
+    root + "/site.json",
+    "{\"title\":\"Example\",\"description\":\"Example\",\"base_path\":\"/\",\"site_url\":\"https://example.test/\",\"repo_url\":\"https://example.test/repo\",\"packages\":[]}",
+  )
+  let config = configuration(root + "/site.json")
+  write(root + "/supplied/site.css", "consumer")
+  let malformed : Array[Json] = [
+    { "static": [{ "from": "../outside", "to": "assets" }] },
+    { "static": [{ "from": "supplied", "to": "../outside" }] },
+    { "static": "invalid" },
+  ]
+  for value in malformed {
+    let rejected = try {
+      ignore(static_outputs(root, config, value, root + "/out"))
+      false
+    } catch {
+      _ => true
+    }
+    assert_true(rejected)
+  }
+  write(root + "/secret", "private")
+  @fs.symlink(target=root + "/secret", root + "/supplied/escape")
+  let rejected = try {
+    ignore(
+      static_outputs(
+        root,
+        config,
+        { "static": [{ "from": "supplied", "to": "assets" }] },
+        root + "/out",
+      ),
+    )
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(rejected)
+  @fs.remove(root + "/supplied/escape")
+  write(
+    root + "/site.json",
+    "{\"title\":\"Example\",\"description\":\"Example\",\"base_path\":\"/\",\"site_url\":\"https://example.test/\",\"repo_url\":\"https://example.test/repo\",\"packages\":[],\"static\":[{\"from\":\"supplied\",\"to\":\"assets\"}]}",
+  )
+  let collision = try {
+    ignore(build(root, root + "/site.json", root + "/out"))
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(collision)
+  assert_false(@fs.exists(root + "/out"))
+}

@@ -33,6 +33,11 @@ The toolkit SHALL discover configured public content deterministically, exclude 
 - **WHEN** an HTML page and a Markdown page map to the same output route
 - **THEN** the build reports both sources and rejects the collision
 
+#### Scenario: Stable consumer resource URLs
+- **WHEN** a consumer explicitly maps a project-relative static directory to an output directory
+- **THEN** its regular files are copied without byte changes and existing resource URLs resolve under the deployment base
+- **AND** development exclusions, declared-root containment and output collision checks also apply to those copies
+
 ### Requirement: Markdown and HTML document facts
 The toolkit SHALL accept Markdown, HTML fragments and complete HTML pages, preserve explicit heading IDs and relative resources, and derive title, summary, headings and search text without discarding reviewed content.
 

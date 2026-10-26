@@ -59,6 +59,13 @@ artifact to be a regular contained file, and offline HTML/SVG/CSS companion
 references must be declared. Supplied bytes are copied unchanged. See
 [the gallery contract](../pkgs/telescope/gallery/README.md).
 
+Use `"static": [{"from": "site/assets", "to": "assets"}]` to copy a consumer
+directory to stable output URLs such as `/example/assets/logo.svg`. Both paths
+are normalized relative directories; `from` is relative to the project root and
+`to` to the output tree. Static directories do not need to be source roots.
+Default/configured exclusions still apply. Copies preserve bytes, reject escaping
+symlinks and input/output overlap, and participate in output collision checks.
+
 Optional `api` lists consumer module directories. Supply `moon doc` output under
 `api_output`, default `_build/site-api/<module>/doc`. To explicitly request the
 host to invoke `moon doc`, set `api_generate` to `true`. No invocation occurs

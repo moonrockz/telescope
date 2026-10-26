@@ -237,6 +237,7 @@ pub async fn build(
   )
   let outputs = built.outputs.copy()
   outputs.append(gallery)
+  outputs.append(static_outputs(root, config, value, out))
   for (path, text) in shell_assets {
     outputs.push(Text(path, text))
   }

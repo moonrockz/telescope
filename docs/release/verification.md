@@ -15,12 +15,12 @@ Node 24.14.1 ran the pinned browser harness.
 | `mise run format` | Passed |
 | `mise run check:setup` | Passed script checks, YAML, actionlint 1.7.12, schema/assets and OpenSpec validation |
 | `mise exec -- openspec validate --all --strict` | Passed, one change |
-| `mise run check` | Strict native compilation and 217/217 native tests passed; model/content/gallery/extensions checked on wasm, wasm-gc, JS and native |
-| Pinned `moon test pkgs/telescope/host --target native --deny-warn` | 10/10 focused host tests passed |
+| `mise run check` | Strict native compilation and 219/219 native tests passed; model/content/gallery/extensions checked on wasm, wasm-gc, JS and native |
+| Pinned `moon test pkgs/telescope/host --target native --deny-warn` | 12/12 focused host tests passed |
 | Pinned `moon test scripts/release-approval.mbtx --deny-warn` | 2/2 publication-gate regression tests passed |
 | `mise run package` | Library ZIP and relocatable macOS arm64 native archive/checksum created; CLI reports 0.1.0 |
 | `mise run test:consumer -- --prepared` | Passed the external, isolated-cache candidate consumer |
-| `mise run test:browser` | Browser owner reports 38/38 passed without skips, retries or flakes; actual results retained under `_build/browser/` |
+| `mise run test:browser` | 38/38 passed before the static mapping addition; current-source browser CI remains pending |
 
 The consumer used a real `moon package` ZIP inserted into an isolated temporary
 Mooncakes cache/index with explicit prerelease metadata derived from the packaged
@@ -51,13 +51,16 @@ The final candidate files are:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `_build/publish/moonrockz-telescope-0.1.0.zip` | `89a829c1cd93405973a1b6ca8a6e5626e1a7034d5f01e2d9cf69146aa0248c47` |
-| `_build/package/telescope-0.1.0-macos-arm64.tar.gz` | `82c85d7bc9b4d5c3c6d1a0016f2e6a1c7337e1b6b0e2c36107baa25286f3d6f6` |
+| `_build/publish/moonrockz-telescope-0.1.0.zip` | `328fd5bd17179bcc605299dde2a5f6d28b337ff5a771c4ebb5fec6ee362d2fd9` |
+| `_build/package/telescope-0.1.0-macos-arm64.tar.gz` | `8cb78bc1724a00a6ecbc333e948b06e5de26b9ebd382de9e837d9cad57242b3c` |
 
-The native archive also retains available resolved dependency license/notice
-files and module metadata, plus MoonBit core's license. After that packaging-only
-addition, `cmp` verified the executable still matches the browser-qualified bytes
-and the installed-consumer suite passed again.
+The native archive retains available resolved dependency license/notice files
+and module metadata, plus MoonBit core's license. Real diagrams content exposed
+missing stable static-resource copying. The host now supports explicit directory
+mappings, with byte, exclusion, traversal, symlink and output-collision regressions.
+The full engine check, packaging and installed-consumer suite passed again after
+that source change. Actual CI also exposed an empty registry on fresh machines;
+setup now initializes the pinned Moon registry before running scripts.
 
 Machine evidence is `_build/evidence/consumer-macos-arm64.json`, plus browser
 `results.json`, `cli-evidence.json`, report, traces and screenshots. No gallery

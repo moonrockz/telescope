@@ -14,3 +14,4 @@ runs:
         echo "MOON_HOME=$(mise where http:moonbit)" >> "$GITHUB_ENV"
         mise where http:moonbit | sed 's|$|/bin|' >> "$GITHUB_PATH"
         "$(mise where http:moonbit)/bin/moonc" -v
+        "$(mise where http:moonbit)/bin/moon" update
