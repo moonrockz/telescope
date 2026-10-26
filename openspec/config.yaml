@@ -1,0 +1,29 @@
+schema: html-design
+githubCopilot:
+  cloudAgent: false
+context: |
+  Telescope is a reusable MoonBit and Rabbita project site toolkit.
+  Separate pure model/content, rendering, host tooling and optional adapters.
+  Consumer projects own content, diagram generation and domain workbenches.
+  Use a versioned library plus CLI; reject local-path consumer dependencies.
+  The owner approved implementation with gallery digests removed. Publication still needs release approval.
+  The owner must approve publication before diagrams adopt-telescope-site can pin a real release.
+  Track work in this repository only. Create an epic and one story per task group after approval.
+  Each group has a separate Bead: line; close only after merge with PR and merge SHA.
+  Archive in the last implementation PR. Do not copy Morphir's shared tracker or labels.
+  Cross-workspace planning uses Run run_b3638d9bfa3d, mailbox run:run_b3638d9bfa3d.
+rules:
+  tasks:
+    - The first implementation group proves an independent fresh consumer without local workspace paths.
+    - Every group has acceptance criteria, verification and its own documentation and tests.
+    - Publication is an explicit owner-gated task, before downstream adoption.
+operations:
+  archive:
+    guidance:
+      - >-
+        Archive in the last implementation PR. In archived design.html replace
+        ../../../docs/templates/assets/ with ../../../../docs/templates/assets/.
+        Resolve each local asset path and update links to the change.
+      - >-
+        After merge, close completed local stories with the PR and merge SHA.
+        Close the epic only after all children merge and point it to the archive.

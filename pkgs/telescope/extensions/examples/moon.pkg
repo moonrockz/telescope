@@ -1,0 +1,8 @@
+import {
+  "moonrockz/telescope/extensions",
+}
+
+import {
+  "moonrockz/telescope/extensions/examples",
+  "moonrockz/telescope/extensions",
+} for "test"

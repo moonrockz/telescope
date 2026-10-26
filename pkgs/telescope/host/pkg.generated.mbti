@@ -1,0 +1,34 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/host"
+
+import {
+  "moonrockz/telescope/extensions",
+  "moonrockz/telescope/model",
+}
+
+// Values
+pub async fn assemble(String, String) -> Unit
+
+pub async fn build(String, String, String, base? : String, providers? : @extensions.Registry, main_build? : Bool) -> Array[@model.Problem]
+
+pub async fn check(String, String) -> Array[@model.Problem]
+
+pub async fn configuration(String, base? : String) -> @model.SiteConfig
+
+pub fn diagnostics(Array[@model.Problem], String) -> String
+
+pub fn parent(String) -> String
+
+pub fn relative(String) -> Bool
+
+pub async fn serve(String, String, Int32) -> Unit
+
+pub let version : String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

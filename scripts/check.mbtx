@@ -1,0 +1,45 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn run(args : Array[String]) -> Unit {
+  let code = @process.run(
+    "moon",
+    args,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if code != 0 {
+    @sys.exit(1)
+  }
+}
+
+///|
+async fn main {
+  for target in ["wasm", "wasm-gc", "js", "native"] {
+    for pure_package in ["model", "content", "gallery", "extensions"] {
+      run([
+        "-C", "pkgs/telescope", "check", pure_package, "--target", target, "--deny-warn",
+      ])
+    }
+  }
+  run(["check", "--target", "native", "--deny-warn"])
+  run(["test", "--target", "native"])
+  run(["test", "scripts/release-approval.mbtx", "--deny-warn"])
+  // A domain engine may never enter either distribution.
+  for module_path in ["pkgs/telescope/moon.mod", "apps/telescope/moon.mod"] {
+    let manifest = @fs.read_file(module_path).text()
+    for forbidden in ["diagrams-", "morphir-", "smithy-", "beautiful_mermaid"] {
+      guard !manifest.contains(forbidden) else {
+        eprintln("Forbidden engine dependency in \{module_path}: \{forbidden}")
+        @sys.exit(1)
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+# Pinned development tools for moonrockz/telescope.
+# Adapted from moonrockz/diagrams.mbt; see NOTICE.
+
+[tools]
+# Node.js runs the js target in `moon test --target js` and `moon run --target js`.
+node = "24.14.1"
+bun = "1.4.3"
+
+# YAML linting, pinned so lint results do not change between machines
+yamllint = "1.38.0"
+actionlint = "1.7.12"
+
+# Spec-driven change proposals under openspec/; needs Node.js 20.19 or later
+"npm:@fission-ai/openspec" = "1.14.1"
+
+# MoonBit toolchain, pinned. mise cannot resolve "latest" for an http: tool, and a pinned version
+# keeps CI and every machine on the same compiler. To move to a newer release, change the version
+# here and in each URL (with "+" written as "%2B"), taken from
+# https://cli.moonbitlang.com/binaries/<version>/.
+#
+# The binary archive omits the core library. CI (and a fresh machine) completes it with
+# `curl -fsSL https://cli.moonbitlang.com/install/unix.sh | MOON_HOME=$(mise where http:moonbit) bash -s -- <version>`.
+
+[tools."http:moonbit"]
+version = "0.10.17+093cb8f9c"
+bin_path = "bin"
+
+[tools."http:moonbit".platforms]
+linux-x64 = { url = "https://cli.moonbitlang.com/binaries/0.10.17%2B093cb8f9c/moonbit-linux-x86_64.tar.gz" }
+linux-arm64 = { url = "https://cli.moonbitlang.com/binaries/0.10.17%2B093cb8f9c/moonbit-linux-aarch64.tar.gz" }
+macos-arm64 = { url = "https://cli.moonbitlang.com/binaries/0.10.17%2B093cb8f9c/moonbit-darwin-aarch64.tar.gz" }
+windows-x64 = { url = "https://cli.moonbitlang.com/binaries/0.10.17%2B093cb8f9c/moonbit-windows-x86_64.zip", format = "zip" }
+# No Windows arm64 build is published; Windows on Arm runs the x64 build under emulation.
+windows-arm64 = { url = "https://cli.moonbitlang.com/binaries/0.10.17%2B093cb8f9c/moonbit-windows-x86_64.zip", format = "zip" }
+
+[tasks.format]
+description = "Format development MoonBit scripts"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/format.mbtx'
+
+[tasks."openspec:setup"]
+description = "Refresh OpenSpec integrations without changing user settings"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/openspec-setup.mbtx'
+
+[tasks."check:setup"]
+description = "Validate setup scripts, YAML and OpenSpec artifacts"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/check-setup.mbtx'
+
+[settings]
+experimental = true
+
+[tasks.build]
+description = "Bundle generic islands, embed shell assets and build native CLI"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/build.mbtx'
+
+[tasks.check]
+description = "Check toolkit, pure packages on all targets and native host tests"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/check.mbtx'
+
+[tasks."test:consumer"]
+description = "Qualify packaged candidate in a clean consumer without workspace overrides"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/test-consumer.mbtx'
+
+[tasks.package]
+description = "Prepare native CLI archive, library package and download checksum"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/package.mbtx'
+
+[tasks."test:browser"]
+description = "Qualify shell and islands with pinned Chromium browser tests"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/test-browser.mbtx'
+
+[tasks."test:diagrams-consumer"]
+description = "Qualify supplied diagrams consumer fixture with an external read-only checkout"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/test-diagrams-consumer.mbtx'

@@ -1,0 +1,71 @@
+///|
+/// Publication runs only in the owner-approved Actions job, never on a workstation.
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn main {
+  guard @env.get_env_var("GITHUB_ACTIONS") == Some("true") &&
+    @env.get_env_var("RUNNER_ENVIRONMENT") == Some("github-hosted") else {
+    eprintln(
+      "Publication requires the approved GitHub-hosted Actions release job",
+    )
+    @sys.exit(1)
+    return
+  }
+  let gate = @process.run(
+    "moonx",
+    ["scripts/release-approval.mbtx"],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard gate == 0 else {
+    @sys.exit(1)
+    return
+  }
+  let token = @env.get_env_var("MOONCAKES_TOKEN").unwrap_or("")
+  guard token != "" else {
+    eprintln("Missing Actions Mooncakes credential")
+    @sys.exit(1)
+    return
+  }
+  let toolchain = @env.get_env_var("MOON_HOME").unwrap()
+  let home = @fs.tmpdir(prefix="telescope-publish")
+  defer @fs.rmdir(home, recursive=true)
+  for name in ["bin", "lib", "include"] {
+    if @fs.exists(toolchain + "/" + name) {
+      @fs.symlink(target=toolchain + "/" + name, home + "/" + name)
+    }
+  }
+  let credential : Json = { "token": token }
+  @fs.write_file(
+    home + "/credentials.json",
+    credential.stringify(),
+    permission=0o600,
+  )
+  let command = if @env.args().contains("--dry-run") {
+    ["publish", "--dry-run"]
+  } else {
+    ["publish"]
+  }
+  let code = @process.run(
+    "moon",
+    command,
+    cwd=@env.get_env_var("RUNNER_TEMP").unwrap() + "/telescope-library",
+    extra_env=Map::from_array([("MOON_HOME", home)]),
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard code == 0 else {
+    eprintln("Library publication failed; CLI release was not created")
+    @sys.exit(1)
+    return
+  }
+}

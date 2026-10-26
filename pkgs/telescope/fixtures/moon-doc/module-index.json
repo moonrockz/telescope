@@ -1,0 +1,345 @@
+{
+  "name": "moonrockz",
+  "package": null,
+  "childs": [
+    {
+      "name": "telescope",
+      "package": null,
+      "childs": [
+        {
+          "name": "content",
+          "package": {
+            "path": "moonrockz/telescope/content",
+            "traits": [],
+            "errors": [],
+            "types": [
+              { "name": "Document", "impls": [], "methods": [] },
+              {
+                "name": "FieldValue",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "FrontMatter",
+                "impls": [],
+                "methods": [ "flag", "list", "text" ]
+              },
+              {
+                "name": "Heading",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              { "name": "LayersPass", "impls": [], "methods": [] }
+            ],
+            "typealias": [],
+            "values": [
+              "analyse_html", "check_moonbit_fences", "escape", "ids_in",
+              "inline_text", "map_urls", "parse_front_matter", "plain_text",
+              "render_callouts", "render_layers", "slug", "unescape"
+            ],
+            "misc": []
+          },
+          "childs": []
+        },
+        {
+          "name": "extensions",
+          "package": {
+            "path": "moonrockz/telescope/extensions",
+            "traits": [],
+            "errors": [],
+            "types": [
+              {
+                "name": "AdapterError",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "Artifact",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              { "name": "FenceAdapter", "impls": [], "methods": [] },
+              {
+                "name": "Heading",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "IslandAdapter",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              { "name": "PageAdapter", "impls": [], "methods": [] },
+              { "name": "Registry", "impls": [], "methods": [] },
+              {
+                "name": "RenderInput",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "RenderOutput",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              }
+            ],
+            "typealias": [],
+            "values": [
+              "contract_version", "empty_registry", "islands_for_route",
+              "render_fence", "render_page", "validate_registry"
+            ],
+            "misc": []
+          },
+          "childs": []
+        },
+        {
+          "name": "gallery",
+          "package": {
+            "path": "moonrockz/telescope/gallery",
+            "traits": [],
+            "errors": [],
+            "types": [
+              {
+                "name": "ArtifactCopy",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "Entry",
+                "impls": [],
+                "methods": [ "artifacts", "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "FileRef",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "GalleryPage",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "GalleryPlan",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "Manifest",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "Producer",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "Status",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              }
+            ],
+            "typealias": [],
+            "values": [
+              "parse_manifest", "plan", "valid_relative_path", "validate"
+            ],
+            "misc": []
+          },
+          "childs": []
+        },
+        {
+          "name": "markdown",
+          "package": {
+            "path": "moonrockz/telescope/markdown",
+            "traits": [],
+            "errors": [],
+            "types": [],
+            "typealias": [],
+            "values": [ "render_markdown" ],
+            "misc": []
+          },
+          "childs": []
+        },
+        {
+          "name": "model",
+          "package": {
+            "path": "moonrockz/telescope/model",
+            "traits": [],
+            "errors": [
+              {
+                "name": "Invalid",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              }
+            ],
+            "types": [
+              {
+                "name": "ApiEntry",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "ApiImpl",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr", "via" ]
+              },
+              {
+                "name": "ApiItem",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "ApiLoc",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "ApiPackage",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "parse", "to_repr" ]
+              },
+              {
+                "name": "ArticleSummary",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "ChapterOrder",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "NavGroup",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "NavItem",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "Problem",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "render", "to_repr" ]
+              },
+              {
+                "name": "SearchEntry",
+                "impls": [],
+                "methods": [
+                  "equal", "from_fields", "from_json", "not_equal",
+                  "to_json", "to_repr"
+                ]
+              },
+              {
+                "name": "Section",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "SignaturePart",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "SiteConfig",
+                "impls": [],
+                "methods": [
+                  "absolute", "chapter_order", "equal", "href", "includes",
+                  "not_equal", "parse", "to_repr"
+                ]
+              },
+              {
+                "name": "TocEntry",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              {
+                "name": "VersionsFile",
+                "impls": [],
+                "methods": [
+                  "choices", "equal", "not_equal", "parse", "to_repr",
+                  "to_text", "trees"
+                ]
+              }
+            ],
+            "typealias": [],
+            "values": [
+              "api_anchors", "api_index_packages", "api_link",
+              "api_method_anchor", "api_missing_docstrings",
+              "api_prose_link", "api_route", "api_search_entries",
+              "api_source_url", "article_parts", "article_route",
+              "banner_start", "choice_base", "choice_label",
+              "current_choice", "default_exclusions", "doc_route",
+              "first_sentence", "forbidden_dir", "has_title",
+              "internal_links", "is_minor_line", "link_file",
+              "move_selection", "next_theme", "package_route",
+              "parse_signature", "percent_decode", "problem",
+              "relative_path", "reserved_route", "reserved_segments",
+              "result_url", "route_file", "search", "search_index_url",
+              "site_root", "strip_extension", "switch_probe", "switch_url",
+              "tree_path", "without_banner", "xml_problem"
+            ],
+            "misc": []
+          },
+          "childs": []
+        },
+        {
+          "name": "site",
+          "package": {
+            "path": "moonrockz/telescope/site",
+            "traits": [],
+            "errors": [],
+            "types": [
+              { "name": "ApiModule", "impls": [], "methods": [] },
+              {
+                "name": "ApiSite",
+                "impls": [],
+                "methods": [ "anchors", "package_paths", "search_entries" ]
+              },
+              { "name": "Built", "impls": [], "methods": [] },
+              {
+                "name": "Kind",
+                "impls": [],
+                "methods": [ "equal", "not_equal", "to_repr" ]
+              },
+              { "name": "LinkContext", "impls": [], "methods": [ "new" ] },
+              { "name": "NavEntry", "impls": [], "methods": [] },
+              { "name": "Output", "impls": [], "methods": [] },
+              { "name": "Page", "impls": [], "methods": [] },
+              { "name": "Prepared", "impls": [], "methods": [] },
+              { "name": "Resolution", "impls": [], "methods": [] },
+              { "name": "SourceFile", "impls": [], "methods": [] }
+            ],
+            "typealias": [],
+            "values": [
+              "api_outputs", "atom_feed", "build", "build_grouped_nav",
+              "build_nav", "classify", "glob_match", "needs_text", "no_api",
+              "normalize", "prepare", "resolve", "search_index",
+              "toc_entries", "unescaped_links"
+            ],
+            "misc": []
+          },
+          "childs": []
+        },
+        {
+          "name": "views",
+          "package": {
+            "path": "moonrockz/telescope/views",
+            "traits": [],
+            "errors": [],
+            "types": [ { "name": "PageMeta", "impls": [], "methods": [] } ],
+            "typealias": [],
+            "values": [
+              "article_page", "articles_index", "docs_page", "home_page",
+              "latest_articles_marker", "layout", "raw", "render",
+              "theme_script"
+            ],
+            "misc": []
+          },
+          "childs": []
+        }
+      ]
+    }
+  ]
+}

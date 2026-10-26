@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "candidate": {
+    "version": "0.1.0",
+    "published": false,
+    "source": "Telescope implementation working tree",
+    "cli": "_build/telescope/telescope",
+    "driver": "_build/native/release/build/qualification/browser-driver/cmd/cmd.exe"
+  },
+  "environment": {
+    "platform": "macOS arm64",
+    "node": "24.14.1",
+    "playwright": "1.64.1",
+    "chromium": "156.0.8078.4",
+    "browser_workers": 2,
+    "retries": 0
+  },
+  "command": "mise run test:browser",
+  "deployment_bases": [
+    "/",
+    "/example/"
+  ],
+  "qualification": {
+    "started_at": "2026-10-26T23:37:21.212Z",
+    "playwright_duration_ms": 5055.349,
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "typescript": "tsc --noEmit passed",
+    "native_driver": "public host.build integration compiled in native release mode",
+    "cli_commands_completed": 24,
+    "cli_preview_processes": 8,
+    "all_preview_processes_stopped": true,
+    "screenshots": {
+      "width": 360,
+      "height": 1407,
+      "root_and_nested_match": true,
+      "visually_reviewed": true
+    }
+  },
+  "coverage": [
+    "Actual native CLI build/check/serve and supplied-tree assemble output, with no output patching",
+    "Local index fetch, slash focus, arrow selection, Enter navigation, Escape and empty results",
+    "Draft and development-template exclusion from search",
+    "Stored dark theme applied while the real render-blocking stylesheet is withheld",
+    "Denied storage, system dark colors, readable body contrast, theme controls and persistence",
+    "360px mobile menu by keyboard, long-path wrapping and no horizontal page overflow",
+    "JavaScript-disabled navigation, skip link, table of contents, code and readable content",
+    "ToC heading navigation and scroll location tracking",
+    "Actual clipboard write/read, success announcement and rejected-write failure announcement",
+    "Reviewed HTML fragment script resolution at both bases",
+    "Registered page/island adapters through public host.build, route-local JS/CSS requests, execution and static fallback",
+    "Search stays within assembled root, latest, next and old-version trees",
+    "Version selection probes real HEAD responses and preserves existing pages",
+    "Missing next-only page falls back to the target documentation section",
+    "Static older-release banner fallback without JavaScript and no-release assembly behavior"
+  ],
+  "source_fixes_proven_by_regressions": [
+    {
+      "area": "Native preview HEAD responses",
+      "owner": "CLI/host worker",
+      "finding": "Writing response bodies for HEAD rejected browser fetches and incorrectly triggered missing-page fallback.",
+      "regression": "Existing-page probe returns 200 and preserves the page; missing-page probe returns 404 and selects its section."
+    },
+    {
+      "area": "Narrow JavaScript-disabled table of contents",
+      "owner": "Library coordinator",
+      "finding": "The documentation rail was hidden below 1200px with no static alternative.",
+      "regression": "A JavaScript-disabled 360px browser can reach real heading links and navigate to the heading without page overflow."
+    }
+  ],
+  "runtime_evidence": {
+    "cli_commands": "_build/browser/cli-evidence.json",
+    "playwright_results": "_build/browser/results.json",
+    "html_report": "_build/browser/report/index.html",
+    "failure_traces": "_build/browser/test-results/",
+    "static_screenshots": [
+      "_build/browser/no-js-root.png",
+      "_build/browser/no-js-nested.png"
+    ]
+  },
+  "release_review": {
+    "scope": "Read-only inspection of current CI/release workflow and approval scripts, using the personal build-master skill",
+    "selected_browser_gate": "Linux qualification runs browser tests after package and before qualification succeeds; publish depends on the qualification matrix.",
+    "approval": "Publication defaults off; source requires manual administrative approval naming the exact main merge SHA, version and merged release PR.",
+    "environment_protection": "A release environment name is present; protection settings are not assumed or remotely verified.",
+    "finding_resolved": "CLI owner added always-run Linux browser evidence uploads, including reports/traces on failure, with 14-day CI and 30-day release retention.",
+    "publication": "No publication was attempted and no real published coordinates were verified.",
+    "remote_gate_evidence": "Unknown until the actual GitHub Actions qualification/publication runs complete; this local result does not establish release readiness."
+  },
+  "limits": [
+    "Linux browser CI execution is configured but was not run by this worker.",
+    "Firefox, WebKit, physical mobile devices and additional native platforms are unqualified.",
+    "The registered-adapter driver is a workspace integration test; published package installation is covered separately by tests/consumer.",
+    "This browser fixture does not enable optional moon doc API inputs or qualify API-page rendering.",
+    "Consumer-owned domain engines and gallery animation correctness are outside this browser fixture.",
+    "Publication and downstream adoption remain gated on owner approval and real published-consumer qualification."
+  ],
+  "artifact_policy": "No gallery hashes or output digest manifests were added; release archive checksums remain in the packaging workflow."
+}

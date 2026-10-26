@@ -1,0 +1,9 @@
+import {
+  "moonrockz/telescope/model",
+  "moonbitlang/core/debug",
+}
+
+import {
+  "moonrockz/telescope/content",
+  "moonrockz/telescope/model",
+} for "test"

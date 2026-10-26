@@ -1,0 +1,441 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn run(
+  command : String,
+  args : Array[String],
+  cwd~ : String = ".",
+  extra_env~ : Map[String, String] = Map([]),
+) -> Unit {
+  let code = @process.run(
+    command,
+    args,
+    cwd~,
+    extra_env~,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if code != 0 {
+    @sys.exit(1)
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  let published = args.contains("--published")
+  let mut version = "0.1.0"
+  if published {
+    let mut i = 0
+    while i < args.length() && args[i] != "--published" {
+      i += 1
+    }
+    guard i + 1 < args.length() else {
+      eprintln("--published requires an actual version")
+      @sys.exit(2)
+      return
+    }
+    version = args[i + 1]
+  }
+  guard version.split(".").count() == 3 &&
+    version
+    .split(".")
+    .all(part => part != "" && part.iter().all(c => c >= '0' && c <= '9')) else {
+    eprintln("Expected exact semantic version")
+    @sys.exit(2)
+    return
+  }
+  if !published && !args.contains("--prepared") {
+    run("moonx", ["scripts/package.mbtx"])
+  }
+  let toolchain = @env.get_env_var("MOON_HOME").unwrap()
+  let temp = @fs.tmpdir(prefix="telescope-consumer")
+  defer @fs.rmdir(temp, recursive=true)
+  let home = temp + "/toolchain"
+  @fs.mkdir(home)
+  for name in ["bin", "lib", "include"] {
+    if @fs.exists(toolchain + "/" + name) {
+      @fs.symlink(target=toolchain + "/" + name, home + "/" + name)
+    }
+  }
+  let registry = home + "/registry"
+  if !published {
+    @fs.mkdir(registry)
+    for name in ["index", "cache"] {
+      run("cp", ["-R", toolchain + "/registry/" + name, registry + "/" + name])
+    }
+    let archive = "_build/publish/moonrockz-telescope-0.1.0.zip"
+    let (code, sha, _) = @process.collect_output("shasum", [
+      "-a", "256", archive,
+    ])
+    guard code == 0 else {
+      @sys.exit(1)
+      return
+    }
+    let checksum = sha.text().split(" ").next().unwrap().to_owned()
+    @fs.mkdir(
+      registry + "/cache/moonrockz/telescope",
+      recursive=true,
+      allow_exist=true,
+    )
+    @fs.write_file(
+      registry + "/cache/moonrockz/telescope/0.1.0.zip",
+      @fs.read_file(archive).binary(),
+      create_mode=CreateOrTruncate,
+    )
+    @fs.mkdir(
+      registry + "/index/user/moonrockz",
+      recursive=true,
+      allow_exist=true,
+    )
+    let (manifest_status, packaged_manifest, _) = @process.collect_output(
+      "unzip",
+      ["-p", archive, "moon.mod"],
+    )
+    guard manifest_status == 0 else {
+      @sys.exit(1)
+      return
+    }
+    let deps : Map[String, Json] = Map([])
+    for line in packaged_manifest.text().split("\n") {
+      let parts = line.split("\"").collect()
+      if parts.length() >= 3 {
+        let item = parts[1].to_owned()
+        if item.find("@") is Some(i) {
+          deps[item[:i].to_owned()] = Json::string(item[i + 1:].to_owned())
+        }
+      }
+    }
+    let metadata : Json = {
+      "name": "moonrockz/telescope",
+      "version": version,
+      "checksum": checksum,
+      "source": ".",
+      "yanked": false,
+      "license": "Apache-2.0",
+      "repository": "https://github.com/moonrockz/telescope",
+      "description": "Explicit prerelease packaged candidate",
+      "deps": Json::object(deps),
+    }
+    @fs.write_file(
+      registry + "/index/user/moonrockz/telescope.index",
+      metadata.stringify() + "\n",
+      create_mode=CreateOrTruncate,
+    )
+  }
+  let (code, platform_output, _) = @process.collect_output("uname", ["-sm"])
+  guard code == 0 else {
+    @sys.exit(1)
+    return
+  }
+  let platform = match platform_output.text().trim().to_owned() {
+    "Darwin arm64" => "macos-arm64"
+    "Linux x86_64" => "linux-x64"
+    other => {
+      eprintln("Unsupported qualification platform \{other}")
+      @sys.exit(1)
+      return
+    }
+  }
+  let archive = "telescope-\{version}-\{platform}.tar.gz"
+  if published {
+    let url = "https://github.com/moonrockz/telescope/releases/download/v\{version}/\{archive}"
+    run("curl", ["--fail", "--location", "--output", temp + "/" + archive, url])
+    run("curl", [
+      "--fail",
+      "--location",
+      "--output",
+      temp + "/" + archive + ".sha256",
+      url + ".sha256",
+    ])
+  } else {
+    for suffix in ["", ".sha256"] {
+      @fs.write_file(
+        temp + "/" + archive + suffix,
+        @fs.read_file("_build/package/" + archive + suffix).binary(),
+      )
+    }
+  }
+  run("shasum", ["-a", "256", "-c", archive + ".sha256"], cwd=temp)
+  run("tar", ["-xzf", archive], cwd=temp)
+  let cli = temp + "/telescope-\{version}-\{platform}/telescope"
+  let (status, installed_version, _) = @process.collect_output(cli, [
+    "--version",
+  ])
+  guard status == 0 && installed_version.text().trim() == version else {
+    eprintln("CLI version mismatch")
+    @sys.exit(1)
+    return
+  }
+  let consumer = temp + "/consumer"
+  run("cp", ["-R", "tests/consumer/fixture", consumer])
+  @fs.write_file(
+    consumer + "/moon.mod",
+    "name = \"qualification/observatory\"\nversion = \"1.0.0\"\nimport { \"moonrockz/telescope@\{version}\", \"moonbitlang/async@0.22.5\" }\n",
+  )
+  @fs.write_file(
+    consumer + "/moon.pkg",
+    "import { \"moonrockz/telescope/model\", \"moonrockz/telescope/site\", \"moonrockz/telescope/host\", \"moonrockz/telescope/extensions\", \"moonbitlang/async\", \"moonbitlang/async/fs\" } for \"test\"\n supported_targets = \"native\"\n",
+  )
+  @fs.write_file(
+    consumer + "/consumer_test.mbt",
+    (
+      #|async test "versioned library builds consumer content" {
+      #|  let config = @model.SiteConfig::parse("site.json", "{\"schema_version\":1,\"title\":\"Independent Observatory\",\"description\":\"Fixture\",\"base_path\":\"/example/\",\"site_url\":\"https://example.test/example/\",\"repo_url\":\"https://example.test/observatory\",\"packages\":[]}")
+      #|  let built = @site.build(config, [@site.SourceFile::{path:"site/pages/index.md",text:Some("# Independent Observatory\n\nA packaged library consumer.")}], main_build=false)
+      #|  assert_true(built.outputs.iter().any(output => match output { Text(path,html) => path == "index.html" && html.contains("Independent Observatory"); _ => false }))
+      #|}
+    ),
+  )
+  let isolated_env = Map::from_array([("MOON_HOME", home)])
+  @fs.write_file(
+    consumer + "/provider_test.mbt",
+    (
+      #|async test "published host builds a consumer-registered fence without engine dependencies" {
+      #|  let root = @fs.realpath(".")
+      #|  @fs.write_file("docs/provider.md", "# Consumer provider\n\n```observatory\nSignal\n```\n")
+      #|  let providers : @extensions.Registry = {
+      #|    pages: [], islands: [],
+      #|    fences: [{id:"observatory",contract_version:1,labels:["observatory"],render: input => Ok({body_html:"<figure id=\"consumer-rendered\">"+input.body+"</figure>",text:input.body,headings:[],assets:[],problems:[]})}],
+      #|  }
+      #|  ignore(@host.build(root,"site/site.json","host-out",providers~))
+      #|  let html = @fs.read_file("host-out/docs/provider/index.html").text()
+      #|  assert_true(html.contains("<figure id=\"consumer-rendered\">Signal"))
+      #|  assert_true(@fs.read_file("host-out/telescope-build.json").text().contains("observatory"))
+      #|}
+    ),
+  )
+  run(
+    "moon",
+    ["test", "--target", "native", "--deny-warn"],
+    cwd=consumer,
+    extra_env=isolated_env,
+  )
+  guard !@fs.exists(consumer + "/moon.work") &&
+    @fs.exists(consumer + "/.mooncakes/moonrockz/telescope/moon.mod") else {
+    eprintln("Consumer did not resolve registry package")
+    @sys.exit(1)
+    return
+  }
+  for base in ["/", "/example/"] {
+    run(
+      cli,
+      ["build", "--config", "site/site.json", "--out", "out", "--base", base],
+      cwd=consumer,
+    )
+    run(
+      cli,
+      [
+        "check", "--config", "site/site.json", "--out", "out", "--base", base, "--format",
+        "json",
+      ],
+      cwd=consumer,
+    )
+    let before = snapshot(consumer + "/out")
+    run(
+      cli,
+      ["build", "--config", "site/site.json", "--out", "out", "--base", base],
+      cwd=consumer,
+    )
+    guard snapshot(consumer + "/out") == before else {
+      eprintln("Repeated build changed output paths or bytes")
+      @sys.exit(1)
+      return
+    }
+    guard !@fs.exists(consumer + "/out/docs/templates") &&
+      !@fs.exists(consumer + "/out/docs/superpowers") else {
+      eprintln("Development artifacts entered public output")
+      @sys.exit(1)
+      return
+    }
+    let source = @fs.read_file(consumer + "/docs/guide.md").text()
+    @fs.write_file(
+      consumer + "/docs/guide.md",
+      source + "\n[Broken](missing.md)\n",
+      create_mode=CreateOrTruncate,
+    )
+    let (failed, _, _) = @process.collect_output(
+      cli,
+      ["build", "--config", "site/site.json", "--out", "out", "--base", base],
+      cwd=consumer,
+    )
+    guard failed != 0 && snapshot(consumer + "/out") == before else {
+      eprintln("Failed build replaced successful output")
+      @sys.exit(1)
+      return
+    }
+    @fs.write_file(
+      consumer + "/docs/guide.md",
+      source,
+      create_mode=CreateOrTruncate,
+    )
+  }
+  @fs.mkdir(consumer + "/modules/sample", recursive=true)
+  @fs.write_file(
+    consumer + "/modules/sample/moon.mod",
+    "name = \"independent/sample\"\nversion = \"1.0.0\"\n",
+  )
+  @fs.write_file(consumer + "/modules/sample/moon.pkg", "")
+  @fs.write_file(
+    consumer + "/modules/sample/sample.mbt",
+    "/// Add one to an input.\npub fn add_one(value : Int) -> Int { value + 1 }\n",
+  )
+  let config = @fs.read_file(consumer + "/site/site.json").text()
+  @fs.write_file(
+    consumer + "/site/site.json",
+    config.replace(
+      old="\"api\":[]",
+      new="\"api\":[\"modules/sample\"],\"api_generate\":true",
+    ),
+    create_mode=CreateOrTruncate,
+  )
+  run(
+    cli,
+    [
+      "build", "--config", "site/site.json", "--out", "out", "--base", "/example/",
+    ],
+    cwd=consumer,
+  )
+  run(
+    cli,
+    [
+      "check", "--config", "site/site.json", "--out", "out", "--base", "/example/",
+      "--format", "json",
+    ],
+    cwd=consumer,
+  )
+  guard @fs.exists(
+    consumer +
+    "/_build/site-api/modules/sample/doc/independent/sample/module_index.json",
+  ) else {
+    eprintln("Configured moon doc did not generate metadata")
+    @sys.exit(1)
+    return
+  }
+  preview(cli, consumer)
+  @fs.mkdir("_build/evidence", recursive=true, allow_exist=true)
+  let evidence : Json = {
+    "version": version,
+    "platform": platform,
+    "package_source": if published {
+      "real Mooncakes registry and GitHub release"
+    } else {
+      "isolated cache seeded with moon package ZIP and explicit prerelease index entry"
+    },
+    "published": published,
+    "library": "moonrockz/telescope@" + version,
+    "cli_archive": archive,
+    "workspace_overrides": false,
+    "bases": ["/", "/example/"],
+  }
+  @fs.write_file(
+    "_build/evidence/consumer-\{platform}.json",
+    evidence.stringify(indent=2),
+    create_mode=CreateOrTruncate,
+  )
+  println(evidence.stringify(indent=2))
+}
+
+///|
+async fn snapshot(
+  root : String,
+  prefix~ : String = "",
+) -> Array[(String, Bytes)] {
+  let result = []
+  let dir = if prefix == "" { root } else { root + "/" + prefix }
+  for name in @fs.readdir(dir, sort=true) {
+    let path = if prefix == "" { name } else { prefix + "/" + name }
+    if @fs.kind(root + "/" + path) is Directory {
+      result.append(snapshot(root, prefix=path))
+    } else {
+      result.push((path, @fs.read_file(root + "/" + path).binary()))
+    }
+  }
+  result
+}
+
+///|
+async fn preview(cli : String, consumer : String) -> Unit {
+  let port = "49731"
+  @async.with_task_group() <| group => {
+    let child = @process.spawn(
+      group,
+      cli,
+      [
+        "serve", "--config", "site/site.json", "--out", "out", "--base", "/example/",
+        "--port", port,
+      ],
+      cwd=consumer,
+      cancel_handler=@process.graceful_cancel(timeout=1000),
+    )
+    let mut ready = false
+    for _ in 0..<30 {
+      let (code, _, _) = @process.collect_output("curl", [
+        "--silent",
+        "--fail",
+        "http://127.0.0.1:" + port + "/example/",
+      ])
+      if code == 0 {
+        ready = true
+        break
+      }
+      @async.sleep(50)
+    }
+    guard ready else {
+      eprintln("Preview did not become ready")
+      @sys.exit(1)
+      return
+    }
+    run("curl", [
+      "--silent",
+      "--fail",
+      "--output",
+      "/dev/null",
+      "http://127.0.0.1:" + port + "/example/assets/site.css",
+    ])
+    run("curl", [
+      "--head",
+      "--silent",
+      "--fail",
+      "--output",
+      "/dev/null",
+      "http://127.0.0.1:" + port + "/example/",
+    ])
+    let (missing, code, _) = @process.collect_output("curl", [
+      "--head",
+      "--silent",
+      "--output",
+      "/dev/null",
+      "--write-out",
+      "%{http_code}",
+      "http://127.0.0.1:" + port + "/example/missing/",
+    ])
+    guard missing == 0 && code.text() == "404" else {
+      eprintln("HEAD missing-page probe did not return a valid 404")
+      @sys.exit(1)
+      return
+    }
+    child.cancel()
+  }
+  let (closed, _, _) = @process.collect_output("curl", [
+    "--silent",
+    "--fail",
+    "--connect-timeout",
+    "1",
+    "http://127.0.0.1:" + port + "/example/",
+  ])
+  guard closed != 0 else {
+    eprintln("Preview listener remained open after cancellation")
+    @sys.exit(1)
+    return
+  }
+}

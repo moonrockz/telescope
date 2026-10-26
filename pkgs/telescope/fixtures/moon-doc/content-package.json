@@ -1,0 +1,310 @@
+{
+  "name": "moonrockz/telescope/content",
+  "traits": [],
+  "errors": [],
+  "types": [
+    {
+      "name": "Document",
+      "docstring": "\n An HTML body with the facts the site needs from it.",
+      "signature": "pub(all) struct Document {\n  html : String\n  title : String?\n  summary : String\n  headings : <a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"moonrockz/telescope/content#Heading\">Heading</a>]\n  ids : <a href=\"moonbitlang/core/builtin#Array\">Array</a>[String]\n  text : String\n}",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "document.mbt",
+        "line": 16,
+        "column": 17
+      },
+      "methods": [],
+      "impls": []
+    },
+    {
+      "name": "FieldValue",
+      "docstring": "",
+      "signature": "pub(all) enum FieldValue {\n  Text(String)\n  List(<a href=\"moonbitlang/core/builtin#Array\">Array</a>[String])\n} derive(<a href=\"moonbitlang/core/builtin#Eq\">Eq</a>, <a href=\"moonbitlang/core/debug#Debug\">@moonbitlang/core/debug.Debug</a>)",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "front_matter.mbt",
+        "line": 2,
+        "column": 15
+      },
+      "methods": [
+        {
+          "name": "equal",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>::equal(<a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>, <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>) -> Bool",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "front_matter.mbt",
+            "line": 8,
+            "column": 33
+          }
+        },
+        {
+          "name": "not_equal",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>::not_equal(x : <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>, y : <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>) -> Bool",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "front_matter.mbt",
+            "line": 8,
+            "column": 40
+          }
+        },
+        {
+          "name": "to_repr",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>::to_repr(<a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>) -> <a href=\"moonbitlang/core/debug#Repr\">@moonbitlang/core/debug.Repr</a>",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "front_matter.mbt",
+            "line": 11,
+            "column": 43
+          }
+        }
+      ],
+      "impls": []
+    },
+    {
+      "name": "FrontMatter",
+      "docstring": "\n Front matter and the rest of a source file. `body_line` is the 1-based line\n where the body starts in the source file.",
+      "signature": "pub(all) struct FrontMatter {\n  fields : <a href=\"moonbitlang/core/builtin#Map\">Map</a>[String, <a href=\"moonrockz/telescope/content#FieldValue\">FieldValue</a>]\n  body : String\n  body_line : Int\n}",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "front_matter.mbt",
+        "line": 16,
+        "column": 17
+      },
+      "methods": [
+        {
+          "name": "flag",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a>::flag(self : <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a>, key : String) -> Bool",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "front_matter.mbt",
+            "line": 152,
+            "column": 21
+          }
+        },
+        {
+          "name": "list",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a>::list(self : <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a>, key : String) -> <a href=\"moonbitlang/core/builtin#Array\">Array</a>[String]",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "front_matter.mbt",
+            "line": 143,
+            "column": 21
+          }
+        },
+        {
+          "name": "text",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a>::text(self : <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a>, key : String) -> String?",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "front_matter.mbt",
+            "line": 135,
+            "column": 21
+          }
+        }
+      ],
+      "impls": []
+    },
+    {
+      "name": "Heading",
+      "docstring": "",
+      "signature": "pub(all) struct Heading {\n  level : Int\n  id : String\n  text : String\n} derive(<a href=\"moonbitlang/core/builtin#Eq\">Eq</a>, <a href=\"moonbitlang/core/debug#Debug\">@moonbitlang/core/debug.Debug</a>)",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "document.mbt",
+        "line": 2,
+        "column": 17
+      },
+      "methods": [
+        {
+          "name": "equal",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#Heading\">Heading</a>::equal(<a href=\"moonrockz/telescope/content#Heading\">Heading</a>, <a href=\"moonrockz/telescope/content#Heading\">Heading</a>) -> Bool",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "document.mbt",
+            "line": 9,
+            "column": 30
+          }
+        },
+        {
+          "name": "not_equal",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#Heading\">Heading</a>::not_equal(x : <a href=\"moonrockz/telescope/content#Heading\">Heading</a>, y : <a href=\"moonrockz/telescope/content#Heading\">Heading</a>) -> Bool",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "document.mbt",
+            "line": 9,
+            "column": 37
+          }
+        },
+        {
+          "name": "to_repr",
+          "docstring": "",
+          "signature": "fn <a href=\"moonrockz/telescope/content#Heading\">Heading</a>::to_repr(<a href=\"moonrockz/telescope/content#Heading\">Heading</a>) -> <a href=\"moonbitlang/core/debug#Repr\">@moonbitlang/core/debug.Repr</a>",
+          "loc": {
+            "path": "moonrockz/telescope/content",
+            "file": "document.mbt",
+            "line": 12,
+            "column": 40
+          }
+        }
+      ],
+      "impls": []
+    },
+    {
+      "name": "LayersPass",
+      "docstring": "\n The result of the layer-stack pass over one page.",
+      "signature": "pub(all) struct LayersPass {\n  html : String\n  problems : <a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"moonrockz/telescope/model#Problem\">@moonrockz/telescope/model.Problem</a>]\n}",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "blocks.mbt",
+        "line": 74,
+        "column": 17
+      },
+      "methods": [],
+      "impls": []
+    }
+  ],
+  "typealias": [],
+  "values": [
+    {
+      "name": "analyse_html",
+      "docstring": "\n Add missing IDs to headings, preserve explicit IDs and attributes, then\n collect the title (first `h1`), summary (first paragraph), headings, ids and text.",
+      "signature": "fn analyse_html(source : String) -> <a href=\"moonrockz/telescope/content#Document\">Document</a>",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "document.mbt",
+        "line": 28,
+        "column": 8
+      }
+    },
+    {
+      "name": "check_moonbit_fences",
+      "docstring": "\n Check the MoonBit fences of a Markdown source that `moon test` does not compile: each fence whose\n language is `moonbit` or `mbt` must have the word `notest` after the language. `first_line` is the\n line number of the first line of `source` in the file.",
+      "signature": "fn check_moonbit_fences(file : String, source : String, first_line? : Int) -> <a href=\"moonbitlang/core/builtin#Array\">Array</a>[<a href=\"moonrockz/telescope/model#Problem\">@moonrockz/telescope/model.Problem</a>]",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "blocks.mbt",
+        "line": 168,
+        "column": 8
+      }
+    },
+    {
+      "name": "escape",
+      "docstring": "\n Escape text for an HTML text node or a double-quoted attribute value.",
+      "signature": "fn escape(text : String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "html_text.mbt",
+        "line": 3,
+        "column": 8
+      }
+    },
+    {
+      "name": "ids_in",
+      "docstring": "\n Every quoted ID attribute in document order.",
+      "signature": "fn ids_in(html : String) -> <a href=\"moonbitlang/core/builtin#Array\">Array</a>[String]",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "document.mbt",
+        "line": 117,
+        "column": 8
+      }
+    },
+    {
+      "name": "inline_text",
+      "docstring": "\n The text of inline HTML, such as a heading: like `plain_text`, but a tag adds no\n space, so `A (<code>b</code>)` is `A (b)`.",
+      "signature": "fn inline_text(html : String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "html_text.mbt",
+        "line": 38,
+        "column": 8
+      }
+    },
+    {
+      "name": "map_urls",
+      "docstring": "\n Apply `f` to every `href` and `src` attribute value, double- or single-quoted. `f` receives the URL with\n entities decoded, and its result is escaped again.",
+      "signature": "fn map_urls(html : String, f : (String) -> String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "urls.mbt",
+        "line": 21,
+        "column": 8
+      }
+    },
+    {
+      "name": "parse_front_matter",
+      "docstring": "\n Split `source` into front matter and body. Markdown front matter is a block\n between two `---` lines at the top. HTML front matter is the same block inside\n a leading `<!-- --- ... --- -->` comment. A file without the block has no fields.",
+      "signature": "fn parse_front_matter(file : String, source : String) -> <a href=\"moonrockz/telescope/content#FrontMatter\">FrontMatter</a> raise <a href=\"moonrockz/telescope/model#Invalid\">@moonrockz/telescope/model.Invalid</a>",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "front_matter.mbt",
+        "line": 31,
+        "column": 8
+      }
+    },
+    {
+      "name": "plain_text",
+      "docstring": "\n The text of an HTML fragment: tags removed, entities decoded, white space collapsed.",
+      "signature": "fn plain_text(html : String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "html_text.mbt",
+        "line": 31,
+        "column": 8
+      }
+    },
+    {
+      "name": "render_callouts",
+      "docstring": "\n Turn each block quote whose first line is `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]` or\n `[!CAUTION]` into `aside.callout.<kind>` with a label. Other block quotes stay as they are.",
+      "signature": "fn render_callouts(html : String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "blocks.mbt",
+        "line": 40,
+        "column": 8
+      }
+    },
+    {
+      "name": "render_layers",
+      "docstring": "\n Replace each `layers` code block with `figure.layer-stack`: an ordered list with one layer for each\n non-empty `name | detail` line, the first line at the top. A line without `|` gives a problem.",
+      "signature": "fn render_layers(file : String, html : String) -> <a href=\"moonrockz/telescope/content#LayersPass\">LayersPass</a>",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "blocks.mbt",
+        "line": 85,
+        "column": 8
+      }
+    },
+    {
+      "name": "slug",
+      "docstring": "\n A heading anchor: ASCII letters and digits are kept (lower case), white space,\n `-` and `_` become one `-`, and every other character is removed.",
+      "signature": "fn slug(text : String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "html_text.mbt",
+        "line": 69,
+        "column": 8
+      }
+    },
+    {
+      "name": "unescape",
+      "docstring": "\n Undo the entity escapes that cmark writes in text and code. `&amp;` is last, so\n `&amp;lt;` becomes `&lt;` and not `<`.",
+      "signature": "fn unescape(text : String) -> String",
+      "loc": {
+        "path": "moonrockz/telescope/content",
+        "file": "html_text.mbt",
+        "line": 20,
+        "column": 8
+      }
+    }
+  ],
+  "misc": []
+}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>extract-project-site-toolkit</title>
+<!--
+  Agent document template (docs/templates/agent-document.html). Specs, plans and reports that a person reviews
+  start from this file: copy it, keep the <head> as it is, and write the content inside the main element.
+  Styles and scripts are files in docs/templates/assets/, referenced and not embedded. In a copy, change the
+  "assets/" prefix of each href and src to the relative path from the copy to that directory, for example
+  "../../docs/templates/assets/" from .dev/beads-specs/. See AGENTS.md, "Specs and plans are HTML documents".
+  Code goes in <pre><code class="language-moonbit"> (or scheme, toml, json, bash, diff). Give sections an id and
+  list them in nav.toc.
+-->
+<link rel="stylesheet" href="../../../docs/templates/assets/agent-document.css">
+<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<script defer src="../../../docs/templates/assets/highlight/highlight.min.js"></script>
+<script defer src="../../../docs/templates/assets/highlight/languages/scheme.min.js"></script>
+<script defer src="../../../docs/templates/assets/agent-document.js"></script>
+</head>
+<body>
+<main>
+<h1>extract-project-site-toolkit</h1>
+<p class="meta">OpenSpec change · 2026-10-26 · Implementation approved · Bead <code>telescope-0wg</code></p>
+<nav class="toc" aria-label="Contents"><ul>
+<li><a href="#context">Context</a></li>
+<li><a href="#sources">Source inventory and provenance</a></li>
+<li><a href="#goals">Goals and boundaries</a></li>
+<li><a href="#decisions">Architecture decisions</a></li>
+<li><a href="#contracts">Consumer and gallery contracts</a></li>
+<li><a href="#compatibility">Compatibility and first-release scope</a></li>
+<li><a href="#risks">Risks and trade-offs</a></li>
+<li><a href="#migration">Delivery and migration sequence</a></li>
+<li><a href="#verification">Verification and acceptance</a></li>
+</ul></nav>
+<h2 id="context">Context</h2>
+<p>See <a href="proposal.md">proposal.md</a> for motivation. Telescope contains setup files and this proposal. It has no engine, published version or consumer migration. The inspected sites already use MoonBit and Rabbita, but each contains project-specific assumptions. diagrams.mbt is the first intended adopter, after Telescope publishes a usable release. Smithy and Morphir remain references for this release.</p>
+<p>Run <code>run_b3638d9bfa3d</code>, coordinator mailbox <code>run:run_b3638d9bfa3d</code>, coordinates Telescope's <code>extract-project-site-toolkit</code> with diagrams.mbt's <code>adopt-telescope-site</code>. Each workspace owns its files. No beads exist before maintainer approval.</p>
+<h2 id="sources">Source inventory and provenance</h2>
+<p>The inventory describes local sources inspected on 2026-10-26. Revisions identify the source baseline, not a claim that those sites are generic packages. Only documentation templates, their assets, the schema and development setup were adapted in this turn. Engine extraction remains future work. Local checkout paths are inspection provenance only and must never become package dependencies.</p>
+<table><thead><tr><th>Repository and local source</th><th>Inspected git revision</th><th>License</th></tr></thead><tbody>
+<tr><td>moonrockz/smithy<br><code>/Users/damian/code/github/moonrockz/smithy</code></td><td><code>8c7d9c6ef3a8f2b152497226e6f230a9787ae508</code></td><td>Apache-2.0</td></tr>
+<tr><td>finos/morphir-moonbit<br><code>/Users/damian/code/github/finos/morphir-moonbit</code></td><td><code>bd3adc52e6b8f6368fdaee50f76535799732f8d6</code></td><td>Apache-2.0; FINOS NOTICE retained</td></tr>
+<tr><td>moonrockz/diagrams.mbt<br><code>/Users/damian/code/github/moonrockz/diagrams.mbt/apps/site</code></td><td><code>79ae56e2bdaf77ad5ed6951c8e2d856b3fffb38a</code></td><td>Apache-2.0</td></tr>
+</tbody></table>
+<table><thead><tr><th>Concrete source files, relative to their repository</th><th>Observed responsibility</th><th>Telescope decision</th></tr></thead><tbody>
+<tr><td><code>Smithy: site/README.md; site/moon.mod; site/moon.work</code></td><td>Standalone site module with local Smithy workspace members and 0.0.0 imports; README records moonspec ancestor 9ea9a688c3a39d95c91a28b2a40bb5332e8786f5.</td><td>Keep lineage attribution if code is reused. Replace local workspace coupling with published distribution.</td></tr>
+<tr><td><code>Smithy: site/route/route.mbt; site/route/route_wbtest.mbt</code></td><td>Base-aware route parsing; project routes include tour, lesson and playground.</td><td>Reuse route principles, not the Smithy-specific route enum.</td></tr>
+<tr><td><code>Smithy: site/content/manifest.mbt; site/content/manifest_wbtest.mbt; site/markdown/ir.mbt; site/markdown/links.mbt; site/search/search.mbt</code></td><td>Document ordering, pure Markdown representation, source-link context, section search.</td><td>Inform pure model/content and generic navigation/search contracts.</td></tr>
+<tr><td><code>Smithy: site/shell/view_chrome.mbt; site/shell/view_markdown.mbt; site/shell/model.mbt; site/shell/update.mbt; site/prerender/build.mbt</code></td><td>Rabbita shell, theme/version controls and prerender pipeline; some synchronous filesystem helpers.</td><td>Adapt shell ideas. Host IO uses async; do not copy synchronous helpers.</td></tr>
+<tr><td><code>Smithy: site/playground/workbench/; site/playground/ui/; site/playground/worker/; site/tour/</code></td><td>Domain-specific model, workers, editors and lessons.</td><td>Consumer-owned. Optional route/island adapters accept compiled assets only.</td></tr>
+<tr><td><code>Morphir: apps/morphir-site/model/config.mbt; apps/morphir-site/model/routes.mbt; apps/morphir-site/model/search.mbt</code></td><td>Configuration, routes and search, separate from host IO.</td><td>Inform pure package separation and validation.</td></tr>
+<tr><td><code>Morphir: apps/morphir-site/content/document.mbt; apps/morphir-site/content/urls.mbt; apps/morphir-site/content/front_matter.mbt; apps/morphir-site/content/html_text.mbt</code></td><td>CommonMark to HTML, heading facts, href/src rewriting and trusted HTML analysis.</td><td>Extract generic behavior; keep render providers out of content analysis.</td></tr>
+<tr><td><code>Morphir: apps/morphir-site/site/pages.mbt; apps/morphir-site/views/layout.mbt; apps/morphir-site/views/pages.mbt; apps/morphir-site/generate/generate.mbt; apps/morphir-site/check/main.mbt</code></td><td>Full-page versus fragment handling, Rabbita rendering, async host file discovery, output and checks.</td><td>Inform the shell/host boundary. Remove hardcoded Morphir branding and Mermaid scripts.</td></tr>
+<tr><td><code>Morphir: apps/morphir-site/islands/theme.mbt; apps/morphir-site/islands/search.mbt; apps/morphir-site/scripts/serve.ts; apps/morphir-site/moon.mod</code></td><td>Optional controls, current TypeScript server, dependency baseline.</td><td>Use small optional JS islands; choose MoonBit async host serve rather than port TypeScript wholesale.</td></tr>
+<tr><td><code>Morphir: apps/morphir-workbench/project.mbt; apps/morphir-workbench/pipeline.mbt; apps/morphir-workbench/worker/main.mbt</code></td><td>Domain workbench and worker boundary.</td><td>Remain entirely consumer-owned; no first-release migration.</td></tr>
+<tr><td><code>Morphir: openspec/schemas/html-design/schema.yaml; openspec/schemas/html-design/templates/proposal.md; openspec/schemas/html-design/templates/spec.md; openspec/schemas/html-design/templates/tasks.md; openspec/schemas/html-design/templates/design.html</code></td><td>HTML OpenSpec artifact graph and review template.</td><td>Copied and adapted tracker rules and approval metadata. No shared tracker, labels or close-before-merge policy.</td></tr>
+<tr><td><code>Morphir: docs/templates/agent-document.html; docs/templates/assets/agent-document.css; docs/templates/assets/agent-document.js; docs/templates/assets/highlight/</code></td><td>Offline design review assets, highlight.js 11.12.0 and BSD license.</td><td>Copied assets and licenses; template paths resolve locally. NOTICE records provenance.</td></tr>
+<tr><td><code>Diagrams: apps/site/model/config.mbt; apps/site/model/routes.mbt; apps/site/model/search.mbt; apps/site/model/theme.mbt; apps/site/model/versions.mbt</code></td><td>Config, package/chapter order, deterministic search, themes, version-prefix rules.</td><td>Preserve behavior through generic core and optional version adapter.</td></tr>
+<tr><td><code>Diagrams: apps/site/model/api.mbt; apps/site/model/api_links.mbt; apps/site/site/api.mbt; apps/site/generate/main.mbt; apps/site/check/api.mbt</code></td><td>moon doc decoding, item anchors, qualified signatures, docstring links, source links and warnings.</td><td>Generic optional moon-doc adapter included before usable first release.</td></tr>
+<tr><td><code>Diagrams: apps/site/content/document.mbt; apps/site/content/blocks.mbt; apps/site/content/urls.mbt; apps/site/content/mermaid.mbt; apps/site/content/plantuml.mbt</code></td><td>HTML/Markdown and generic blocks mixed with diagram-specific transforms.</td><td>Separate generic document handling from consumer-supplied code-fence providers.</td></tr>
+<tr><td><code>Diagrams: apps/site/site/sources.mbt; apps/site/site/pages.mbt; apps/site/site/nav.mbt; apps/site/site/toc.mbt; apps/site/site/outputs.mbt; apps/site/site/feed.mbt; apps/site/views/layout.mbt</code></td><td>Source discovery, nav, ToC, output planning, article feed, branded shell.</td><td>Parameterize project identity and defaults; exclude development templates from discovery.</td></tr>
+<tr><td><code>Diagrams: apps/site/assemble/assemble.mbt; apps/site/assemble/releases.mbt; apps/site/islands/version.mbt; apps/site/check/check.mbt; scripts/site.mbtx; scripts/serve-site.mbtx</code></td><td>Tree assembly, network release lookup, version navigation, built-output checks and preview.</td><td>Keep deterministic assembly generic; consumer retains gh/tag lookup, release eligibility and deploy.</td></tr>
+<tr><td><code>Diagrams: apps/site/model/api_fixture_test.mbt; apps/site/site/api_links_test.mbt; apps/site/model/api_prose_test.mbt; apps/site/model/versions_test.mbt; apps/site/site/outputs_test.mbt; apps/site/views/views_test.mbt; apps/site/fixtures/api/</code></td><td>Existing behavior fixtures for API, versions and output.</td><td>Use attributed contract fixtures and new independent-consumer tests; do not assume copying implementation proves compatibility.</td></tr>
+<tr><td><code>Diagrams: scripts/gallery.mbtx; apps/site/assets/examples/; apps/site/scripts/gallery-test.ts; apps/site/scripts/animation-test.ts; site/site.json</code></td><td>Checked domain artifacts, offline players, browser qualification, project metadata.</td><td>Consumer generates an example manifest and checked artifacts; Telescope validates, copies and presents them.</td></tr>
+<tr><td><code>Diagrams: .config/mise/config.toml; scripts/openspec-setup.mbtx</code></td><td>Pinned tooling and isolated OpenSpec integration refresh.</td><td>Setup-only adaptation in this turn with pinned imports and async IO.</td></tr>
+</tbody></table>
+<p>Apache attribution is in <a href="../../../NOTICE">NOTICE</a> and the unchanged <a href="../../../LICENSE">LICENSE</a>. Preserve original headers and any upstream NOTICE when implementation copies code, identify changed files, and record source revisions. The vendored highlight.js license and UPSTREAM.md remain alongside the assets. Smithy's README traces its site to moonspec; any future copy of that lineage must preserve applicable notices rather than invent copyright ownership.</p>
+<h2 id="goals">Goals and boundaries</h2>
+<p>The first release must build an unrelated project's small site and expose enough optional API/version support for diagrams to migrate without URL regressions. Keep configuration, paths and document facts independent from host IO and consumer domain dependencies. A shared source snapshot is evidence for extraction, not an instruction to copy every feature.</p>
+<p>Exclude diagram parsing, rendering, animations, domain editors and workbenches, hosting and deployment, remote plugin discovery, arbitrary runtime plugins, and wholesale Smithy/Morphir migrations. The initial preview serves an existing build. Automatic watch/rebuild is deferred unless independently scoped later.</p>
+<h2 id="decisions">Architecture decisions</h2>
+<h3 id="pkg-1">PKG-1. One library and one CLI</h3>
+<p>Publish one module <code>moonrockz/telescope</code> with independently importable packages and a matching native <code>telescope</code> CLI. The library supports custom Rabbita pages and exposes native IO through <code>moonrockz/telescope/host</code>, including compile-time providers. The CLI is a thin stock consumer of that same host. A CLI-only design would force custom pages through opaque configuration. A library-only design would make every consumer rebuild the host orchestration. A generic plugin platform would introduce discovery, ABI and trust policy before there is evidence for it. Start with explicit, compile-time adapters and versioned data contracts.</p>
+<table><thead><tr><th>Package in proposed module</th><th>Responsibility</th><th>Allowed dependencies and targets</th></tr></thead><tbody>
+<tr><td><code>model</code></td><td>Config, routes, nav, diagnostics, search entries, document and artifact records</td><td>Pure MoonBit core; wasm, wasm-gc, js, native checks</td></tr>
+<tr><td><code>content</code></td><td>Pure front matter, heading/link analysis and content planning over supplied text</td><td>model; no filesystem, process, browser or consumer engine</td></tr>
+<tr><td><code>shell</code></td><td>Rabbita layout and page rendering</td><td>model/content and Rabbita; native prerender, browser-compatible shared views</td></tr>
+<tr><td><code>host</code>, <code>build</code>, <code>check</code>, <code>serve</code></td><td>Read inputs, CommonMark rendering, provider orchestration, deterministic writes, checks and loopback preview</td><td>async IO and pinned CommonMark backend; native CLI on Linux x64 and macOS arm64</td></tr>
+<tr><td><code>islands</code></td><td>Search, theme, menu, ToC, copy and optional version controls</td><td>JS browser runtime; no domain engine; packaged assets versioned with CLI</td></tr>
+<tr><td><code>adapters/moon-doc</code>, <code>adapters/versions</code>, <code>gallery</code></td><td>Optional metadata ingestion, tree assembly and artifact pages</td><td>model/content/shell and explicit host boundary; no domain parser or network-release policy</td></tr>
+</tbody></table>
+<p>The proposed source layout is <code>pkgs/telescope/</code> for the published module and <code>apps/telescope/</code> for the CLI, with internal workspace membership only inside Telescope. Consumers resolve real versions from the package registry. Package imports keep core usable without loading optional adapters or browser assets. A dependency check must reject imports of Smithy, Morphir or diagrams engines from Telescope packages.</p>
+<h3 id="core-1">CORE-1. Pure content planning, effectful host</h3>
+<p>Pass file text and source metadata into pure analysis, then produce a route/output plan. CommonMark rendering currently uses a native backend in the inspected sites, so it belongs behind a host renderer adapter; do not promise that this backend runs on every target. Core contracts remain pure and testable across targets. The host reads files with <code>moonbitlang/async</code>, invokes the renderer, resolves providers, asks the shell for HTML, validates the full plan, then writes a staged output tree. Promote only a completed build. Repeated declared inputs produce the same output files and bytes.</p>
+<p>Pin implementation dependencies when added. The observed candidate baseline is Rabbita 0.16.5, cmark 0.4.12, async 0.22.5 and x 0.5.5 from diagrams, with Smithy using Rabbita 0.16.4 and Morphir 0.16.3. Group 1 must qualify the chosen pins together. Setup already pins Node, OpenSpec and MoonBit separately; no engine module or dependency claim exists yet.</p>
+<h3 id="html-1">HTML-1. Reviewed HTML remains a first-class input</h3>
+<p>Markdown and HTML fragments use the Rabbita shell; complete HTML documents keep their own head and body. Preserve explicit IDs, resource paths and reviewed raw HTML, then derive navigation/search facts. This supports existing design documents. The input trust model is reviewed repository content, as in the sources. A future untrusted upload service needs a separate sanitizer policy. Resolve URLs and resources after route assignment, including embedded local CSS/JS. Detect duplicate routes and heading IDs rather than silently overwriting them.</p>
+<p>Source discovery is explicit and deterministically sorted. Exclude <code>docs/templates/</code>, <code>.agents/</code>, <code>openspec/</code>, <code>docs/superpowers/</code>, build output and dependencies by default. Public inclusion is opt-in. Keeping Telescope's development assets in <code>docs/templates/</code> is safe only with this exclusion; diagrams currently stores its planning template under <code>.agents/templates/</code> to avoid changing its engine during planning.</p>
+<h3 id="ext-1">EXT-1. Typed adapters with declared inputs</h3>
+<p>Expose a versioned adapter record with unique ID, contract version, supported fence labels or route, and a render callback returning body HTML, text/heading facts, diagnostics and declared assets. The consumer compiles adapters into a small native driver using the library; the stock CLI consumes standard configuration and prebuilt artifact manifests. It never discovers or executes arbitrary packages from configuration. An unsupported fence remains escaped source code. A custom island adds a mount ID, script and optional stylesheet only to its registered routes. Fence inputs include a one-based ordinal within their adapter in the document, so repeated diagrams can use distinct SVG prefixes without mutable callback state.</p>
+<p>All host reads go through the explicit artifact/input boundary. Provider failures carry provider ID, source and stage. User-provided raw HTML has the same reviewed-source trust model as HTML content. This typed extension choice avoids premature runtime loading while leaving consumers free to compile their own domains without a Telescope fork. The stable contract is adapter version 1; binary ABI compatibility is not promised.</p>
+<h3 id="api-1">API-1. Optional API ingestion is in the usable first release</h3>
+<p>Generalize the observed <code>moon doc</code> reader as an optional adapter. Accept module and package metadata plus README content and an explicit source ref. Preserve package/index ordering, item and method anchors, docstring Markdown, <code>api:</code> links, qualified type/trait links, source file/line links, missing-prose warnings and API search facts. Unsupported metadata shapes fail with a diagnostic. Test against the recorded notebooks fixture and freshly generated data from the pinned compiler. The consumer chooses modules and invokes <code>moon doc</code>; Telescope must not import those modules' engines.</p>
+<h3 id="ver-1">VER-1. Generic tree assembly, consumer release policy</h3>
+<p>Provide a deterministic adapter over already checked output trees and a consumer-supplied version manifest. Preserve root, <code>next/</code>, <code>v/&lt;minor&gt;/</code>, <code>latest/</code>, tree-local search, static banners and same-page selection with the current fallback behavior. Reserve <code>next</code>, <code>v</code> and <code>latest</code> prefixes. The consumer retains release eligibility, tag listing, download/checksum policy and deploy. Copying diagrams' <code>gh</code> release lookups into the core would couple a static toolkit to one host and release strategy.</p>
+<h3 id="dist-1">DIST-1. Package proof before publication, publication before adoption</h3>
+<p>Group 1 builds a thin library and CLI candidate, packages them, and tests a fresh consumer outside all source workspaces. A temporary isolated registry/cache seeded with that package is permitted only as a prerelease qualification input, with a recorded package version and source. The consumer manifest must contain a versioned registry dependency, no local path or sibling module. This test proves distribution shape early without requiring unauthorized publication.</p>
+<p>The usable release adds the scoped contracts below, then the owner approves publication through a release PR. Target native CLI archives for Linux x64 and macOS arm64 first. Publish through owner-approved GitHub Actions the library and matching CLI version with license notices and SHA-256 checksums, then repeat the fresh-consumer test from the real registry and release downloads. If either artifact is unavailable, adoption remains blocked. No invented future version is written into diagrams. Other operating systems or architectures remain unqualified until their installer and consumer tests pass.</p>
+<h2 id="contracts">Consumer and gallery contracts</h2>
+<p>Proposed CLI commands are <code>telescope build --config site/site.json --out _site</code>, <code>telescope check --config site/site.json --out _site --format text|json</code>, <code>telescope serve --config site/site.json --out _site --port 4173</code> and <code>telescope assemble --manifest site/versions.json --out _site</code>. Build and serve accept an explicit base-path override for preview. <code>--version</code> reports the installed release. Configuration and manifest contracts use <code>schema_version: 1</code>; unsupported versions fail before writing.</p>
+<p>Configuration contains consumer title, description, repository URL/ref, canonical site URL, base path, public source roots, navigation groups, package/chapter ordering and optional API, versions, gallery and island inputs. Preserve existing diagrams semantics through its thin config adapter rather than forcing hardcoded <code>pkgs/</code> layout into every project. Engine/source lookup paths stay consumer-relative. The CLI refuses overlapping input/output roots and path escapes.</p>
+<p>The gallery is a presentation contract over files already generated and checked by the consumer. Each entry has a stable unique ID, family, title and explicit <code>implemented</code> or <code>planned</code> status. Implemented entries require source records and an SVG preview; an offline HTML player is optional. Every file record includes a relative path and media type. Planned entries contain descriptive metadata and no fabricated runnable artifact. An optional informational producer record can identify the consumer pipeline. It is not a freshness check and is not required to build the gallery.</p>
+<pre><code class="language-json">{
+  "schema_version": 1,
+  "producer": {"project": "consumer", "ref": "recorded-source-ref", "pipeline": "checked-gallery"},
+  "entries": [{
+    "id": "review-sequence", "family": "sequence", "title": "Review sequence",
+    "status": "implemented",
+    "sources": [{"path": "sources/review.mmd", "media_type": "text/plain"}],
+    "preview": {"path": "previews/review.svg", "media_type": "image/svg+xml"},
+    "player": {"path": "players/review.html", "media_type": "text/html"}
+  }]
+}</code></pre>
+<p>This sketch describes file references; example correctness belongs to the consumer's checked generation pipeline. Normalize relative paths, reject absolute paths and traversal, resolve symlinks against the declared root, require regular files before staging. Preserve supplied file bytes and directory relationships needed by offline players, including any declared companion assets. Reject missing or undeclared companions. Check output collisions and keep output writes inside the destination root.</p>
+<h2 id="compatibility">Compatibility and first-release scope</h2>
+<table><thead><tr><th>First-release contract</th><th>Acceptance evidence</th><th>Owner</th></tr></thead><tbody>
+<tr><td>HTML/Markdown, landing/docs/articles, front matter, navigation, ToC, feeds, local resource links</td><td>Mixed-format fixture at / and /example/; full HTML stays standalone; templates excluded</td><td>Telescope</td></tr>
+<tr><td>Generic shell, search and theme with small optional islands</td><td>Browser checks for no-JS reading, keyboard access, storage denial and per-tree search</td><td>Telescope</td></tr>
+<tr><td>API paths, headings, signature/prose links, source locations and package chapter order</td><td>Attributed API fixture and comparison with diagrams baseline; fresh moon doc metadata</td><td>Telescope adapter; diagrams supplies module config</td></tr>
+<tr><td>/diagrams.mbt/ root, docs, articles, API and next/v/minor/latest behavior</td><td>Offline supplied-tree assembly fixture, banners, selectors and tree-local link checks</td><td>Telescope adapter; diagrams owns release selection and deployment</td></tr>
+<tr><td>Gallery artifact schema version 1</td><td>Implemented sequence/BPMN/swimlane/regex/EBNF/JSON/YAML entries; planned general PlantUML, DOT and Draw.io entries; mismatch/path rejection</td><td>Telescope validates/presents; diagrams owns all generation</td></tr>
+<tr><td>Published library and CLI at the same actual version</td><td>Owner publication approval and clean consumer install from real distribution sources</td><td>Telescope repository owner</td></tr>
+</tbody></table>
+<p>No Smithy or Morphir migration is required to release. Their playgrounds, tours, Morphir model explorer and workbench processes stay separate. Existing diagrams domain blocks and canonical generated assets remain owned and verified in diagrams. Adapter contracts can evolve under semantic versioning; an unsupported major contract version fails explicitly rather than guessing.</p>
+<h2 id="risks">Risks and trade-offs</h2>
+<table><thead><tr><th>Risk</th><th>Mitigation</th></tr></thead><tbody>
+<tr><td>Scope grows into migrating three complete sites</td><td>Ship the fresh consumer and a diagrams-compatible contract; defer Smithy/Morphir adoption and domain engines.</td></tr>
+<tr><td>Pure package claims exceed native CommonMark support</td><td>Keep native parsing behind the host adapter; check pure packages across targets separately.</td></tr>
+<tr><td>Compiler API metadata changes</td><td>Pin compiler and fixtures; reject unsupported shapes and qualify new compilers deliberately.</td></tr>
+<tr><td>Local workspace masks missing release artifacts</td><td>Fresh-consumer test before release plus a second test using actual published versions.</td></tr>
+<tr><td>HTML content or gallery assets are untrusted</td><td>Limit initial inputs to reviewed source; validate paths and symlinks. Do not present this as an upload service.</td></tr>
+<tr><td>Adapters become a hidden plugin platform</td><td>Compile-time registration with explicit inputs and no discovery/loading protocol.</td></tr>
+<tr><td>Partial library or CLI publication</td><td>Keep adoption blocked until both published artifacts and matching versions pass installation checks.</td></tr>
+<tr><td>Mobile design review overflows on long paths and revisions</td><td>Wrap long inline code in the review stylesheet; verify a narrow viewport without altering vendored highlight assets.</td></tr>
+</tbody></table>
+<h2 id="migration">Delivery and migration sequence</h2>
+<ol>
+<li>Approve this proposal, then create the repository-local epic and per-group stories.</li>
+<li>Prove independent packaged consumption in group 1, before expanding content features.</li>
+<li>Implement content, shell, host, extension/gallery and API/version contracts with tests and docs in their own groups.</li>
+<li>Prepare release artifacts and install instructions. The owner explicitly approves the release PR; GitHub Actions publishes and maintainers verify library and CLI distribution at the same actual version. The final verification/documentation PR records published-install evidence and archives the change; the release group stays open until it merges.</li>
+<li>Report release coordinates and clean-consumer evidence to mailbox <code>run:run_b3638d9bfa3d</code>. Only then may diagrams' <code>adopt-telescope-site</code> pin that version and migrate.</li>
+<li>Archive this completed change in its last implementation PR, repair asset and inbound links, merge, then close stories and a finished epic with PR and merge SHA.</li>
+</ol>
+<p>Rollback stays consumer-owned. Before diagrams migration lands, keep its existing generator and built baseline. If compatibility fails, leave the migration open and fix the adapter. A released regression uses a corrective version or a rollback to an earlier actual published version; never rewrite an already published version or replace it with a workspace path.</p>
+<h2 id="verification">Verification and acceptance</h2>
+<p><a href="tasks.md">tasks.md</a> contains group acceptance and commands to add during implementation. No engine tests are claimed now. Setup verification uses <code>mise run format</code>, <code>mise run check:setup</code>, <code>mise exec -- openspec schema validate html-design</code> and <code>mise exec -- openspec validate --all --strict</code>. No full <code>mise run check</code> task exists until there is an engine to check.</p>
+<p>Review the source inventory, dependency boundaries and release gate alongside the five capability specs. The first task group is an independent consumer, and the final distribution evidence is an actual published install. No implementation group is complete solely because a local development workspace builds.</p>
+</main>
+</body>
+</html>
