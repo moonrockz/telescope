@@ -1,23 +1,20 @@
 # Telescope
 
-The 0.2.1 candidate fixes gallery filter alignment and indigo reset buttons.
-It is not published; public installation remains on 0.2.0 below. See the
-[patch qualification](docs/release/0.2.1.md).
-
 Telescope is a MoonBit and Rabbita toolkit for static project documentation.
 The `moonrockz/telescope` library supplies configuration, content, views and
 site planning, with reusable native IO in `moonrockz/telescope/host`. The matching
 native `telescope` CLI builds, checks, previews and assembles consumer-supplied
 version trees. Consumers own their domain engines and reviewed content.
 
-Version **0.2.0 is released** as `moonrockz/telescope@0.2.0` on Mooncakes and
-matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.2.0).
+Version **0.2.1 is released** as `moonrockz/telescope@0.2.1` on Mooncakes and
+matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.2.1).
 It adds Smithy-aligned themes, gallery preview cards, family and text filters,
 and accessible Preview/Source inspection with copying and downloads.
+Gallery reset buttons align with the textbox and use the shared indigo fill.
 See [default presentation](docs/presentation.md).
 
 Clean public installs pass on Linux x64 and macOS arm64 without workspace
-overrides. See [installation and compatibility](docs/release/0.2.0.md).
+overrides. See [installation and compatibility](docs/release/0.2.1.md).
 
 ```sh
 mise trust

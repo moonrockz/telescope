@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.2.1, candidate
+## 0.2.1, 2026-10-27
 
 - Align gallery Reset filters controls with the filter textbox and use the shared indigo fill and contrasting text in both themes.
 - Keep responsive wrapping and empty-state reset controls consistent.
 
-Publication requires owner approval of the release commit and version.
+Linux x64 and macOS arm64 real public installation passed. See
+[release evidence](docs/release/0.2.1.md).
 
 ## 0.2.0, 2026-10-27
 
