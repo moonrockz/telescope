@@ -1,5 +1,9 @@
 # Telescope
 
+The 0.2.1 candidate fixes gallery filter alignment and indigo reset buttons.
+It is not published; public installation remains on 0.2.0 below. See the
+[patch qualification](docs/release/0.2.1.md).
+
 Telescope is a MoonBit and Rabbita toolkit for static project documentation.
 The `moonrockz/telescope` library supplies configuration, content, views and
 site planning, with reusable native IO in `moonrockz/telescope/host`. The matching

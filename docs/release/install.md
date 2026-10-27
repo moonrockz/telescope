@@ -17,7 +17,8 @@ mise run package
 mise run test:consumer -- --prepared
 ```
 
-The package task creates `_build/publish/moonrockz-telescope-0.2.0.zip` and the
+The current development candidate is 0.2.1; it is not published.
+The package task creates `_build/publish/moonrockz-telescope-0.2.1.zip` and the
 current platform's archive under `_build/package/`. Supported qualification
 platforms are Linux x64 and macOS arm64. The native archive contains `telescope`,
 LICENSE, NOTICE, README and resolved third-party license records. CSS and generic islands are embedded in the binary.
@@ -30,8 +31,9 @@ archive checksum and pinned dependency metadata. This is an isolated cached
 candidate, not a registry publication and not a simulated claim of registry
 availability.
 
-The consumer manifest pins `moonrockz/telescope@0.2.0`, has no moon.work or local
-path dependency, compiles three library tests, including public host.build with a compiled custom
+The candidate consumer pins `moonrockz/telescope@0.2.1`; published mode uses the
+explicitly requested public version. Neither has a moon.work or local path
+dependency. The harness compiles three library tests, including public host.build with a compiled custom
 fence provider and static gallery source inspection, verifies the CLI archive
 SHA-256 and
 version, then builds and checks its own mixed content at `/` and `/example/`.
@@ -43,9 +45,9 @@ To install a locally packaged candidate archive manually:
 
 ```sh
 cd _build/package
-shasum -a 256 -c telescope-0.2.0-macos-arm64.tar.gz.sha256
-tar -xzf telescope-0.2.0-macos-arm64.tar.gz
-./telescope-0.2.0-macos-arm64/telescope --version
+shasum -a 256 -c telescope-0.2.1-macos-arm64.tar.gz.sha256
+tar -xzf telescope-0.2.1-macos-arm64.tar.gz
+./telescope-0.2.1-macos-arm64/telescope --version
 ```
 
 Use `linux-x64` instead on a qualified Linux x64 host. Archive extraction is the

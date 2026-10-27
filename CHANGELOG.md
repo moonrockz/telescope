@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1, candidate
+
+- Align gallery Reset filters controls with the filter textbox and use the shared indigo fill and contrasting text in both themes.
+- Keep responsive wrapping and empty-state reset controls consistent.
+
+Publication requires owner approval of the release commit and version.
+
 ## 0.2.0, 2026-10-27
 
 - Align the shared light and dark defaults with Smithy's indigo and cool neutral palette.
