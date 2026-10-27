@@ -39,11 +39,7 @@ async fn main {
   let toolchain = @env.get_env_var("MOON_HOME").unwrap()
   let home = @fs.tmpdir(prefix="telescope-publish")
   defer @fs.rmdir(home, recursive=true)
-  for name in ["bin", "lib", "include"] {
-    if @fs.exists(toolchain + "/" + name) {
-      @fs.symlink(target=toolchain + "/" + name, home + "/" + name)
-    }
-  }
+  prepare_home(toolchain, home)
   let credential : Json = { "token": token }
   @fs.write_file(
     home + "/credentials.json",
@@ -68,4 +64,38 @@ async fn main {
     @sys.exit(1)
     return
   }
+}
+
+///|
+async fn prepare_home(toolchain : String, home : String) -> Unit {
+  for name in ["bin", "lib", "include", "registry"] {
+    if @fs.exists(toolchain + "/" + name) {
+      @fs.symlink(target=toolchain + "/" + name, home + "/" + name)
+    }
+  }
+}
+
+///|
+async test "publisher home packages the qualified library without a credential" {
+  let toolchain = @env.get_env_var("MOON_HOME").unwrap()
+  let archive = @env.get_env_var("TELESCOPE_PACKAGE_ARCHIVE").unwrap()
+  let temp = @fs.tmpdir(prefix="telescope-publish-test")
+  defer @fs.rmdir(temp, recursive=true)
+  let home = temp + "/home"
+  @fs.mkdir(home)
+  prepare_home(toolchain, home)
+  assert_false(@fs.exists(home + "/credentials.json"))
+  let source = temp + "/source"
+  let (unpacked, _, unpack_error) = @process.collect_output("unzip", [
+    "-q", archive, "-d", source,
+  ])
+  assert_eq(unpacked, 0, msg=unpack_error.text())
+  let (status, output, error) = @process.collect_output(
+    toolchain + "/bin/moon",
+    ["package"],
+    cwd=source,
+    extra_env=Map::from_array([("MOON_HOME", home)]),
+  )
+  assert_eq(status, 0, msg=output.text() + error.text())
+  assert_false(@fs.exists(home + "/credentials.json"))
 }
