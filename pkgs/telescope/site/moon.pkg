@@ -6,6 +6,7 @@ import {
   "moonrockz/telescope/views",
   "moonbitlang/core/debug",
   "moonbitlang/core/string",
+  "moonbitlang/core/encoding/percent",
 }
 
 import {

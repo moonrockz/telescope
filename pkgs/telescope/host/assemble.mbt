@@ -16,6 +16,35 @@ fn rebase_tree(text : String, from : String, to : String) -> String {
       )
     }
   }
+  for value in attributes(result, "srcset") {
+    let rebased = value
+      .split(",")
+      .map(candidate => {
+        let candidate = candidate.trim().to_owned()
+        let mut end = 0
+        while end < candidate.length() &&
+              ![9, 10, 12, 13, 32].contains(
+                candidate.code_unit_at(end).to_int(),
+              ) {
+          end += 1
+        }
+        let url = candidate[:end].to_owned()
+        (if url.has_prefix(from) {
+          to + url[from.length():].to_owned()
+        } else {
+          url
+        }) +
+        candidate[end:].to_owned()
+      })
+      .collect()
+      .join(", ")
+    for quote in ["\"", "'"] {
+      result = result.replace_all(
+        old="srcset=" + quote + value + quote,
+        new="srcset=" + quote + rebased + quote,
+      )
+    }
+  }
   for start in ["url(", "url(\"", "url('", "@import \"", "@import '"] {
     result = result.replace_all(old=start + from, new=start + to)
   }

@@ -22,16 +22,17 @@ fn resolve(
   origin : String,
   link : String,
 ) -> Result[(String, String), String] {
-  guard decode_url(link.replace_all(old="&amp;", new="&")) is Some(decoded) else {
-    return Err("invalid URL encoding")
-  }
-  let (url, fragment) = match decoded.find("#") {
-    Some(i) => (decoded[:i].to_owned(), decoded[i + 1:].to_owned())
-    None => (decoded, "")
+  let raw = link.replace_all(old="&amp;", new="&")
+  let (url, fragment) = match raw.find("#") {
+    Some(i) => (raw[:i].to_owned(), raw[i + 1:].to_owned())
+    None => (raw, "")
   }
   let url = match url.find("?") {
     Some(i) => url[:i].to_owned()
     None => url
+  }
+  guard decode_url(url) is Some(url) && decode_url(fragment) is Some(fragment) else {
+    return Err("invalid URL encoding")
   }
   let path = if url == "" {
     origin

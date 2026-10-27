@@ -125,6 +125,11 @@ fn is_media(path : String) -> Bool {
 }
 
 ///|
+fn encoded_path(path : String) -> String {
+  path.split("/").map(part => @percent.encode(part)).collect().join("/")
+}
+
+///|
 /// Resolve one `href` or `src` value of the page whose repository path is `from`. A link
 /// `api:<package path>[#<item>]` goes to an API page and must name a package and an anchor that
 /// exist.
@@ -181,7 +186,10 @@ pub fn resolve(ctx : LinkContext, from : String, url : String) -> Resolution {
     Some(i) => from[:i + 1].to_owned()
     None => ""
   }
-  let target = normalize(dir + @model.percent_decode(path))
+  let decoded = @percent.decode(path[:]) catch {
+    _ => return broken(url, "invalid percent-encoded resource path")
+  }
+  let target = normalize(dir + decoded)
   if target == ".." || target.has_prefix("../") {
     return broken(url, "link `\{url}` leaves the repository")
   }
@@ -200,17 +208,21 @@ pub fn resolve(ctx : LinkContext, from : String, url : String) -> Resolution {
     // An image goes below the route of its page, at the same relative path, so the relative link
     // of the source still works in the output.
     if is_media(target) && ctx.routes.get(from) is Some(route) {
-      let out = normalize(route[1:].to_owned() + path)
+      let out = normalize(route[1:].to_owned() + decoded)
       if !(out == ".." || out.has_prefix("../")) {
         return {
-          ..keep(with_anchor(config.href("/" + out) + query, anchor)),
+          ..keep(
+            with_anchor(config.href("/" + encoded_path(out)) + query, anchor),
+          ),
           copy: Some((out, target)),
         }
       }
     }
     if target.has_prefix(config.docs_dir + "/") || is_media(target) {
       return {
-        ..keep(config.href("/" + target)),
+        ..keep(
+          with_anchor(config.href("/" + encoded_path(target)) + query, anchor),
+        ),
         copy: Some((target, target)),
       }
     }

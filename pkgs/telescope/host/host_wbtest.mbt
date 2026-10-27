@@ -19,6 +19,80 @@ test "path and URL boundaries reject escapes while nested links resolve" {
 }
 
 ///|
+async test "encoded image filenames build and check at root and nested bases" {
+  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-encoded-image"))
+  defer @fs.rmdir(root, recursive=true)
+  write(
+    root + "/site.json",
+    "{\"title\":\"Example\",\"description\":\"Example\",\"base_path\":\"/\",\"site_url\":\"https://example.test/\",\"repo_url\":\"https://example.test/repo\",\"packages\":[]}",
+  )
+  write(
+    root + "/docs/a.md",
+    "# Images\n\n![Space](images/my%20diagram.svg)\n\n![Reserved](images/100%25%23.svg)",
+  )
+  let svg = "<svg xmlns='http://www.w3.org/2000/svg'></svg>"
+  write(root + "/docs/images/my diagram.svg", svg)
+  write(root + "/docs/images/100%#.svg", svg)
+  for base in ["/", "/example/"] {
+    ignore(
+      build(root, root + "/site.json", root + "/out", base~) catch {
+        @model.Invalid(problems) => fail(diagnostics(problems, "text"))
+        error => raise error
+      },
+    )
+    assert_eq(check(root + "/out", base), [])
+    assert_eq(
+      @fs.read_file(root + "/out/docs/a/images/my diagram.svg").text(),
+      svg,
+    )
+    assert_eq(@fs.read_file(root + "/out/docs/a/images/100%#.svg").text(), svg)
+    assert_true(
+      @fs.read_file(root + "/out/docs/a/index.html")
+      .text()
+      .contains(base + "docs/a/images/my%20diagram.svg"),
+    )
+  }
+}
+
+///|
+async test "responsive images rebase every srcset candidate through version aliases" {
+  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-srcset"))
+  defer @fs.rmdir(root, recursive=true)
+  for
+    (tree, base) in [("next", "/example/next/"), ("release", "/example/v/0.1/")] {
+    write(
+      root + "/" + tree + "/index.html",
+      "<title>Images</title><img srcset=\"" +
+      base +
+      "assets/a.svg 1x, " +
+      base +
+      "assets/b.svg 2x\"><source srcset='" +
+      base +
+      "assets/a.svg 320w, " +
+      base +
+      "assets/b.svg 640w'>",
+    )
+    for image in ["a", "b"] {
+      write(
+        root + "/" + tree + "/assets/" + image + ".svg",
+        "<svg xmlns='http://www.w3.org/2000/svg'></svg>",
+      )
+    }
+  }
+  write(
+    root + "/manifest.json",
+    "{\"schema_version\":1,\"base_path\":\"/example/\",\"latest\":\"0.1\",\"trees\":[{\"id\":\"next\",\"path\":\"next\",\"base_path\":\"/example/next/\"},{\"id\":\"0.1\",\"path\":\"release\",\"base_path\":\"/example/v/0.1/\"}]}",
+  )
+  assemble(root + "/manifest.json", root + "/out")
+  assert_eq(check(root + "/out", "/example/"), [])
+  for tree in ["", "next/", "v/0.1/", "latest/"] {
+    let html = @fs.read_file(root + "/out/" + tree + "index.html").text()
+    assert_true(html.contains("/example/" + tree + "assets/a.svg 1x"))
+    assert_true(html.contains("/example/" + tree + "assets/b.svg 640w"))
+  }
+}
+
+///|
 async test "checks aggregate missing assets and fragments and JSON origins" {
   let root = @fs.realpath(@fs.tmpdir(prefix="telescope-check"))
   defer @fs.rmdir(root, recursive=true)
