@@ -1,5 +1,39 @@
 # Release verification
 
+## Published 0.1.1, 2026-10-27
+
+The owner approved PR 5 and publication of 0.1.1. Its squash merge
+`4c2c7ebb235425c917780fccfc874a5beb06c156` retains the qualified tree.
+[Actions run 40531421002](https://github.com/moonrockz/telescope/actions/runs/40531421002)
+passed both platform qualifiers and the live exact-commit owner/admin gate,
+then published `moonrockz/telescope@0.1.1` and matching native CLI archives.
+The server accepted the dry run with HTTP 202 and the real upload with HTTP 200.
+
+| Qualification | Result |
+| --- | --- |
+| Native Linux and macOS | 224 engine tests, two owner-gate tests, two publisher regressions, public-index bootstrap, all-target pure checks, packaging and candidate installs passed |
+| Linux browser | 42 checks passed, including gallery navigation/downloads, no-script version trees and canonical availability |
+| Real Linux published consumer | Passed in the publication job, from an empty registry and actual downloads |
+| Real macOS published consumer | `mise run test:consumer -- --published 0.1.1` passed from an empty registry and actual downloads |
+
+Retained reports are [Linux](consumer-0.1.1-linux-x64.json) and
+[macOS](consumer-0.1.1-macos-arm64.json). Exact versions, downloads, archive
+SHA-256 values and API compatibility are in [0.1.1.md](0.1.1.md). Each published
+consumer verified exact pins, CLI version/checksum, a compiled custom provider,
+deterministic root/nested builds, failure preservation, API generation and
+preview shutdown. Neither used a candidate registry or workspace override.
+
+This release restores gallery primary/family navigation and SVG downloads,
+plus latest-page canonicals without truncating filenames such as `genindex.html`.
+The review finding for that filename case was reproduced, fixed, replied to and
+resolved before merge. Diagrams receives the actual 0.1.1 pins and checksums in
+Orca dispatch `ctx_673ab88ae239` on Run `run_b3638d9bfa3d`.
+
+Elapsed release time was 13m41s. Linux qualification took 12m31s, including the
+browser dependency installation; macOS waited about 10 minutes for a runner and
+then qualified in 2m34s. Publication and actual Linux installation took 58s.
+These are observed elapsed times, not billed cost or a promised feedback target.
+
 ## Published 0.1.0, 2026-10-27
 
 The owner-approved [release run 40520332727](https://github.com/moonrockz/telescope/actions/runs/40520332727)

@@ -6,15 +6,14 @@ site planning, with reusable native IO in `moonrockz/telescope/host`. The matchi
 assembles consumer-supplied version trees. Consumers own their domain engines
 and reviewed content.
 
-Version **0.1.0 is released** as `moonrockz/telescope@0.1.0` on Mooncakes and
-matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.1.0).
+Version **0.1.1 is released** as `moonrockz/telescope@0.1.1` on Mooncakes and
+matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.1.1).
 Clean published consumers pass on Linux x64 and macOS arm64, without local
-workspace overrides. See [installation and compatibility](docs/release/0.1.0.md).
+workspace overrides. See [installation and compatibility](docs/release/0.1.1.md).
 
-The working source prepares an unpublished `0.1.1` patch for gallery header and
-family navigation, SVG downloads and latest-tree canonical links. Diagrams'
-released-consumer integration found these gaps in 0.1.0. Publication of this
-patch requires new owner approval; downstream pins remain at actual releases.
+The 0.1.1 patch adds gallery header and family navigation, SVG downloads and
+latest-tree canonical links found missing during diagrams' real integration.
+Consumers keep their content and domain engines and pin the actual release.
 
 ```sh
 mise trust

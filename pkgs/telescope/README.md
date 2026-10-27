@@ -1,6 +1,6 @@
 # Telescope library
 
-`moonrockz/telescope` is a project site library. Version `0.1.0` is published with
+`moonrockz/telescope` is a project site library. Version `0.1.1` is published with
 a matching native CLI. The CLI is built from `apps/telescope` in this repository.
 See the repository's version-specific release documentation for installation
 and compatibility evidence. New publications require owner approval.

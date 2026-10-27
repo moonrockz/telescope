@@ -13,17 +13,17 @@
   Code goes in <pre><code class="language-moonbit"> (or scheme, toml, json, bash, diff). Give sections an id and
   list them in nav.toc.
 -->
-<link rel="stylesheet" href="../../../docs/templates/assets/agent-document.css">
-<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github.min.css" media="(prefers-color-scheme: light)">
-<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
-<script defer src="../../../docs/templates/assets/highlight/highlight.min.js"></script>
-<script defer src="../../../docs/templates/assets/highlight/languages/scheme.min.js"></script>
-<script defer src="../../../docs/templates/assets/agent-document.js"></script>
+<link rel="stylesheet" href="../../../../docs/templates/assets/agent-document.css">
+<link rel="stylesheet" href="../../../../docs/templates/assets/highlight/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../../../../docs/templates/assets/highlight/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<script defer src="../../../../docs/templates/assets/highlight/highlight.min.js"></script>
+<script defer src="../../../../docs/templates/assets/highlight/languages/scheme.min.js"></script>
+<script defer src="../../../../docs/templates/assets/agent-document.js"></script>
 </head>
 <body>
 <main>
 <h1>extract-project-site-toolkit</h1>
-<p class="meta">OpenSpec change · 2026-10-26 · Implementation approved · Bead <code>telescope-0wg</code></p>
+<p class="meta">OpenSpec change · 2026-10-27 · Released 0.1.1 verified · Bead <code>telescope-0wg</code></p>
 <nav class="toc" aria-label="Contents"><ul>
 <li><a href="#context">Context</a></li>
 <li><a href="#sources">Source inventory and provenance</a></li>
@@ -36,7 +36,8 @@
 <li><a href="#verification">Verification and acceptance</a></li>
 </ul></nav>
 <h2 id="context">Context</h2>
-<p>See <a href="proposal.md">proposal.md</a> for motivation. Telescope contains setup files and this proposal. It has no engine, published version or consumer migration. The inspected sites already use MoonBit and Rabbita, but each contains project-specific assumptions. diagrams.mbt is the first intended adopter, after Telescope publishes a usable release. Smithy and Morphir remain references for this release.</p>
+<p>See <a href="proposal.md">proposal.md</a> for motivation. At proposal time Telescope contained setup files and no engine or published version. The inspected sites already used MoonBit and Rabbita with project-specific assumptions. Smithy and Morphir remain references; diagrams.mbt is the first adopter.</p>
+<p>The owner-approved 0.1.1 release is published as <code>moonrockz/telescope@0.1.1</code> with matching Linux x64 and macOS arm64 CLI archives. Actions run <code>40531421002</code> qualified source <code>4c2c7ebb235425c917780fccfc874a5beb06c156</code>. Clean public installs pass on both platforms. The diagrams workspace acknowledged the real library, CLI and archive checksums through the shared Run. Version-specific documentation and retained consumer reports are under <code>docs/release/</code>.</p>
 <p>Run <code>run_b3638d9bfa3d</code>, coordinator mailbox <code>run:run_b3638d9bfa3d</code>, coordinates Telescope's <code>extract-project-site-toolkit</code> with diagrams.mbt's <code>adopt-telescope-site</code>. Each workspace owns its files. No beads exist before maintainer approval.</p>
 <h2 id="sources">Source inventory and provenance</h2>
 <p>The inventory describes local sources inspected on 2026-10-26. Revisions identify the source baseline. The implementation extracts the generic engine along the boundaries below and retains source notices. Local checkout paths are inspection provenance only and must never become package dependencies.</p>
@@ -67,7 +68,7 @@
 <tr><td><code>Diagrams: scripts/gallery.mbtx; apps/site/assets/examples/; apps/site/scripts/gallery-test.ts; apps/site/scripts/animation-test.ts; site/site.json</code></td><td>Checked domain artifacts, offline players, browser qualification, project metadata.</td><td>Consumer generates an example manifest and checked artifacts; Telescope validates, copies and presents them.</td></tr>
 <tr><td><code>Diagrams: .config/mise/config.toml; scripts/openspec-setup.mbtx</code></td><td>Pinned tooling and isolated OpenSpec integration refresh.</td><td>Setup-only adaptation in this turn with pinned imports and async IO.</td></tr>
 </tbody></table>
-<p>Apache attribution is in <a href="../../../NOTICE">NOTICE</a> and the unchanged <a href="../../../LICENSE">LICENSE</a>. Preserve original headers and any upstream NOTICE when implementation copies code, identify changed files, and record source revisions. The vendored highlight.js license and UPSTREAM.md remain alongside the assets. Smithy's README traces its site to moonspec; any future copy of that lineage must preserve applicable notices rather than invent copyright ownership.</p>
+<p>Apache attribution is in <a href="../../../../NOTICE">NOTICE</a> and the unchanged <a href="../../../../LICENSE">LICENSE</a>. Preserve original headers and any upstream NOTICE when implementation copies code, identify changed files, and record source revisions. The vendored highlight.js license and UPSTREAM.md remain alongside the assets. Smithy's README traces its site to moonspec; any future copy of that lineage must preserve applicable notices rather than invent copyright ownership.</p>
 <h2 id="goals">Goals and boundaries</h2>
 <p>The first release must build an unrelated project's small site and expose enough optional API/version support for diagrams to migrate without URL regressions. Keep configuration, paths and document facts independent from host IO and consumer domain dependencies. A shared source snapshot is evidence for extraction, not an instruction to copy every feature.</p>
 <p>Exclude diagram parsing, rendering, animations, domain editors and workbenches, hosting and deployment, remote plugin discovery, arbitrary runtime plugins, and wholesale Smithy/Morphir migrations. The initial preview serves an existing build. Automatic watch/rebuild is deferred unless independently scoped later.</p>
@@ -148,7 +149,7 @@
 </ol>
 <p>Rollback stays consumer-owned. Before diagrams migration lands, keep its existing generator and built baseline. If compatibility fails, leave the migration open and fix the adapter. A released regression uses a corrective version or a rollback to an earlier actual published version; never rewrite an already published version or replace it with a workspace path.</p>
 <h2 id="verification">Verification and acceptance</h2>
-<p><a href="tasks.md">tasks.md</a> contains group acceptance and commands to add during implementation. No engine tests are claimed now. Setup verification uses <code>mise run format</code>, <code>mise run check:setup</code>, <code>mise exec -- openspec schema validate html-design</code> and <code>mise exec -- openspec validate --all --strict</code>. No full <code>mise run check</code> task exists until there is an engine to check.</p>
+<p><a href="tasks.md">tasks.md</a> records all verified implementation groups. Final verification includes <code>mise run format</code>, <code>mise run check:setup</code>, <code>mise run check</code>, strict OpenSpec validation, 224 native tests, 42 browser checks and real published-consumer qualification on Linux and macOS. Version-specific release evidence is under <code>docs/release/</code>. The initial proposal's setup-only boundary is retained as historical context.</p>
 <p>Review the source inventory, dependency boundaries and release gate alongside the five capability specs. The first task group is an independent consumer, and the final distribution evidence is an actual published install. No implementation group is complete solely because a local development workspace builds.</p>
 </main>
 </body>

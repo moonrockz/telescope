@@ -1,7 +1,8 @@
 # Browser qualification
 
-`verification.json` records the working candidate's qualification result, covered
-behaviors, source fixes and release limits. It is updated from actual run evidence.
+`verification.json` retains the initial 0.1.0 candidate qualification as a
+historical record. Current runs write evidence under `_build/browser/`; released
+distribution results are recorded in [release verification](../../docs/release/verification.md).
 
 These tests use pinned Playwright 1.64.1 and Chromium. They exercise actual native
 Telescope output at `/` and `/example/`. Setup copies the independent fixture to
@@ -54,7 +55,9 @@ stored theme before stylesheet delivery, throwing storage, theme persistence,
 narrow-screen menu and long paths, no-JavaScript reading, skip link and ToC,
 clipboard success and rejection, reviewed HTML scripts, registered per-route
 script/CSS isolation and static fallback, tree-local search, version selection,
-HEAD probing, missing-page section fallback and static version banners.
+HEAD probing, missing-page section fallback and static version banners. The
+0.1.1 suite adds gallery primary/family navigation, SVG downloads, narrow themed
+pages, static version-tree reading and canonical-link availability.
 
 Evidence goes under `_build/browser/`:
 
