@@ -8,5 +8,6 @@
   "repo_ref": "browser-fixture",
   "packages": [],
   "api": [],
+  "gallery": {"manifest": "gallery.json", "root": "examples"},
   "source_roots": ["docs", "site/pages", "site/articles"]
 }

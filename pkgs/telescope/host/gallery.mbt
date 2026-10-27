@@ -109,7 +109,7 @@ async fn gallery_outputs(
       description: page.title,
       section: Docs,
     }
-    let html = @views.render(meta, @views.raw(page.body_html))
+    let html = @views.render(meta, @views.raw(page.body_html), gallery=true)
     outputs.push(Text(@model.route_file(page.route), html))
   }
   outputs

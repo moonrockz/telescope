@@ -1,5 +1,9 @@
 # Gallery contract version 1
 
+The 0.1.1 candidate groups examples by family and adds explicit SVG downloads.
+Its shared host links the enabled gallery from primary navigation. These fixes
+are not present in the published 0.1.0 package; publication of 0.1.1 is pending.
+
 `moonrockz/telescope/gallery` parses and plans supplied artifacts without IO or
 diagram engines. The consumer owns generation, source correctness and its checked
 pipeline. All records use `schema_version: 1`. Optional informational `producer`

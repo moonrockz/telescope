@@ -5,6 +5,7 @@ test('version selector preserves an existing page and checks availability with H
   page.on('request', request => { if (request.method() === 'HEAD') probes.push(new URL(request.url()).pathname); });
   await page.goto(site.versions + site.base + 'next/docs/guide/');
   await expect(page.locator('.version-banner')).toHaveText('Unreleased docs.');
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://observatory.example' + site.base + 'latest/docs/guide/');
   const versions = page.getByRole('combobox', { name: 'Docs version', exact: true });
   await expect(versions).toHaveValue('next');
   await expect(versions.locator('option')).toHaveText(['Latest (0.2)', 'main', '0.2', '0.1']);
@@ -24,6 +25,7 @@ test('next-only page falls back to target docs section when missing from a relea
   });
   await page.goto(site.versions + site.base + 'next/docs/next-only/');
   await expect(page.getByRole('heading', { name: 'Aurora preview', exact: true })).toBeVisible();
+  await expect(page.locator('head link[rel="canonical"]')).toHaveCount(0);
   await page.getByRole('combobox', { name: 'Docs version', exact: true }).selectOption('latest');
   await expect(page).toHaveURL(site.versions + site.base + 'latest/docs/');
   expect(missing).toEqual([404]);

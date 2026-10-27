@@ -9,7 +9,7 @@ import {
 }
 
 // Values
-pub async fn api_outputs(@model.SiteConfig, ApiSite) -> Array[Output]
+pub async fn api_outputs(@model.SiteConfig, ApiSite, gallery? : Bool) -> Array[Output]
 
 pub fn atom_feed(@model.SiteConfig, Array[Page]) -> String
 

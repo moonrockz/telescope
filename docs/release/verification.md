@@ -1,4 +1,46 @@
-# Candidate verification, 2026-10-26
+# Release verification
+
+## Published 0.1.0, 2026-10-27
+
+The owner-approved [release run 40520332727](https://github.com/moonrockz/telescope/actions/runs/40520332727)
+published `moonrockz/telescope@0.1.0` and both matching CLI archives from
+`f119b0621d4a6dfe02a5e84615027a133e7f460f` after PR 4 merged. Its tree matched
+the qualified head with an unchanged base. The live owner/admin gate passed.
+The server returned HTTP 202 for the accepted dry run and HTTP 200 for actual
+publication. [Installation and API/adapter compatibility](0.1.0.md) records exact
+downloads and archive checksums.
+
+| Qualification | Observed result |
+| --- | --- |
+| Both exact-source release qualifiers | Setup, strict native compilation, 221 native tests, two owner-gate tests, all-target pure-package checks, packaging and prepared consumers passed |
+| Environment regressions on both platforms | Two publisher regressions and one fresh-public-index regression passed |
+| Linux browser checks | 38 passed using the produced native CLI |
+| Actual Linux published consumer | Passed inside the publication job from the public registry and GitHub downloads |
+| Actual macOS published consumer | `mise run test:consumer -- --published 0.1.0` passed locally from the public registry and GitHub downloads |
+
+Both actual published consumers verified exact pins, CLI versions and SHA-256,
+compiled the public host with a consumer-owned provider, and built and checked
+mixed content at `/` and `/example/`. Deterministic output, failed-build
+preservation, template exclusion, API generation, HEAD responses and preview
+shutdown passed. Retained reports are [Linux](consumer-0.1.0-linux-x64.json) and
+[macOS](consumer-0.1.0-macos-arm64.json). Neither consumer seeded a candidate
+entry or used a moon.work/local-path override. No local publication credential
+was created; the Actions-only credential was removed with its temporary home.
+
+The release took 3m40s. Linux qualification took 2m29s, macOS 2m44s and
+publication plus actual Linux installation 48s. These are elapsed job times,
+not billed cost. Both native qualifiers gate promotion; browsers run once on
+Linux. Publication promoted the same qualified archives without rebuilding.
+
+Both published-install results and exact coordinates were sent through Orca
+Run `run_b3638d9bfa3d` to diagrams dispatch `ctx_a1b42e27a11a`. The worker
+acknowledged them and resolved the actual registry pin. Diagrams integration
+and its own review remain in progress in PR 32.
+
+## Historical candidate verification, 2026-10-26
+
+The following is the prerelease record, retained as history. Its unpublished
+status, pending CI and unperformed publication statements apply to that date.
 
 This records the final local, unpublished public-host 0.1.0 candidate on macOS arm64. It does not
 record a release, owner publication approval, a merged release PR or downstream

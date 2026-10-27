@@ -26,6 +26,7 @@ async test "current compiler metadata renders API anchors, source refs and warni
     [],
     main_build=true,
     api~,
+    external_routes=["/gallery/"],
   )
   let html = built.outputs.filter_map(o => {
       match o {
@@ -34,6 +35,7 @@ async test "current compiler metadata renders API anchors, source refs and warni
       }
     })[0]
   assert_true(html.contains("id=\"Document\""))
+  assert_true(html.contains("href=\"/m/gallery/\""))
   assert_true(html.contains("id=\"analyse_html\""))
   assert_true(
     html.contains("/blob/fixture-ref/pkgs/telescope/content/document.mbt#L"),
