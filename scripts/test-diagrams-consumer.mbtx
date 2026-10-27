@@ -135,7 +135,7 @@ async fn main {
   }
   evidence["source_ref"] = Json::string(source_ref)
   evidence["engine_ref"] = Json::string(engine_ref)
-  evidence["telescope_version"] = "0.1.0"
+  evidence["telescope_version"] = "0.1.1"
   evidence["telescope_source"] = "Copied working source, not an installed distribution"
   if @json.parse(@fs.read_file(input + "/baseline.json").text())
     is Object(baseline) {

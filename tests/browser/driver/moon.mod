@@ -1,11 +1,11 @@
 name = "qualification/browser-driver"
 
-version = "0.1.0"
+version = "0.1.1"
 
 license = "Apache-2.0"
 
 import {
-  "moonrockz/telescope@0.1.0",
+  "moonrockz/telescope@0.1.1",
   "moonbitlang/async@0.22.5",
 }
 

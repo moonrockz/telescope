@@ -415,6 +415,7 @@ fn duplicates(ids : Array[String]) -> Array[String] {
 pub async fn api_outputs(
   config : @model.SiteConfig,
   site : ApiSite,
+  gallery~ : Bool = false,
 ) -> Array[Output] {
   if site.modules.is_empty() {
     return []
@@ -453,7 +454,11 @@ pub async fn api_outputs(
       outputs.push(
         Text(
           @model.route_file(route),
-          @views.render(meta, @views.docs_page(meta, nav, body, None, toc~)),
+          @views.render(
+            meta,
+            @views.docs_page(meta, nav, body, None, toc~),
+            gallery~,
+          ),
         ),
       )
     }
@@ -471,6 +476,7 @@ pub async fn api_outputs(
       @views.render(
         index,
         @views.docs_page(index, nav, api_index_body(config, site), None),
+        gallery~,
       ),
     ),
   )

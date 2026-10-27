@@ -54,6 +54,56 @@ test "implemented and planned pages preserve status base paths escaping and decl
 }
 
 ///|
+test "families have grouped navigation and SVG previews have download links" {
+  let text = manifest_json(
+    implemented("first", family="sequence") +
+    "," +
+    planned("future", "Future & formats") +
+    "," +
+    implemented("second", family="sequence"),
+  )
+  let manifest = @gallery.parse_manifest(
+    text.replace_all(
+      old="\"preview\":{",
+      new="\"preview_dark\":{\"path\":\"previews/dark.svg\",\"media_type\":\"image/svg+xml\"},\"preview\":{",
+    ),
+  ).unwrap()
+  for base in ["/diagrams.mbt/", "/diagrams.mbt/next/"] {
+    let output = @gallery.plan(manifest, base).unwrap()
+    let index = output.pages[0].body_html
+    assert_true(index.contains("aria-label=\"Gallery families\""))
+    assert_true(index.contains("href=\"#family-first\""))
+    assert_true(
+      index.contains("<section id=\"family-first\"><h2>sequence</h2>"),
+    )
+    assert_true(
+      index.contains(
+        "<section id=\"family-future\"><h2>Future &amp; formats</h2>",
+      ),
+    )
+    for page in [output.pages[1], output.pages[3]] {
+      assert_true(
+        page.body_html.contains("href=\"" + base + "gallery/#family-first\""),
+      )
+      assert_true(
+        page.body_html.contains(
+          "href=\"" +
+          base +
+          "gallery/artifacts/previews/review.svg\" download>Download SVG</a>",
+        ),
+      )
+      assert_true(
+        page.body_html.contains(
+          "href=\"" +
+          base +
+          "gallery/artifacts/previews/dark.svg\" download>Download dark SVG</a>",
+        ),
+      )
+    }
+  }
+}
+
+///|
 test "all seven implemented family labels and planned families are data" {
   let families = [
     "sequence", "BPMN", "swimlane", "regex", "EBNF", "JSON", "YAML",

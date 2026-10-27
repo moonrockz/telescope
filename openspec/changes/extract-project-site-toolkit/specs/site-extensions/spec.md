@@ -34,6 +34,11 @@ The toolkit SHALL accept a versioned gallery manifest with stable unique ID, fam
 - **THEN** the gallery presents its title, family, support status, source downloads, preview and player link
 - **AND** the supplied files retain their bytes and offline behavior
 
+#### Scenario: Browse a family and download a preview
+- **WHEN** a reader opens the gallery without browser scripting
+- **THEN** family links lead to grouped examples and each detail links back to its family
+- **AND** SVG previews have explicit download links in the active version tree
+
 #### Scenario: Planned format
 - **WHEN** an entry is marked planned without generated artifacts
 - **THEN** it is visibly identified as planned and has no fabricated preview or player

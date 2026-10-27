@@ -1,14 +1,13 @@
 # Tasks
 
-Status: Implementation and 0.1.0 publication approved. The candidate is unpublished. Native engine,
-packaging and isolated-consumer CI pass on Linux x64 and macOS arm64; all 38
-browser checks pass on Linux and locally on macOS. The actual diagrams fixture
-preserves 77 routes, 5,376 anchors and 40 artifact copies. The approved Actions
-attempts stopped before publication: artifact paths and the publisher registry
-were repaired in PRs 2 and 3. Mooncakes then accepted the server dry run, but the
-pinned CLI reported that HTTP 202 as an error. The exact-receipt compatibility
-fix and fresh-consumer bootstrap verification await merge. Downstream adoption remains blocked until
-real published-consumer verification succeeds. Stories stay open until merge.
+Status: Owner-approved 0.1.0 publication succeeded in Actions run 40520332727 at
+f119b0621d4a6dfe02a5e84615027a133e7f460f. Clean actual published consumers pass
+on Linux x64 and macOS arm64. Diagrams resolves that real pin and preserves
+77 routes, 5,376 anchors and 40 artifacts in root and next output. Integration
+found missing gallery primary/family navigation and latest canonical insertion.
+The working source prepares an unpublished 0.1.1 patch with shared fixes and
+regressions. That new publication requires owner approval. Keep final readiness
+and archive pending the patched released consumer. Stories stay open until merge.
 
 ## 1. Prove an independent packaged consumer
 
@@ -115,15 +114,14 @@ Acceptance: Library and CLI are published at the same actual semantic version
 after owner approval. A clean consumer installs both from real distribution
 sources, verifies checksums and builds/checks without any local overrides.
 
-The workflow, archives, checksums, notices and candidate CI are implemented.
-The owner-approved server dry run succeeded in Actions run 40461111541. The
-pinned CLI's exit handling requires the scoped compatibility repair described
-above; no local credential was created and no real upload has run.
+The workflow, archives, checksums and notices were published for 0.1.0. Actual
+Linux and macOS published-install reports are retained under docs/release/.
+The patch candidate is not a released dependency or an approved publication.
 
 - [x] 7.1 Prepare an owner-gated GitHub Actions release workflow and release PR with semantic version, changelog, supported-platform archives, SHA-256 checksums, registry metadata and complete notices; verify package dry-run, all checks and reproducible candidate installation instructions.
 - [x] 7.2 Obtain and record explicit Telescope repository-owner approval of publication before executing it; verify the approval identifies the release PR/version and keep publication and downstream readiness blocked if absent.
-- [ ] 7.3 After that approval, publish through GitHub Actions the library to Mooncakes and matching CLI archives/checksums to the versioned GitHub release; verify both real coordinates exist and report partial-publication failure without claiming readiness.
-- [ ] 7.4 Run `mise run test:consumer -- --published <actual-version>` in a clean environment against the real registry and downloads; verify exact pins, CLI version, checksums, both deployment bases and no candidate registry, local paths or workspace overrides.
+- [x] 7.3 After that approval, publish through GitHub Actions the library to Mooncakes and matching CLI archives/checksums to the versioned GitHub release; verify both real coordinates exist and report partial-publication failure without claiming readiness.
+- [x] 7.4 Run `mise run test:consumer -- --published <actual-version>` in a clean environment against the real registry and downloads; verify exact pins, CLI version, checksums, both deployment bases and no candidate registry, local paths or workspace overrides.
 - [ ] 7.5 Publish version-specific install/API/adapter compatibility documentation and send exact release coordinates and test evidence to `run:run_b3638d9bfa3d`; verify the diagrams maintainer can replace its adoption gate with those actual pins before removing its generator.
 
 ## Workflow follow-up

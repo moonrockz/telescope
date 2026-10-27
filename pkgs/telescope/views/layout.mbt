@@ -35,7 +35,8 @@ fn nav_link(
   route : String,
   label : String,
 ) -> Html {
-  if meta.section == section {
+  if meta.section == section &&
+    !(section == Docs && meta.route.has_prefix("/gallery/")) {
     @html.a(
       href=meta.config.href(route),
       class="current",
@@ -51,7 +52,7 @@ fn nav_link(
 /// The page frame: head, header, main content and footer. Every link starts with the base path, and
 /// the page works without JavaScript: the islands script only fills the empty mount elements of the
 /// search box, the version switcher, the theme control and the menu button.
-pub fn layout(meta : PageMeta, main : Html) -> Html {
+pub fn layout(meta : PageMeta, main : Html, gallery~ : Bool = false) -> Html {
   let config = meta.config
   let title = if meta.section == Home {
     config.title
@@ -101,6 +102,22 @@ pub fn layout(meta : PageMeta, main : Html) -> Html {
               nav_link(meta, Docs, "/docs/", "Docs"),
               nav_link(meta, Articles, "/articles/", "Articles"),
             ] +
+            (if gallery {
+              [
+                if meta.route.has_prefix("/gallery/") {
+                  @html.a(
+                    href=config.href("/gallery/"),
+                    class="current",
+                    attrs=@html.Attrs::build().aria_current("page"),
+                    "Gallery",
+                  )
+                } else {
+                  @html.a(href=config.href("/gallery/"), "Gallery")
+                },
+              ]
+            } else {
+              []
+            }) +
             (if config.api.is_empty() {
               []
             } else {
@@ -128,8 +145,12 @@ pub fn layout(meta : PageMeta, main : Html) -> Html {
 }
 
 ///|
-pub async fn render(meta : PageMeta, main : Html) -> String {
-  let page = layout(meta, main)
+pub async fn render(
+  meta : PageMeta,
+  main : Html,
+  gallery~ : Bool = false,
+) -> String {
+  let page = layout(meta, main, gallery~)
   @rabbita.new(() => @rabbita.Val::constant(page)).render(
     url=meta.config.absolute(meta.route),
   )

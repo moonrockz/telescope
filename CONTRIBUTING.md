@@ -1,8 +1,8 @@
 # Contributing to Telescope
 
-Telescope is implementing the approved extraction proposal. Candidate 0.1.0 is
-unpublished; review the proposal and public package contracts before changing
-the engine. Implementation approval does not authorize publication or migration.
+Telescope 0.1.0 is published. Review the accepted specifications and public
+package contracts before changing the engine. Implementation approval does not
+authorize a new publication or a downstream migration.
 
 ## Development setup
 
@@ -47,7 +47,7 @@ without a credential. PR and release qualification enforce this boundary.
 `mise run test:consumer-environment` separately verifies public-index bootstrap
 for a fresh published consumer, without a candidate registry or credentials.
 This proves packaging shape, not publication. See [CLI usage](docs/cli.md),
-[candidate install](docs/release/install.md) and [release gates](docs/release/README.md).
+[installation](docs/release/install.md) and [release gates](docs/release/README.md).
 
 ## OpenSpec and review documents
 

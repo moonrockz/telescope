@@ -52,6 +52,7 @@ async test "layout has head, nav and main" {
   assert_true(out.contains("href=\"/m/articles/atom.xml\""))
   assert_true(out.contains("href=\"/m/docs/\""))
   assert_true(out.contains("href=\"/m/articles/\""))
+  assert_false(out.contains(">Gallery</a>"))
   assert_true(out.contains("class=\"current\""))
   assert_true(
     out.contains(

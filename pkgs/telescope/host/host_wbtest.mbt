@@ -1,4 +1,103 @@
 ///|
+async test "configured gallery is reachable from shared headers at both bases" {
+  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery-navigation"))
+  defer @fs.rmdir(root, recursive=true)
+  write(
+    root + "/site.json",
+    "{\"title\":\"Example\",\"description\":\"Example\",\"base_path\":\"/\",\"site_url\":\"https://example.test/\",\"repo_url\":\"https://example.test/repo\",\"packages\":[],\"gallery\":{\"manifest\":\"gallery.json\"}}",
+  )
+  write(
+    root + "/gallery.json",
+    "{\"schema_version\":1,\"entries\":[{\"id\":\"dot\",\"family\":\"dot\",\"title\":\"DOT\",\"status\":\"planned\"}]}",
+  )
+  write(root + "/docs/a.md", "# A")
+  for base in ["/diagrams.mbt/", "/diagrams.mbt/next/"] {
+    ignore(build(root, root + "/site.json", root + "/out", base~))
+    for
+      path in [
+        "index.html", "docs/a/index.html", "articles/index.html", "gallery/index.html",
+        "gallery/dot/index.html",
+      ] {
+      let html = @fs.read_file(root + "/out/" + path).text()
+      let header = html.split("</header>").next().unwrap().to_owned()
+      assert_true(header.contains("href=\"" + base + "gallery/\""), msg=path)
+      if path.has_prefix("gallery/") {
+        assert_true(
+          header.contains("aria-current=\"page\" href=\"" + base + "gallery/\""),
+          msg=path,
+        )
+        assert_false(
+          header.contains("aria-current=\"page\" href=\"" + base + "docs/\""),
+          msg=path,
+        )
+      }
+    }
+  }
+}
+
+///|
+async test "assembly restores latest canonical links only for available release pages" {
+  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-canonical"))
+  defer @fs.rmdir(root, recursive=true)
+  for tree in ["next", "old", "release"] {
+    write(
+      root + "/" + tree + "/index.html",
+      "<html><head><title>Home</title></head><body>Home</body></html>",
+    )
+    write(
+      root + "/" + tree + "/docs/common/index.html",
+      "<html><head><title>Common</title></head><body>Common</body></html>",
+    )
+  }
+  write(
+    root + "/next/docs/new/index.html",
+    "<html><head><title>New</title></head><body>New</body></html>",
+  )
+  write(
+    root + "/release/docs/authored/index.html",
+    "<html><head><title>Authored</title><link rel='canonical' href='https://example.test/custom/'></head><body>Authored</body></html>",
+  )
+  write(
+    root + "/old/docs/removed/index.html",
+    "<html><head><title>Removed</title></head><body>Removed</body></html>",
+  )
+  write(
+    root + "/manifest.json",
+    "{\"schema_version\":1,\"base_path\":\"/diagrams.mbt/\",\"site_url\":\"https://example.test/diagrams.mbt/\",\"latest\":\"0.2\",\"trees\":[{\"id\":\"next\",\"path\":\"next\"},{\"id\":\"0.1\",\"path\":\"old\"},{\"id\":\"0.2\",\"path\":\"release\"}]}",
+  )
+  assemble(root + "/manifest.json", root + "/out")
+  for tree in ["", "next/", "v/0.1/", "v/0.2/", "latest/"] {
+    for
+      (path, route) in [
+        ("index.html", ""),
+        ("docs/common/index.html", "docs/common/"),
+      ] {
+      let html = @fs.read_file(root + "/out/" + tree + path).text()
+      assert_true(
+        html.contains(
+          "<link rel=\"canonical\" href=\"https://example.test/diagrams.mbt/latest/" +
+          route +
+          "\">",
+        ),
+      )
+    }
+  }
+  for path in ["next/docs/new/index.html", "v/0.1/docs/removed/index.html"] {
+    assert_false(
+      @fs.read_file(root + "/out/" + path).text().contains("rel=\"canonical\""),
+    )
+  }
+  for tree in ["", "v/0.2/", "latest/"] {
+    let html = @fs.read_file(root + "/out/" + tree + "docs/authored/index.html").text()
+    assert_eq(
+      attributes(html, "rel").filter(rel => rel == "canonical").length(),
+      1,
+    )
+    assert_true(html.contains("href='https://example.test/custom/'"))
+  }
+}
+
+///|
 test "path and URL boundaries reject escapes while nested links resolve" {
   assert_false(relative("../secret"))
   assert_false(relative("/etc/passwd"))
@@ -230,6 +329,7 @@ async test "offline supplied trees retain HTML and isolate links at root base" {
   assert_true(home.contains("href=\"/docs/\""))
   assert_true(home.contains("No version is released yet"))
   assert_false(@fs.exists(root + "/out/latest"))
+  assert_false(home.contains("rel=\"canonical\""))
   assert_eq(
     rebase_tree("<a href='/docs/'>x</a>", "/", "/next/"),
     "<a href='/next/docs/'>x</a>",

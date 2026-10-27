@@ -6,10 +6,15 @@ site planning, with reusable native IO in `moonrockz/telescope/host`. The matchi
 assembles consumer-supplied version trees. Consumers own their domain engines
 and reviewed content.
 
-The current **0.1.0 candidate is unpublished**. Clean cached-candidate consumers
-have passed on Linux x64 and macOS arm64 in
-[GitHub Actions](https://github.com/moonrockz/telescope/actions/runs/40422349667).
-Do not use this candidate as a published downstream dependency.
+Version **0.1.0 is released** as `moonrockz/telescope@0.1.0` on Mooncakes and
+matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.1.0).
+Clean published consumers pass on Linux x64 and macOS arm64, without local
+workspace overrides. See [installation and compatibility](docs/release/0.1.0.md).
+
+The working source prepares an unpublished `0.1.1` patch for gallery header and
+family navigation, SVG downloads and latest-tree canonical links. Diagrams'
+released-consumer integration found these gaps in 0.1.0. Publication of this
+patch requires new owner approval; downstream pins remain at actual releases.
 
 ```sh
 mise trust
@@ -34,7 +39,7 @@ _build/telescope/telescope assemble --manifest site/versions.json --out _site
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [CLI and configuration](docs/cli.md),
-[candidate installation](docs/release/install.md), and the
+[installation and qualification](docs/release/install.md), and the
 [release procedure](docs/release/README.md). The library's
 [package README](pkgs/telescope/README.md) documents its public namespaces.
 

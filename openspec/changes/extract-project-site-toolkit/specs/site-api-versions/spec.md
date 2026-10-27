@@ -39,6 +39,11 @@ The optional version adapter SHALL support root, `next/`, `v/<minor>/` and `late
 - **WHEN** a content source claims a top-level `next`, `v` or `latest` route
 - **THEN** validation reports the reserved-prefix collision before assembly
 
+#### Scenario: Latest documentation canonical links
+- **WHEN** supplied release trees include the same page in the latest release and a canonical site URL is configured
+- **THEN** assembled pages without an authored canonical link receive a link to that page under `latest/`
+- **AND** next-only or removed pages receive no invented latest canonical link
+
 ### Requirement: Version navigation and banners
 The version adapter SHALL preserve version selection, static release or unreleased banners, and same-page links across trees with a fallback when the destination page is absent.
 

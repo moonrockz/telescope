@@ -1,8 +1,10 @@
-# Release candidate procedure
+# Release procedure
 
-Candidate 0.1.0 merged in [PR 1](https://github.com/moonrockz/telescope/pull/1).
-The owner approved publication in the development session. Only the approved
-GitHub Actions release job may publish.
+Telescope 0.1.0 is published. [Install and compatibility evidence](0.1.0.md)
+records the actual registry pin, CLI downloads and both clean published consumers.
+The owner-approved [release run](https://github.com/moonrockz/telescope/actions/runs/40520332727)
+published source `f119b0621d4a6dfe02a5e84615027a133e7f460f` after PR 4 merged.
+Only an approved GitHub Actions release job may publish a new version.
 
 The [first approved attempt](https://github.com/moonrockz/telescope/actions/runs/40449781959)
 passed native/browser qualification, credential availability and the live
@@ -67,10 +69,10 @@ The environment name alone does not prove protection; its settings have not been
 verified or changed by this implementation.
 
 A trusted publication preflight checks only whether `MOONCAKES_USER_TOKEN` is
-available as an Actions secret, using a boolean expression. Current availability
-is unknown because the organization metadata API could not be inspected with
-existing permissions. Do not change credentials or refresh auth to work around
-this. PR jobs receive no publication credential. The publish script refuses a
+available as an Actions secret, using a boolean expression. The approved release
+preflight and publication passed, confirming availability without exposing the
+credential. Organization secret metadata was not inspected or changed.
+PR jobs receive no publication credential. The publish script refuses a
 workstation, rechecks the manual owner/admin approval, creates a temporary Actions-only Moon home
 with a mode-0600 credential file and deletes it afterwards without printing the
 credential. It publishes from the tested library ZIP's extracted source. CLI
@@ -86,13 +88,13 @@ published qualification before downstream adoption.
 Required final evidence is the owner/admin dispatch URL, release PR and approved source SHA,
 Mooncakes coordinate, CLI archive URLs and verified checksums, both native
 platform results, API/version compatibility fixtures and the published consumer
-report. Tasks 7.2 onward remain incomplete until those events actually occur.
+report. The 0.1.0 events and reports are recorded in the version-specific evidence.
 Do not archive this change or close its beads before the coordinator's final
 integration and merge gates.
 
 Candidate CI passes on both platforms, including archive consumption and Linux
 browser qualification. Failure propagation uses direct job relationships. The
-owner/admin gate API happy path and actual publication remain unverified.
+owner/admin gate API happy path and actual publication also passed in run 40520332727.
 
 The approval mechanism follows [GitHub review and environment semantics](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments).
 The credential file follows [MoonBit's package publication contract](https://docs.moonbitlang.com/en/stable/toolchain/moon/package-manage-tour.html).

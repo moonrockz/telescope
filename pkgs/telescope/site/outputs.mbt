@@ -44,6 +44,8 @@ pub async fn build(
     external_routes~,
   )
   let pages = prepared.pages
+  let gallery = external_routes.contains("/gallery/") ||
+    pages.iter().any(page => page.route == "/gallery/")
   let entries = nav_entries(pages)
   let nav = match config.nav {
     None => build_nav(entries)
@@ -74,13 +76,14 @@ pub async fn build(
         let summary = summaries[summaries
           .search_by(s => s.route == page.route)
           .unwrap()]
-        @views.render(m, @views.article_page(m, summary, page.html))
+        @views.render(m, @views.article_page(m, summary, page.html), gallery~)
       }
       Landing => {
         let m = meta(config, "/", config.title, config.description, Home)
         @views.render(
           m,
           @views.home_page(m, page.html, summaries.iter().take(3).collect()),
+          gallery~,
         )
       }
       _ => {
@@ -100,6 +103,7 @@ pub async fn build(
             toc=page.toc,
             proposed=page.proposed,
           ),
+          gallery~,
         )
       }
     }
@@ -118,7 +122,10 @@ pub async fn build(
       @content.escape(config.description) +
       "</p>"
     outputs.push(
-      Text("index.html", @views.render(m, @views.home_page(m, html, summaries))),
+      Text(
+        "index.html",
+        @views.render(m, @views.home_page(m, html, summaries), gallery~),
+      ),
     )
   }
   if !pages.iter().any(p => p.route == "/docs/") {
@@ -127,7 +134,7 @@ pub async fn build(
     outputs.push(
       Text(
         "docs/index.html",
-        @views.render(m, @views.docs_page(m, nav, body, None)),
+        @views.render(m, @views.docs_page(m, nav, body, None), gallery~),
       ),
     )
   }
@@ -141,14 +148,14 @@ pub async fn build(
   outputs.push(
     Text(
       "articles/index.html",
-      @views.render(index, @views.articles_index(index, summaries)),
+      @views.render(index, @views.articles_index(index, summaries), gallery~),
     ),
   )
   outputs.push(Text("articles/atom.xml", atom_feed(config, articles)))
   outputs.push(
     Text("search-index.json", search_index(pages, api=api.search_entries())),
   )
-  outputs.append(api_outputs(config, api))
+  outputs.append(api_outputs(config, api, gallery~))
   for copy in prepared.copies {
     if !outputs
       .iter()

@@ -1,7 +1,16 @@
-# Candidate installation and qualification
+# Installation and qualification
 
-No Telescope version is published yet. Candidate 0.1.0 is a local prerelease
-qualification input and is not an adoption dependency.
+Telescope 0.1.0 is published. Use the exact library pin, native CLI downloads,
+checksums and supported toolchain in [the version-specific instructions](0.1.0.md).
+Repeat actual released-install qualification with:
+
+```sh
+mise run test:consumer -- --published 0.1.0
+```
+
+Linux x64 and macOS arm64 passed. Retained reports are linked from the
+[release verification](verification.md). The candidate workflow below is a
+separate development check and cannot satisfy a published dependency gate.
 
 ```sh
 mise run package
@@ -28,7 +37,7 @@ No reference checkout is consulted. Evidence is written to
 `_build/evidence/consumer-<platform>.json`; temporary consumers and caches are
 removed afterwards.
 
-To install the current candidate archive manually:
+To install a locally packaged candidate archive manually:
 
 ```sh
 cd _build/package
@@ -41,7 +50,7 @@ Use `linux-x64` instead on a qualified Linux x64 host. Archive extraction is the
 CLI installation path; no MoonBit installation or source checkout is needed to
 run that binary. The library needs the matching supported MoonBit toolchain.
 
-After an explicitly approved publication, run:
+For any later owner-approved published version, run:
 
 ```sh
 mise run test:consumer -- --published ACTUAL_VERSION
@@ -52,4 +61,4 @@ mode creates an empty registry home, resolves the real Mooncakes version, fetche
 the matching GitHub CLI release archive/checksum and repeats qualification.
 It never seeds the local candidate entry. Failure to find either distribution
 keeps adoption blocked. Record real registry and release URLs only after this
-command succeeds. No such published proof exists now.
+command succeeds. The actual 0.1.0 proof is retained beside these instructions.

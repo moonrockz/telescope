@@ -21,6 +21,11 @@ The toolkit SHALL provide readable page content, semantic navigation, a skip lin
 - **THEN** its content, navigation and table of contents remain usable
 - **AND** keyboard navigation reaches the main content through the skip link
 
+#### Scenario: Enabled gallery navigation
+- **WHEN** a consumer supplies a gallery manifest
+- **THEN** the shared header links to that tree's gallery from landing, docs, articles and API pages
+- **AND** gallery index and detail pages identify Gallery as the current primary link
+
 ### Requirement: Per-tree search
 The toolkit SHALL build a deterministic local search index from published pages and enabled API content, with results limited to the current version tree.
 

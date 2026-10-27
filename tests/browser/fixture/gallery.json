@@ -1,0 +1,1 @@
+{"schema_version":1,"entries":[{"id":"signal","family":"Sequence","title":"Signal path","status":"implemented","sources":[{"path":"sources/signal.txt","media_type":"text/plain"}],"preview":{"path":"previews/signal.svg","media_type":"image/svg+xml"}},{"id":"future","family":"Future formats","title":"Future format","status":"planned"}]}

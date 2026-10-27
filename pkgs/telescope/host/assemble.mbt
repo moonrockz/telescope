@@ -141,6 +141,21 @@ pub async fn assemble(manifest_path : String, out : String) -> Unit {
             text = text.replace_all(old=from_url, new=site_url + tree_path)
           }
           if path.has_suffix(".html") {
+            if latest != "" &&
+              site_url != "" &&
+              @fs.exists(planned[latest].0 + "/" + path) &&
+              !attributes(text, "rel").contains("canonical") {
+              let route = if path.has_suffix("index.html") {
+                path[:path.length() - "index.html".length()].to_owned()
+              } else {
+                path
+              }
+              let canonical = @content.escape(site_url + "latest/" + route)
+              text = text.replace(
+                old="</head>",
+                new="<link rel=\"canonical\" href=\"" + canonical + "\"></head>",
+              )
+            }
             let banner = if latest == "" {
               "Pre-release docs. No version is released yet."
             } else if id == "next" {

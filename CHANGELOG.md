@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.1.0 candidate, unpublished
+## 0.1.1, unpublished
+
+- Show the enabled gallery in shared navigation, with the correct current link.
+- Group gallery examples by family, link details back to their family and offer
+  explicit downloads for light and dark SVG previews.
+- Restore latest-tree canonical links during supplied-tree assembly when the
+  corresponding released page exists, preserving authored canonical links.
+- Retain actual 0.1.0 publication and clean published-install evidence.
+
+## 0.1.0, 2026-10-27
 
 - Extract generic configuration, content facts, Rabbita views, navigation,
   articles, feeds and browser islands from the attributed reference sites.
@@ -11,6 +20,6 @@
 - Package one library and matching relocatable CLI archives, with isolated
   candidate-consumer qualification and an owner-gated Actions release workflow.
 
-Linux x64 execution and actual registry/release consumption remain release gates.
+Linux x64 and macOS arm64 clean published installation passed.
 No consumer domain engines are distributed. Reviewed repository HTML is trusted
-input; this release candidate is not an untrusted-upload service.
+input; this release is not an untrusted-upload service.

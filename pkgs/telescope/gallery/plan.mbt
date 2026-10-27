@@ -29,14 +29,14 @@ fn previews(entry : Entry, base_path : String) -> String {
   let light_url = escape(artifact_url(base_path, light))
   let dark = match entry.preview_dark {
     Some(file) =>
-      "<figure class=\"gallery-preview gallery-dark\" style=\"background:#161b22;color:#f0f6fc;padding:1rem;overflow:auto\"><img style=\"max-width:100%;height:auto\" src=\"\{escape(artifact_url(base_path, file))}\" alt=\"\{alt} (dark)\" loading=\"lazy\"><figcaption>Dark preview</figcaption></figure>"
+      "<figure class=\"gallery-preview gallery-dark\" style=\"background:#161b22;color:#f0f6fc;padding:1rem;overflow:auto\"><img style=\"max-width:100%;height:auto\" src=\"\{escape(artifact_url(base_path, file))}\" alt=\"\{alt} (dark)\" loading=\"lazy\"><figcaption>Dark preview. <a href=\"\{escape(artifact_url(base_path, file))}\" download>Download dark SVG</a></figcaption></figure>"
     None => ""
   }
-  "<figure class=\"gallery-preview gallery-light\" style=\"background:#fff;color:#161b22;padding:1rem;overflow:auto\"><img style=\"max-width:100%;height:auto\" src=\"\{light_url}\" alt=\"\{alt}\" loading=\"lazy\"><figcaption>\{if dark == "" { "Preview" } else { "Light preview" }}</figcaption></figure>\{dark}"
+  "<figure class=\"gallery-preview gallery-light\" style=\"background:#fff;color:#161b22;padding:1rem;overflow:auto\"><img style=\"max-width:100%;height:auto\" src=\"\{light_url}\" alt=\"\{alt}\" loading=\"lazy\"><figcaption>\{if dark == "" { "Preview" } else { "Light preview" }}. <a href=\"\{light_url}\" download>Download SVG</a></figcaption></figure>\{dark}"
 }
 
 ///|
-fn detail_body(entry : Entry, base_path : String) -> String {
+fn detail_body(entry : Entry, base_path : String, family_id : String) -> String {
   let description = match entry.description {
     Some(text) => "<p>\{escape(text)}</p>"
     None => ""
@@ -45,7 +45,7 @@ fn detail_body(entry : Entry, base_path : String) -> String {
     Some(text) => "<p>Scope: \{escape(text)}</p>"
     None => ""
   }
-  let heading = "<p><a href=\"\{base_path}gallery/\">Gallery</a></p><h1>\{escape(entry.title)}</h1><p>Family: \{escape(entry.family)}. Status: <strong>\{status_label(entry.status)}</strong>.</p>\{description}\{scope}"
+  let heading = "<p><a href=\"\{base_path}gallery/\">Gallery</a></p><h1>\{escape(entry.title)}</h1><p>Family: <a href=\"\{base_path}gallery/#\{family_id}\">\{escape(entry.family)}</a>. Status: <strong>\{status_label(entry.status)}</strong>.</p>\{description}\{scope}"
   if entry.status == Planned {
     return heading +
       "<p>This example is planned. No generated preview or offline player is supplied.</p>"
@@ -87,9 +87,26 @@ pub fn plan(
   if !problems.is_empty() {
     return Err(problems)
   }
-  let cards = manifest.entries
-    .map(entry => {
-      "<li><a href=\"\{base_path}gallery/\{entry.id}/\">\{escape(entry.title)}</a> <span>\{escape(entry.family)}</span> <strong>\{status_label(entry.status)}</strong></li>"
+  let families : Array[String] = []
+  let family_ids : Map[String, String] = Map([])
+  for entry in manifest.entries {
+    if !family_ids.contains(entry.family) {
+      families.push(entry.family)
+      family_ids[entry.family] = "family-" + entry.id
+    }
+  }
+  let navigation = families
+    .map(family => "<a href=\"#\{family_ids[family]}\">\{escape(family)}</a>")
+    .join(" · ")
+  let groups = families
+    .map(family => {
+      let cards = manifest.entries
+        .filter(entry => entry.family == family)
+        .map(entry => {
+          "<li><a href=\"\{base_path}gallery/\{entry.id}/\">\{escape(entry.title)}</a> <span>\{escape(entry.family)}</span> <strong>\{status_label(entry.status)}</strong></li>"
+        })
+        .join("")
+      "<section id=\"\{family_ids[family]}\"><h2>\{escape(family)}</h2><ul>\{cards}</ul></section>"
     })
     .join("")
   let provenance = match manifest.producer {
@@ -101,7 +118,7 @@ pub fn plan(
     {
       route: "/gallery/",
       title: "Gallery",
-      body_html: "<h1>Gallery</h1>\{provenance}<ul>\{cards}</ul>",
+      body_html: "<h1>Gallery</h1>\{provenance}<nav aria-label=\"Gallery families\">\{navigation}</nav>\{groups}",
     },
   ]
   let copies : Array[ArtifactCopy] = []
@@ -110,7 +127,7 @@ pub fn plan(
     pages.push({
       route: "/gallery/\{entry.id}/",
       title: entry.title,
-      body_html: detail_body(entry, base_path),
+      body_html: detail_body(entry, base_path, family_ids[entry.family]),
     })
     for file in entry.artifacts() {
       if !seen.contains(file.path) {
