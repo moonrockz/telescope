@@ -1,10 +1,14 @@
 # Release procedure
 
-Telescope 0.1.1 is published. [Install and compatibility evidence](0.1.1.md)
-records the actual registry pin, CLI downloads and both clean published consumers.
-The owner-approved [release run](https://github.com/moonrockz/telescope/actions/runs/40531421002)
-published source `4c2c7ebb235425c917780fccfc874a5beb06c156` after PR 5 merged.
+Telescope 0.2.0 is published. [Install and compatibility evidence](0.2.0.md)
+records the actual registry pin, CLI downloads and both clean public consumers.
+The owner-approved [release run](https://github.com/moonrockz/telescope/actions/runs/40573188390)
+published source `597f50ab27ffc116d50b48c7a402a250ade856b2` after PR 7 merged.
 Only an approved GitHub Actions release job may publish a new version.
+
+The earlier [0.1.1 release](0.1.1.md) and [0.1.0 release](0.1.0.md) retain their
+actual source identities and installation reports. The following initial-release
+repair history explains the publisher's current behavior.
 
 The [first approved attempt](https://github.com/moonrockz/telescope/actions/runs/40449781959)
 passed native/browser qualification, credential availability and the live

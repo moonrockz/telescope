@@ -94,7 +94,7 @@ as claims that Telescope can render those languages.
 
 ## Gallery browsing and inspection
 
-The unpublished 0.2.0 candidate adds responsive preview cards and source panels.
+Release 0.2.0 adds responsive preview cards and source panels.
 Manifest version 1 and public `Entry` fields stay unchanged. Family fragments
 remain `#family-<first-entry-id>` in manifest order. Example routes, artifact URLs
 and output copy paths remain stable at root, nested and versioned base paths.

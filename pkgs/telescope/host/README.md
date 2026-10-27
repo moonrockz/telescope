@@ -36,8 +36,8 @@ supports GET and HEAD. `assemble(manifest_path, out)` consumes supplied checked
 trees offline. See the repository CLI documentation for boundary, staging,
 version and artifact rules.
 
-The clean candidate-consumer test imports this public host from the packaged
-version and registers a small custom fence provider outside Telescope's workspace.
+The independent consumer test imports this public host from the packaged
+candidate or the actual published version and registers a small custom fence provider outside Telescope's workspace.
 It demonstrates provider-driven rendering without copying host implementation
 or importing a consumer domain engine into Telescope.
 

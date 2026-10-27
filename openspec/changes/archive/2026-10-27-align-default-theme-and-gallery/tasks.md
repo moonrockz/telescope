@@ -41,8 +41,8 @@ Acceptance: Full checks pass, and an owner-approved Actions release provides a r
 
 - [x] 4.1 Run format, setup, strict OpenSpec validation, engine, browser and independent packaged-consumer qualification; record final candidate source revision and results, including no-gallery and versioned consumers.
 - [x] 4.2 Prepare version and changelog updates and release notes for a concrete owner-reviewed release PR; verify matching library/CLI versions and existing release gates before requesting publication approval.
-- [ ] 4.3 After explicit release approval, publish only through GitHub Actions and run actual public-consumer checks on Linux x64 and macOS arm64; record version, source revision, archive URLs and checksums and both consumer reports.
-- [ ] 4.4 Send verified release evidence to the diagrams coordinator mailbox and record acknowledgement; verify the downstream pins refer to those public artifacts and complete release documentation in the final PR.
+- [x] 4.3 After explicit release approval, publish only through GitHub Actions and run actual public-consumer checks on Linux x64 and macOS arm64; record version, source revision, archive URLs and checksums and both consumer reports.
+- [x] 4.4 Send verified release evidence to the diagrams coordinator mailbox and record acknowledgement; verify the downstream pins refer to those public artifacts and complete release documentation in the final PR.
 
 ## Workflow follow-up
 

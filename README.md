@@ -1,23 +1,19 @@
 # Telescope
 
-The **0.2.0 candidate** adds Smithy-aligned themes and a component-style gallery.
-It is not published. The current public release is 0.1.1. See the
-[default presentation](docs/presentation.md) and candidate qualification below.
-
 Telescope is a MoonBit and Rabbita toolkit for static project documentation.
 The `moonrockz/telescope` library supplies configuration, content, views and
-site planning, with reusable native IO in `moonrockz/telescope/host`. The matching native `telescope` CLI builds, checks, previews and
-assembles consumer-supplied version trees. Consumers own their domain engines
-and reviewed content.
+site planning, with reusable native IO in `moonrockz/telescope/host`. The matching
+native `telescope` CLI builds, checks, previews and assembles consumer-supplied
+version trees. Consumers own their domain engines and reviewed content.
 
-Version **0.1.1 is released** as `moonrockz/telescope@0.1.1` on Mooncakes and
-matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.1.1).
-Clean published consumers pass on Linux x64 and macOS arm64, without local
-workspace overrides. See [installation and compatibility](docs/release/0.1.1.md).
+Version **0.2.0 is released** as `moonrockz/telescope@0.2.0` on Mooncakes and
+matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.2.0).
+It adds Smithy-aligned themes, gallery preview cards, family and text filters,
+and accessible Preview/Source inspection with copying and downloads.
+See [default presentation](docs/presentation.md).
 
-The 0.1.1 patch adds gallery header and family navigation, SVG downloads and
-latest-tree canonical links found missing during diagrams' real integration.
-Consumers keep their content and domain engines and pin the actual release.
+Clean public installs pass on Linux x64 and macOS arm64 without workspace
+overrides. See [installation and compatibility](docs/release/0.2.0.md).
 
 ```sh
 mise trust

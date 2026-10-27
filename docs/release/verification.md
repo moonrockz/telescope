@@ -1,5 +1,29 @@
 # Release verification
 
+## Published 0.2.0, 2026-10-27
+
+The owner approved PR 7 and publication of 0.2.0. Its squash merge
+`597f50ab27ffc116d50b48c7a402a250ade856b2` retained the exact qualified tree of
+`a97d05a3ffc9934f590217f67677cd064b23388f` on an unchanged base.
+[Actions run 40573188390](https://github.com/moonrockz/telescope/actions/runs/40573188390)
+passed both native qualifiers and the exact-commit owner/admin gate, then
+published `moonrockz/telescope@0.2.0` and matching CLI archives.
+
+| Qualification | Result |
+| --- | --- |
+| Native Linux and macOS | 232 engine tests, two owner-gate tests, two publisher regressions, public-index bootstrap, all-target pure checks, packaging and prepared installs passed |
+| Linux browser | 56 cases passed, including palette contrast, gallery filtering, keyboard tabs, source copying, no-script fallback and version-tree source preservation |
+| Real Linux public consumer | Passed in the publication job from an empty registry and actual downloads |
+| Real macOS public consumer | `mise run test:consumer -- --published 0.2.0` passed from an empty registry and actual downloads |
+
+Retained reports are [Linux](consumer-0.2.0-linux-x64.json) and
+[macOS](consumer-0.2.0-macos-arm64.json). [0.2.0.md](0.2.0.md) records the exact
+library pin, supported compiler, public archive URLs, SHA-256 values and Orca
+handoff acknowledgement. Both public installs verify manifest version 1, static
+source inspection and unchanged artifact bytes at root and nested bases, without
+candidate caches or workspace overrides. Diagrams pinned these real artifacts
+after receiving and acknowledging the release evidence.
+
 ## Published 0.1.1, 2026-10-27
 
 The owner approved PR 5 and publication of 0.1.1. Its squash merge
