@@ -282,7 +282,7 @@ test "optional source text is escaped and cannot alter routes or artifact copies
   let detail = enriched.pages[1].body_html
   assert_true(
     detail.contains(
-      "&lt;script&gt;alert&#40;&#39;source &amp; only&#39;&#41;&lt;/script&gt;&#13;\n&quot;quoted&quot;\n",
+      "&lt;script&gt;alert&#40;&#39;source &amp; only&#39;&#41;&lt;&#47;script&gt;&#13;\n&quot;quoted&quot;\n",
     ),
   )
   assert_false(detail.contains(source))

@@ -34,7 +34,7 @@ async test "gallery reads verified text sources and preserves every downloaded b
     let html = @fs.read_file(root + "/out/gallery/one/index.html").text()
     assert_true(
       html.contains(
-        "&lt;script&gt;window.sourceRan = true&lt;/script&gt;\n&amp; &quot;literal&quot; café&#13;\nbody { background: url&#40;missing.png&#41;; }\n",
+        "&lt;script&gt;window.sourceRan = true&lt;&#47;script&gt;\n&amp; &quot;literal&quot; café&#13;\nbody { background: url&#40;missing.png&#41;; }\n",
       ),
     )
     assert_true(html.contains("{&quot;literal&quot;:&quot;&lt;tag&gt;&quot;}"))

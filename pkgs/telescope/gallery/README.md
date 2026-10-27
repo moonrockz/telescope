@@ -124,7 +124,9 @@ Opening a detail page never runs a renderer or an offline player.
 through the optional `source_text=` label; absent entries retain labeled download
 fallbacks. Undeclared map keys are ignored. The planner escapes text as text,
 including script-like content, and preserves carriage returns in the DOM for
-copying. The map does not affect the byte-preserving copy plan.
+copying. Source-only slash character references keep literal URLs unchanged
+during version-tree assembly while browsers still display and copy the original
+text. The map does not affect the byte-preserving copy plan.
 
 The native host supplies inline text for declared sources whose MIME type is
 `text/*`, JSON, XML, YAML, JavaScript, SVG, or an application subtype ending in

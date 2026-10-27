@@ -222,3 +222,27 @@ test('consumer without gallery has no gallery links controls or enhancement', as
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+
+test('assembled trees preserve literal source URLs for copying and downloads', async ({ page, site }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: {
+      writeText: async (text: string) => { (window as Window & { copied?: string }).copied = text; },
+    } });
+  });
+  for (const tree of ['', 'next/', 'latest/', 'v/0.2/', 'v/0.1/']) {
+    const base = site.base + tree;
+    await page.goto(site.versions + base + 'gallery/signal/');
+    await page.getByRole('tab', { name: 'Source', exact: true }).click();
+    const file = page.getByRole('region', { name: 'sources/signal.txt', exact: true });
+    expect(await file.locator('pre code').textContent(), `literal source in ${base}`).toBe(sourceText);
+    await file.getByRole('button', { name: 'Copy source: sources/signal.txt', exact: true }).click();
+    expect(await page.evaluate(() => (window as Window & { copied?: string }).copied)).toBe(sourceText);
+    const download = file.getByRole('link', { name: 'Download source: sources/signal.txt', exact: true });
+    await expect(download).toHaveAttribute('href', base + 'gallery/artifacts/sources/signal.txt');
+    const response = await page.request.get(site.versions + base + 'gallery/artifacts/sources/signal.txt');
+    expect(response.ok()).toBeTruthy();
+    expect(await response.body()).toEqual(await readFile(new URL('examples/sources/signal.txt', fixture)));
+    await expect(page.locator('#site-links a[aria-current="page"]')).toHaveAttribute('href', base + 'gallery/');
+  }
+});

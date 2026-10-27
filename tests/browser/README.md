@@ -82,3 +82,6 @@ entry, an unsupported binary source and invalid UTF-8 fallback.
 
 Current results are generated under `_build/browser/` by `mise run test:browser`.
 The historical 0.1 candidate `verification.json` does not qualify this candidate.
+
+Version-tree source regression covers literal site URLs and exact copied/downloaded
+text across root, next, latest and both minor-version trees at both base paths.

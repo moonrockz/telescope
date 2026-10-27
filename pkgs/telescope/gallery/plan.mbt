@@ -71,6 +71,9 @@ fn detail_body(
             .replace_all(old="\r", new="&#13;")
             .replace_all(old="(", new="&#40;")
             .replace_all(old=")", new="&#41;")
+            // Keep literal URLs opaque to version-tree URL rewriting. Browsers
+            // decode this character reference back into the exact source text.
+            .replace_all(old="/", new="&#47;")
           "<pre tabindex=\"0\" aria-label=\"\{escape(file.path)} source\"><code>\{literal}</code></pre>"
         }
         None =>

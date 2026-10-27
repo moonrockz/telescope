@@ -773,6 +773,8 @@ select:focus-visible,
 }
 
 .gallery-rail {
+  display: grid;
+  gap: 0.25rem;
   align-self: start;
   position: sticky;
   top: 1.5rem;
@@ -1119,6 +1121,9 @@ select:focus-visible,
   }
   .gallery-rail {
     position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
   }
   .gallery-rail nav,
   .gallery-rail ul {
@@ -1166,10 +1171,6 @@ select:focus-visible,
   display: none;
 }
 
-.gallery-rail {
-  display: grid;
-  gap: 0.25rem;
-}
 
 .site-links a.current {
   color: var(--accent);
