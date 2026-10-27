@@ -48,6 +48,10 @@ async test "assembly restores latest canonical links only for available release 
       root + "/" + tree + "/docs/common/index.html",
       "<html><head><title>Common</title></head><body>Common</body></html>",
     )
+    write(
+      root + "/" + tree + "/genindex.html",
+      "<html><head><title>Generated index</title></head><body><div class=\"version-banner\"></div></body></html>",
+    )
   }
   write(
     root + "/next/docs/new/index.html",
@@ -71,6 +75,7 @@ async test "assembly restores latest canonical links only for available release 
       (path, route) in [
         ("index.html", ""),
         ("docs/common/index.html", "docs/common/"),
+        ("genindex.html", "genindex.html"),
       ] {
       let html = @fs.read_file(root + "/out/" + tree + path).text()
       assert_true(
@@ -82,6 +87,13 @@ async test "assembly restores latest canonical links only for available release 
       )
     }
   }
+  assert_true(
+    @fs.read_file(root + "/out/v/0.1/genindex.html")
+    .text()
+    .contains(
+      "href=\"/diagrams.mbt/latest/genindex.html\">Open latest docs</a>",
+    ),
+  )
   for path in ["next/docs/new/index.html", "v/0.1/docs/removed/index.html"] {
     assert_false(
       @fs.read_file(root + "/out/" + path).text().contains("rel=\"canonical\""),

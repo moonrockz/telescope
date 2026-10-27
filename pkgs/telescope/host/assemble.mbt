@@ -145,7 +145,8 @@ pub async fn assemble(manifest_path : String, out : String) -> Unit {
               site_url != "" &&
               @fs.exists(planned[latest].0 + "/" + path) &&
               !attributes(text, "rel").contains("canonical") {
-              let route = if path.has_suffix("index.html") {
+              let route = if path == "index.html" ||
+                path.has_suffix("/index.html") {
                 path[:path.length() - "index.html".length()].to_owned()
               } else {
                 path
@@ -163,7 +164,7 @@ pub async fn assemble(manifest_path : String, out : String) -> Unit {
             } else if id != latest {
               let route = if path == "index.html" {
                 ""
-              } else if path.has_suffix("index.html") {
+              } else if path.has_suffix("/index.html") {
                 path[:path.length() - "index.html".length()].to_owned()
               } else {
                 path
