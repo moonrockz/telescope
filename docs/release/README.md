@@ -1,8 +1,19 @@
 # Release candidate procedure
 
-Candidate 0.1.0 is prepared in [PR 1](https://github.com/moonrockz/telescope/pull/1).
-Publication is not authorized. Only the owner-approved GitHub Actions release job
-may publish.
+Candidate 0.1.0 merged in [PR 1](https://github.com/moonrockz/telescope/pull/1).
+The owner approved publication in the development session. Only the approved
+GitHub Actions release job may publish.
+
+The [first approved attempt](https://github.com/moonrockz/telescope/actions/runs/40449781959)
+passed native/browser qualification, credential availability and the live
+owner/admin approval gate, then failed while locating its downloaded library
+ZIP. Neither publication step ran. Multi-path artifact upload retains `publish/`,
+`package/` and `evidence/` directories. The publisher must read the library from
+`release-<platform>/publish/` and CLI files from `release-<platform>/package/`.
+The repair was checked against the actual downloaded Linux/macOS artifacts:
+both native checksums and ZIP integrity checks pass, and the extracted Linux
+library passes strict native compilation. A fresh source compatibility run also
+preserves all 77 diagrams routes, 5,376 anchors and 40 artifact copies.
 
 PR CI qualifies the exact source on Linux x64 and macOS arm64. Each job runs setup
 validation, all-target pure checks, strict native compilation and native tests,

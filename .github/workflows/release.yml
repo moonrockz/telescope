@@ -103,7 +103,7 @@ jobs:
         run: test "$HAS_MOONCAKES_TOKEN" = true
       - name: Extract tested library source
         run: >-
-          unzip -q release-artifacts/release-linux-x64/moonrockz-telescope-*.zip
+          unzip -q release-artifacts/release-linux-x64/publish/moonrockz-telescope-*.zip
           -d "$RUNNER_TEMP/telescope-library"
       - name: Publish approved library
         env:
@@ -123,10 +123,10 @@ jobs:
           APPROVED_SHA: ${{ inputs.approved_sha }}
         run: >-
           gh release create "v$RELEASE_VERSION"
-          release-artifacts/release-linux-x64/*.tar.gz
-          release-artifacts/release-linux-x64/*.sha256
-          release-artifacts/release-macos-arm64/*.tar.gz
-          release-artifacts/release-macos-arm64/*.sha256
+          release-artifacts/release-linux-x64/package/*.tar.gz
+          release-artifacts/release-linux-x64/package/*.sha256
+          release-artifacts/release-macos-arm64/package/*.tar.gz
+          release-artifacts/release-macos-arm64/package/*.sha256
           --target "$GITHUB_SHA" --title "Telescope $RELEASE_VERSION"
           --notes "Manual owner/admin approval for $APPROVED_SHA, release PR $RELEASE_PR. Adoption remains gated on real published consumer qualification."
       - name: Real published consumer qualification

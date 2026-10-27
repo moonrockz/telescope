@@ -1,10 +1,10 @@
 # Tasks
 
-Status: Implementation approved. The candidate is unpublished. Native engine,
+Status: Implementation and 0.1.0 publication approved. The candidate is unpublished. Native engine,
 packaging and isolated-consumer CI pass on Linux x64 and macOS arm64; all 38
 browser checks pass on Linux and locally on macOS. The actual diagrams fixture
-preserves 77 routes, 5,376 anchors and 40 artifact copies. Publication requires
-the separate owner approval in group 7; downstream adoption remains blocked until
+preserves 77 routes, 5,376 anchors and 40 artifact copies. The approved Actions
+attempt failed before publication at artifact extraction; its path repair awaits merge. Downstream adoption remains blocked until
 real published-consumer verification succeeds. Stories stay open until merge.
 
 ## 1. Prove an independent packaged consumer
@@ -118,7 +118,7 @@ pinned Moon CLI refuses without credentials. It runs only in owner-approved
 Actions alongside publication; no local credential was created to bypass it.
 
 - [ ] 7.1 Prepare an owner-gated GitHub Actions release workflow and release PR with semantic version, changelog, supported-platform archives, SHA-256 checksums, registry metadata and complete notices; verify package dry-run, all checks and reproducible candidate installation instructions.
-- [ ] 7.2 Obtain and record explicit Telescope repository-owner approval of publication before executing it; verify the approval identifies the release PR/version and keep publication and downstream readiness blocked if absent.
+- [x] 7.2 Obtain and record explicit Telescope repository-owner approval of publication before executing it; verify the approval identifies the release PR/version and keep publication and downstream readiness blocked if absent.
 - [ ] 7.3 After that approval, publish through GitHub Actions the library to Mooncakes and matching CLI archives/checksums to the versioned GitHub release; verify both real coordinates exist and report partial-publication failure without claiming readiness.
 - [ ] 7.4 Run `mise run test:consumer -- --published <actual-version>` in a clean environment against the real registry and downloads; verify exact pins, CLI version, checksums, both deployment bases and no candidate registry, local paths or workspace overrides.
 - [ ] 7.5 Publish version-specific install/API/adapter compatibility documentation and send exact release coordinates and test evidence to `run:run_b3638d9bfa3d`; verify the diagrams maintainer can replace its adoption gate with those actual pins before removing its generator.
