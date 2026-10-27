@@ -1,0 +1,18 @@
+Telescope diagrams source-level compatibility fixture
+
+The driver/providers.mbt renderer calls are adapted from
+moonrockz/diagrams.mbt apps/site/content/mermaid.mbt and plantuml.mbt.
+Copyright 2026 diagrams.mbt contributors, licensed under Apache-2.0.
+Engine source revision: e0a5410.
+Preparation and current 77-page compatibility baseline: 31302b0.
+The original baseline recorded d19c2e788a927be15ac07fa35140102e22e91048.
+Its corrected inventory records 31302b0 and removes nine escaped XML literals
+that were never DOM anchors; the driver separately preserves those code strings.
+Repository: https://github.com/moonrockz/diagrams.mbt
+
+The runner reads the supplied checkout and copies its source, documentation,
+assets, gallery, and prebuilt moon-doc metadata into an external temporary
+workspace. Those files retain the checkout's licenses and notices. No copied
+consumer engine becomes a dependency of the published Telescope module.
+
+Apache-2.0 license text is included in LICENSE.

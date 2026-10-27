@@ -1,0 +1,7 @@
+# Build and tool output
+_build/
+_site/
+.mooncakes/
+node_modules/
+.DS_Store
+.config/mise/config.local.toml

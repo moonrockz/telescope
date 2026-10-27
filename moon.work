@@ -1,0 +1,6 @@
+members = [
+  ".",
+  "./pkgs/telescope",
+  "./apps/telescope",
+  "./tests/browser/driver",
+]

@@ -1,0 +1,175 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/process",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+fn field(value : Json, key : String) -> String {
+  match value {
+    Object(m) =>
+      match m.get(key) {
+        Some(String(s)) => s
+        _ => ""
+      }
+    _ => ""
+  }
+}
+
+///|
+async fn main {
+  let repository = @env.get_env_var("GITHUB_REPOSITORY").unwrap_or("")
+  let sha = @env.get_env_var("GITHUB_SHA").unwrap_or("")
+  let actor = @env.get_env_var("GITHUB_ACTOR").unwrap_or("")
+  let version = @env.get_env_var("RELEASE_VERSION").unwrap_or("")
+  let approved_sha = @env.get_env_var("APPROVED_SHA").unwrap_or("")
+  let url = @env.get_env_var("RELEASE_PR").unwrap_or("")
+  guard @env.get_env_var("GITHUB_EVENT_NAME") == Some("workflow_dispatch") &&
+    @env.get_env_var("GITHUB_REF") == Some("refs/heads/main") &&
+    repository != "" &&
+    sha != "" &&
+    actor != "" &&
+    version == "0.1.0" &&
+    approved_sha == sha &&
+    url.has_prefix("https://github.com/\{repository}/pull/") else {
+    eprintln(
+      "Publication needs a manual exact-commit/version approval and release PR URL",
+    )
+    @sys.exit(1)
+    return
+  }
+  let pull = url["https://github.com/\{repository}/pull/".length():].to_owned()
+  guard pull != "" && pull.iter().all(c => c >= '0' && c <= '9') else {
+    @sys.exit(1)
+    return
+  }
+  let event_path = @env.get_env_var("GITHUB_EVENT_PATH").unwrap_or("")
+  let event = @json.parse(@fs.read_file(event_path).text())
+  guard dispatch_matches(event, sha, version, url) else {
+    eprintln("Dispatch inputs do not identify this publication candidate")
+    @sys.exit(1)
+    return
+  }
+  let (code, stdout, _) = @process.collect_output("gh", [
+    "api",
+    "repos/\{repository}/collaborators/\{actor}/permission",
+  ])
+  guard code == 0 && field(@json.parse(stdout.text()), "permission") == "admin" else {
+    eprintln(
+      "Manual release approval requires repository-owner administrative authority",
+    )
+    @sys.exit(1)
+    return
+  }
+  let (status, pr, _) = @process.collect_output("gh", [
+    "api",
+    "repos/\{repository}/pulls/\{pull}",
+  ])
+  guard status == 0 else {
+    eprintln("Cannot verify release PR")
+    @sys.exit(1)
+    return
+  }
+  let pr = @json.parse(pr.text())
+  guard release_matches(pr, sha) else {
+    eprintln(
+      "Release PR must be merged to main at the exact approved source commit",
+    )
+    @sys.exit(1)
+    return
+  }
+  println(
+    "Manual owner/admin approval verified for \{version} at \{sha}, release PR \{url}",
+  )
+}
+
+///|
+fn dispatch_matches(
+  event : Json,
+  sha : String,
+  version : String,
+  url : String,
+) -> Bool {
+  event is Object(fields) &&
+  fields.get("inputs") is Some(inputs) &&
+  field(inputs, "publish") == "true" &&
+  field(inputs, "approved_sha") == sha &&
+  field(inputs, "version") == version &&
+  field(inputs, "release_pr") == url
+}
+
+///|
+fn release_matches(pr : Json, sha : String) -> Bool {
+  pr is Object(fields) &&
+  fields.get("merged") is Some(True) &&
+  fields.get("base") is Some(base) &&
+  field(base, "ref") == "main" &&
+  field(pr, "merge_commit_sha") == sha
+}
+
+///|
+test "release gate accepts exact squash merge and refuses unmerged stale or other branch" {
+  let approved : Json = {
+    "merged": true,
+    "base": { "ref": "main" },
+    "merge_commit_sha": "merge-sha",
+    "head": { "sha": "old-head" },
+  }
+  assert_true(release_matches(approved, "merge-sha"))
+  assert_false(release_matches(approved, "old-head"))
+  assert_false(
+    release_matches(
+      {
+        "merged": false,
+        "base": { "ref": "main" },
+        "merge_commit_sha": "merge-sha",
+      },
+      "merge-sha",
+    ),
+  )
+  assert_false(
+    release_matches(
+      {
+        "merged": true,
+        "base": { "ref": "dev" },
+        "merge_commit_sha": "merge-sha",
+      },
+      "merge-sha",
+    ),
+  )
+}
+
+///|
+test "dispatch gate refuses dry-run and mismatched candidate evidence" {
+  let event : Json = {
+    "inputs": {
+      "publish": "true",
+      "approved_sha": "abc",
+      "version": "0.1.0",
+      "release_pr": "pr",
+    },
+  }
+  assert_true(dispatch_matches(event, "abc", "0.1.0", "pr"))
+  assert_false(dispatch_matches(event, "def", "0.1.0", "pr"))
+  assert_false(dispatch_matches(event, "abc", "0.2.0", "pr"))
+  assert_false(dispatch_matches(event, "abc", "0.1.0", "other-pr"))
+  assert_false(
+    dispatch_matches(
+      {
+        "inputs": {
+          "publish": "false",
+          "approved_sha": "abc",
+          "version": "0.1.0",
+          "release_pr": "pr",
+        },
+      },
+      "abc",
+      "0.1.0",
+      "pr",
+    ),
+  )
+}

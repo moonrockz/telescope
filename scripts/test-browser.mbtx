@@ -1,0 +1,50 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async/process",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/stdio",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn run(args : Array[String]) -> Unit {
+  let code = @process.run(
+    "npm",
+    args,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard code == 0 else { @sys.exit(1) }
+}
+
+///|
+async fn main {
+  let code = @process.run(
+    "moon",
+    ["-C", "tests/browser/driver", "build", "--target", "native", "--release"],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard code == 0 else {
+    @sys.exit(1)
+    return
+  }
+  run(["ci", "--prefix", "tests/browser"])
+  run(["--prefix", "tests/browser", "run", "typecheck"])
+  run([
+    "exec", "--prefix", "tests/browser", "--", "playwright", "install", "--with-deps",
+    "chromium",
+  ])
+  let driver = @fs.realpath(
+    "_build/native/release/build/qualification/browser-driver/cmd/cmd.exe",
+  )
+  let tests = @process.run(
+    "npm",
+    ["--prefix", "tests/browser", "test"],
+    extra_env=Map::from_array([("TELESCOPE_BROWSER_DRIVER", driver)]),
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard tests == 0 else { @sys.exit(1) }
+}

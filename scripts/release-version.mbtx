@@ -1,0 +1,26 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn main {
+  let version = @env.get_env_var("RELEASE_VERSION").unwrap_or("")
+  guard version == "0.1.0" else {
+    eprintln(
+      "Release candidate is 0.1.0; update module, CLI and packaging versions together before another release",
+    )
+    @sys.exit(1)
+    return
+  }
+  for path in ["pkgs/telescope/moon.mod", "apps/telescope/moon.mod"] {
+    guard @fs.read_file(path).text().contains("version = \"\{version}\"") else {
+      eprintln("Version mismatch in \{path}")
+      @sys.exit(1)
+      return
+    }
+  }
+}

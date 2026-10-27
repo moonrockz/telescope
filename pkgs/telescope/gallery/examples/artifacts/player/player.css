@@ -1,0 +1,4 @@
+/* Original Telescope fixture, Apache-2.0. */
+:root { color-scheme: light dark; font: 1rem/1.6 system-ui, sans-serif; }
+body { margin: 2rem auto; padding: 0 1rem; max-width: 48rem; }
+img { max-width: 100%; background: white; }

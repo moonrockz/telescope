@@ -1,0 +1,112 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn run(
+  command : String,
+  args : Array[String],
+  cwd~ : String = ".",
+) -> Unit {
+  let code = @process.run(
+    command,
+    args,
+    cwd~,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard code == 0 else { @sys.exit(1) }
+}
+
+///|
+async fn main {
+  run("moonx", ["scripts/build.mbtx"])
+  run("moon", ["package"], cwd="pkgs/telescope")
+  let (code, stdout, _) = @process.collect_output("uname", ["-sm"])
+  guard code == 0 else { @sys.exit(1) }
+  let platform = match stdout.text().trim().to_owned() {
+    "Darwin arm64" => "macos-arm64"
+    "Linux x86_64" => "linux-x64"
+    other => {
+      eprintln("Unqualified native platform: \{other}")
+      @sys.exit(1)
+      return
+    }
+  }
+  let dir = "_build/package/telescope-0.1.0-\{platform}"
+  if @fs.exists(dir) {
+    @fs.rmdir(dir, recursive=true)
+  }
+  @fs.mkdir(dir, recursive=true, allow_exist=true)
+  for file in ["LICENSE", "NOTICE", "README.md"] {
+    @fs.write_file(
+      "\{dir}/\{file}",
+      @fs.read_file(file).binary(),
+      create_mode=CreateOrTruncate,
+    )
+  }
+  copy_licenses(".mooncakes", dir + "/third-party")
+  let toolchain = @env.get_env_var("MOON_HOME").unwrap()
+  @fs.mkdir(
+    dir + "/third-party/moonbitlang/core",
+    recursive=true,
+    allow_exist=true,
+  )
+  @fs.write_file(
+    dir + "/third-party/moonbitlang/core/LICENSE",
+    @fs.read_file(toolchain + "/lib/core/LICENSE").binary(),
+    create_mode=CreateOrTruncate,
+  )
+  @fs.write_file(
+    "\{dir}/telescope",
+    @fs.read_file("_build/telescope/telescope").binary(),
+    create_mode=CreateOrTruncate,
+    permission=0o755,
+  )
+  @fs.chmod("\{dir}/telescope", 0o755)
+  let archive = "telescope-0.1.0-\{platform}.tar.gz"
+  run(
+    "tar",
+    ["-czf", archive, "telescope-0.1.0-\{platform}"],
+    cwd="_build/package",
+  )
+  let (status, digest, _) = @process.collect_output(
+    "shasum",
+    ["-a", "256", archive],
+    cwd="_build/package",
+  )
+  guard status == 0 else { @sys.exit(1) }
+  @fs.write_file(
+    "_build/package/\{archive}.sha256",
+    digest.binary(),
+    create_mode=CreateOrTruncate,
+  )
+  println("Prepared \{archive}; publication has not occurred.")
+}
+
+///|
+/// Preserve available resolved dependency license and notice files in native distributions.
+async fn copy_licenses(source : String, to : String) -> Unit {
+  for name in @fs.readdir(source, sort=true) {
+    let path = source + "/" + name
+    if @fs.kind(path, follow_symlink=false) is Directory {
+      copy_licenses(path, to + "/" + name)
+    } else if name.has_prefix("LICENSE") ||
+      name.has_prefix("NOTICE") ||
+      name.has_prefix("COPYING") ||
+      name == "moon.mod" {
+      @fs.mkdir(to, recursive=true, allow_exist=true)
+      @fs.write_file(
+        to + "/" + name,
+        @fs.read_file(path).binary(),
+        create_mode=CreateOrTruncate,
+      )
+    }
+  }
+}

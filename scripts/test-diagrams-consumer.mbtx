@@ -1,0 +1,165 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn run(
+  command : String,
+  args : Array[String],
+  cwd~ : String = ".",
+) -> Unit {
+  let code = @process.run(
+    command,
+    args,
+    cwd~,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  guard code == 0 else {
+    abort("Command failed: " + command + " " + args.join(" "))
+  }
+}
+
+///|
+async fn git(repo : String, args : Array[String]) -> String {
+  let (code, out, err) = @process.collect_output("git", ["-C", repo, ..args])
+  guard code == 0 else { abort(err.text()) }
+  out.text().trim().to_owned()
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  let index = args.search("--repo-root")
+  guard index is Some(index) && index + 1 < args.length() else {
+    abort(
+      "usage: moonx scripts/test-diagrams-consumer.mbtx --repo-root /path/to/diagrams.mbt",
+    )
+  }
+  let repo = @fs.realpath(args[index + 1])
+  let telescope = @fs.realpath(".")
+  let before = git(repo, ["status", "--porcelain"])
+  let source_ref = git(repo, ["rev-parse", "HEAD"])
+  let engine_ref = git(repo, ["rev-parse", "e0a5410^{commit}"])
+  run("git", ["-C", repo, "merge-base", "--is-ancestor", engine_ref, source_ref])
+  let temp = @fs.tmpdir(prefix="telescope-diagrams-source-proof")
+  println("Temporary source compatibility workspace: " + temp)
+  defer (if !args.contains("--keep-temp") { @fs.rmdir(temp, recursive=true) })
+  run("cp", ["-R", "tests/diagrams-consumer/driver", temp + "/driver"])
+  run("cp", ["-R", "pkgs/telescope", temp + "/telescope"])
+  let input = temp + "/input"
+  @fs.mkdir(input)
+  for name in ["docs", "site", "pkgs"] {
+    run("cp", ["-R", repo + "/" + name, input + "/" + name])
+  }
+  @fs.mkdir(input + "/apps/site", recursive=true)
+  run("cp", ["-R", repo + "/apps/site/assets", input + "/apps/site/assets"])
+  // The PlantUML package README links its attributed corpus notice.
+  @fs.mkdir(input + "/tests/corpus/plantuml-1.2026.9", recursive=true)
+  run("cp", [
+    repo + "/tests/corpus/plantuml-1.2026.9/NOTICE.md",
+    input + "/tests/corpus/plantuml-1.2026.9/NOTICE.md",
+  ])
+  @fs.mkdir(input + "/_build", recursive=true)
+  run("cp", ["-R", repo + "/_build/site-api", input + "/_build/site-api"])
+  run("cp", [
+    repo + "/apps/site/fixtures/compatibility/routes.json",
+    input + "/baseline.json",
+  ])
+  // Original output independently distinguishes DOM anchors from escaped code.
+  if @json.parse(@fs.read_file(input + "/baseline.json").text())
+    is Object(baseline) &&
+    baseline.get("pages") is Some(Object(pages)) {
+    for path, _ in pages {
+      let destination = input + "/legacy/" + path
+      let slash = destination.rev_find("/").unwrap()
+      @fs.mkdir(
+        destination[:slash].to_owned(),
+        recursive=true,
+        allow_exist=true,
+      )
+      run("cp", [repo + "/_site/" + path, destination])
+    }
+  }
+  let members = ["./driver", "./telescope"]
+  for
+    name in [
+      "bpmn", "diagrams", "diagrams-svg", "diagrams-mermaid", "diagrams-plantuml",
+      "diagrams-bpmn", "diagrams-animated",
+    ] {
+    members.push("./input/pkgs/" + name)
+  }
+  @fs.write_file(
+    temp + "/moon.work",
+    "members = [" +
+    members.map(s => Json::string(s).stringify()).join(",") +
+    "]\n",
+  )
+  guard @json.parse(@fs.read_file(input + "/site/site.json").text())
+    is Object(config) else {
+    abort("Expected diagrams site config object")
+  }
+  config["schema_version"] = 1
+  config["source_roots"] = [
+    "docs", "site/pages", "site/articles", "pkgs", "apps/site/assets", "tests/corpus",
+  ]
+  config["api_output"] = "_build/site-api"
+  config["api_generate"] = false
+  config["static"] = [
+    { "from": "apps/site/assets/examples", "to": "assets/examples" },
+  ]
+  config["repo_ref"] = Json::string(source_ref)
+  config["gallery"] = {
+    "manifest": "site/gallery.json",
+    "root": "apps/site/assets/examples",
+  }
+  @fs.write_file(
+    input + "/site/site.json",
+    Json::object(config).stringify(),
+    create_mode=CreateOrTruncate,
+  )
+  let report = telescope + "/tests/diagrams-consumer/report.json"
+  run(
+    "moon",
+    ["run", "--target", "native", "--release", "driver", "--", input, report],
+    cwd=temp,
+  )
+  guard @json.parse(@fs.read_file(report).text()) is Object(evidence) else {
+    abort("Expected report")
+  }
+  evidence["source_ref"] = Json::string(source_ref)
+  evidence["engine_ref"] = Json::string(engine_ref)
+  evidence["telescope_version"] = "0.1.0"
+  evidence["telescope_source"] = "Copied working source, not an installed distribution"
+  if @json.parse(@fs.read_file(input + "/baseline.json").text())
+    is Object(baseline) {
+    if baseline.get("source_ref") is Some(reference) {
+      evidence["baseline_source_ref"] = reference
+    }
+  }
+  evidence["preparation_ref"] = Json::string(
+    git(repo, ["rev-parse", "31302b0^{commit}"]),
+  )
+  evidence["source_root"] = Json::string(repo)
+  evidence["working_tree_status"] = Json::string(before)
+  evidence["source_unchanged"] = Json::boolean(
+    before == git(repo, ["status", "--porcelain"]),
+  )
+  guard evidence["source_unchanged"] == true else {
+    abort("Downstream checkout changed during qualification")
+  }
+  evidence["command"] = Json::string(
+    "moonx scripts/test-diagrams-consumer.mbtx --repo-root " + repo,
+  )
+  @fs.write_file(
+    report,
+    Json::object(evidence).stringify(indent=2) + "\n",
+    create_mode=CreateOrTruncate,
+  )
+}

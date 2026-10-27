@@ -1,0 +1,12 @@
+import {
+  "moonrockz/telescope/model",
+  "moonrockz/telescope/content",
+  "moonbit-community/cmark/cmark_html",
+}
+
+import {
+  "moonrockz/telescope/markdown",
+  "moonrockz/telescope/content",
+} for "test"
+
+supported_targets = "native"

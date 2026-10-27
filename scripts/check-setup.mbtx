@@ -1,0 +1,81 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+/// Check development setup only. This is not site engine qualification.
+
+///|
+async fn run(command : String, args : Array[String]) -> Unit {
+  let code = @process.run(
+    command,
+    args,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if code != 0 {
+    @sys.exit(if code > 0 { code } else { 1 })
+  }
+}
+
+///|
+/// Check only external asset attributes, not example text in comments.
+async fn check_assets(path : String) -> Unit {
+  let text = @fs.read_file(path).text()
+  let dir = match path.rev_find("/") {
+    Some(i) => path[:i + 1].to_owned()
+    None => ""
+  }
+  let mut count = 0
+  for line in text.split("\n") {
+    if line.has_prefix("<link ") || line.has_prefix("<script ") {
+      for token in line.split("\"") {
+        if token.has_suffix(".css") || token.has_suffix(".js") {
+          guard @fs.exists(dir + token.to_owned()) else {
+            eprintln("Missing document asset: \{path}: \{token}")
+            @sys.exit(1)
+          }
+          count += 1
+        }
+      }
+    }
+  }
+  guard count == 6 else {
+    eprintln("Expected six local document assets in \{path}, found \{count}")
+    @sys.exit(1)
+  }
+}
+
+///|
+async fn main {
+  let scripts = @fs.readdir("scripts", sort=true)
+    .filter(name => name.has_suffix(".mbtx"))
+    .map(name => "scripts/\{name}")
+  run("moon", ["fmt", "--check", ..scripts])
+  for script in scripts {
+    run("moon", ["check", script])
+  }
+  run("yamllint", [
+    "openspec", ".github/workflows", ".github/actions", ".yamllint.yml",
+  ])
+  run("openspec", ["schema", "validate", "html-design"])
+  run("actionlint", [
+    ".github/workflows/ci.yml", ".github/workflows/release.yml",
+  ])
+  check_assets("docs/templates/agent-document.html")
+  for name in @fs.readdir("openspec/changes", sort=true) {
+    let path = "openspec/changes/\{name}/design.html"
+    if @fs.exists(path) {
+      check_assets(path)
+    }
+  }
+  run("openspec", ["validate", "--all", "--strict"])
+  println(
+    "Setup checks passed. Run mise run check separately for engine checks.",
+  )
+}

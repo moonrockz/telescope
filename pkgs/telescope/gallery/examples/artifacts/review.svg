@@ -1,0 +1,11 @@
+<!-- Original Telescope fixture, Apache-2.0. Static illustration; no bundled renderer. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="180" viewBox="0 0 440 180" role="img" aria-labelledby="title desc">
+  <title id="title">Review sequence</title>
+  <desc id="desc">An author sends a review request to a reviewer and receives feedback.</desc>
+  <rect width="440" height="180" fill="white"/>
+  <g font-family="sans-serif" font-size="16" fill="#172033" text-anchor="middle">
+    <text x="80" y="25">Author</text><text x="360" y="25">Reviewer</text>
+    <text x="220" y="65">Review →</text><text x="220" y="125">← Feedback</text>
+  </g>
+  <g stroke="#172033" fill="none"><path d="M80 35V165M360 35V165" stroke-dasharray="4 4"/><path d="M80 80H360M350 74L360 80L350 86M360 140H80M90 134L80 140L90 146"/></g>
+</svg>

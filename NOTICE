@@ -1,0 +1,42 @@
+Telescope
+Copyright 2026 Telescope contributors
+
+This repository includes adaptations of documentation templates and the html-design
+OpenSpec schema from finos/morphir-moonbit, revision
+bd3adc52e6b8f6368fdaee50f76535799732f8d6, under Apache-2.0.
+The upstream NOTICE reads:
+
+morphir-moonbit - FINOS
+Copyright 2026 - FINOS info@finos.org
+
+This product includes software developed at the Fintech Open Source Foundation (https://www.finos.org/).
+
+Pinned mise configuration and scripts/openspec-setup.mbtx are adapted from
+moonrockz/diagrams.mbt, revision 79ae56e2bdaf77ad5ed6951c8e2d856b3fffb38a,
+under Apache-2.0. Changes include Telescope names and setup-only tasks.
+
+The documentation template assets are copied with a responsive wrapping change
+to agent-document.css and a comment clarification in the HTML templates;
+vendored highlight assets are unchanged. The adapted schema
+replaces Morphir's shared tracker rules with Telescope's repository-local policy.
+Vendored highlight.js 11.12.0 keeps its BSD 3-Clause license and upstream record
+in docs/templates/assets/highlight/LICENSE and UPSTREAM.md.
+
+The reusable site library in pkgs/telescope/model, content, markdown, site,
+views, islands and assets is adapted from moonrockz/diagrams.mbt apps/site,
+revision 79ae56e2bdaf77ad5ed6951c8e2d856b3fffb38a, under Apache-2.0.
+This includes the embedded notebooks moon-doc package and module-index fixtures
+in model/api_fixture_test.mbt, recorded with MoonBit 0.10.17+093cb8f9c.
+Changes separate portable content analysis from native CommonMark rendering,
+remove diagram engines, generalize consumer configuration and branding,
+exclude development artifacts, add explicit provider hooks and output validation,
+and preserve API and version navigation contracts.
+
+Smithy and Morphir site engine files remain read-only references. Smithy's site
+records its moonspec ancestor moonrockz/moonspec revision
+9ea9a688c3a39d95c91a28b2a40bb5332e8786f5; no Smithy domain code is included.
+
+The native host in pkgs/telescope/host adapts diagrams.mbt's apps/site/generate,
+apps/site/check, apps/site/assemble and scripts/serve-site.mbtx from the
+Apache-2.0 source baseline documented above. Subsequent provider-anchor behavior
+also follows diagrams.mbt commit e0a541033c77590d4c51ecfeb7fb2932e5c478c4.

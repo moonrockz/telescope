@@ -1,0 +1,23 @@
+import {
+  "moonrockz/telescope/content",
+  "moonrockz/telescope/markdown",
+  "moonrockz/telescope/model",
+  "moonrockz/telescope/extensions",
+  "moonrockz/telescope/views",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/string",
+  "moonbitlang/core/encoding/percent",
+}
+
+import {
+  "moonrockz/telescope/site",
+  "moonrockz/telescope/content",
+  "moonrockz/telescope/model",
+  "moonbitlang/async",
+  "moonbitlang/core/json",
+  "moonrockz/expect",
+  "moonrockz/telescope/extensions",
+  "moonbitlang/async/fs",
+} for "test"
+
+supported_targets = "native"

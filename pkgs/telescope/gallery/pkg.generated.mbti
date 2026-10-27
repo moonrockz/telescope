@@ -1,0 +1,102 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/gallery"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/telescope/model",
+}
+
+// Values
+pub fn parse_manifest(String, source? : String) -> Result[Manifest, Array[@model.Problem]]
+
+pub fn plan(Manifest, String) -> Result[GalleryPlan, Array[@model.Problem]]
+
+pub fn valid_relative_path(String) -> Bool
+
+pub fn validate(Manifest, source? : String) -> Array[@model.Problem]
+
+// Errors
+
+// Types and methods
+pub(all) struct ArtifactCopy {
+  source_path : String
+  output_path : String
+  media_type : String
+} derive(Eq, @debug.Debug)
+pub fn ArtifactCopy::equal(Self, Self) -> Bool
+pub fn ArtifactCopy::not_equal(Self, Self) -> Bool
+pub fn ArtifactCopy::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Entry {
+  id : String
+  family : String
+  title : String
+  status : Status
+  description : String?
+  scope : String?
+  sources : Array[FileRef]
+  preview : FileRef?
+  preview_dark : FileRef?
+  player : FileRef?
+  companions : Array[FileRef]
+} derive(Eq, @debug.Debug)
+pub fn Entry::artifacts(Self) -> Array[FileRef]
+pub fn Entry::equal(Self, Self) -> Bool
+pub fn Entry::not_equal(Self, Self) -> Bool
+pub fn Entry::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FileRef {
+  path : String
+  media_type : String
+} derive(Eq, @debug.Debug)
+pub fn FileRef::equal(Self, Self) -> Bool
+pub fn FileRef::not_equal(Self, Self) -> Bool
+pub fn FileRef::to_repr(Self) -> @debug.Repr
+
+pub(all) struct GalleryPage {
+  route : String
+  title : String
+  body_html : String
+} derive(Eq, @debug.Debug)
+pub fn GalleryPage::equal(Self, Self) -> Bool
+pub fn GalleryPage::not_equal(Self, Self) -> Bool
+pub fn GalleryPage::to_repr(Self) -> @debug.Repr
+
+pub(all) struct GalleryPlan {
+  pages : Array[GalleryPage]
+  copies : Array[ArtifactCopy]
+} derive(Eq, @debug.Debug)
+pub fn GalleryPlan::equal(Self, Self) -> Bool
+pub fn GalleryPlan::not_equal(Self, Self) -> Bool
+pub fn GalleryPlan::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Manifest {
+  schema_version : Int32
+  producer : Producer?
+  root : String?
+  entries : Array[Entry]
+} derive(Eq, @debug.Debug)
+pub fn Manifest::equal(Self, Self) -> Bool
+pub fn Manifest::not_equal(Self, Self) -> Bool
+pub fn Manifest::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Producer {
+  project : String
+  source_ref : String
+  pipeline : String
+} derive(Eq, @debug.Debug)
+pub fn Producer::equal(Self, Self) -> Bool
+pub fn Producer::not_equal(Self, Self) -> Bool
+pub fn Producer::to_repr(Self) -> @debug.Repr
+
+pub(all) enum Status {
+  Implemented
+  Planned
+} derive(Eq, @debug.Debug)
+pub fn Status::equal(Self, Self) -> Bool
+pub fn Status::not_equal(Self, Self) -> Bool
+pub fn Status::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

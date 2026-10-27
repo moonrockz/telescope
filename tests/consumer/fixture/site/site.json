@@ -1,0 +1,1 @@
+{"schema_version":1,"title":"Independent Observatory","description":"An unrelated project fixture","base_path":"/","site_url":"https://example.test/","repo_url":"https://example.test/observatory","repo_ref":"fixture-ref","packages":[],"api":[],"source_roots":["docs","site/pages"]}

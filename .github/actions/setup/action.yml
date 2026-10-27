@@ -1,0 +1,18 @@
+name: Pinned Telescope tools
+description: Install mise tools and complete the pinned MoonBit core library
+runs:
+  using: composite
+  steps:
+    - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db
+      with:
+        version: 2026.10.19
+    - name: Complete exact MoonBit installation
+      shell: bash
+      run: |
+        export MOON_HOME="$(mise where http:moonbit)"
+        curl --fail --silent --show-error --location https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
+        bash "$RUNNER_TEMP/install-moonbit.sh" '0.10.17+093cb8f9c'
+        echo "MOON_HOME=$(mise where http:moonbit)" >> "$GITHUB_ENV"
+        mise where http:moonbit | sed 's|$|/bin|' >> "$GITHUB_PATH"
+        "$(mise where http:moonbit)/bin/moonc" -v
+        "$(mise where http:moonbit)/bin/moon" update

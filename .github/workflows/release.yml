@@ -1,0 +1,135 @@
+name: Release candidate
+"on":
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact version matching both module manifests
+        required: true
+        default: 0.1.0
+      publish:
+        description: Publish after repository owner approves the release PR
+        type: boolean
+        default: false
+      release_pr:
+        description: Release PR URL for the explicitly approved commit and version
+        required: false
+      approved_sha:
+        description: Exact source SHA approved for publication by owner or admin
+        required: false
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+jobs:
+  credential-preflight:
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Report credential availability without exposing it
+        env:
+          HAS_MOONCAKES_TOKEN: ${{ secrets.MOONCAKES_USER_TOKEN != '' }}
+        run: test "$HAS_MOONCAKES_TOKEN" = true
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            platform: linux-x64
+          - os: macos-15
+            platform: macos-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: ./.github/actions/setup
+      - name: Match candidate version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: moonx scripts/release-version.mbtx
+      - run: mise run check:setup
+      - run: mise run check
+      - run: mise run package
+      - run: mise run test:browser
+        if: matrix.platform == 'linux-x64'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && matrix.platform == 'linux-x64'
+        with:
+          name: browser-evidence-${{ matrix.platform }}
+          path: |
+            _build/browser/results.json
+            _build/browser/cli-evidence.json
+            _build/browser/report/
+            _build/browser/test-results/
+            _build/browser/*.png
+          if-no-files-found: warn
+          retention-days: 30
+      - run: mise run test:consumer -- --prepared
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-${{ matrix.platform }}
+          path: |
+            _build/package/*.tar.gz
+            _build/package/*.sha256
+            _build/publish/*.zip
+            _build/evidence/*.json
+          if-no-files-found: error
+          retention-days: 30
+  publish:
+    if: ${{ inputs.publish }}
+    needs: [qualify, credential-preflight]
+    runs-on: ubuntu-24.04
+    environment: release
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: release-*
+          path: release-artifacts
+      - name: Verify manual owner/admin approval for exact release commit and version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_PR: ${{ inputs.release_pr }}
+          APPROVED_SHA: ${{ inputs.approved_sha }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: moonx scripts/release-approval.mbtx
+      - name: Check publication credential availability
+        env:
+          HAS_MOONCAKES_TOKEN: ${{ secrets.MOONCAKES_USER_TOKEN != '' }}
+        run: test "$HAS_MOONCAKES_TOKEN" = true
+      - name: Extract tested library source
+        run: >-
+          unzip -q release-artifacts/release-linux-x64/moonrockz-telescope-*.zip
+          -d "$RUNNER_TEMP/telescope-library"
+      - name: Publish approved library
+        env:
+          MOONCAKES_TOKEN: ${{ secrets.MOONCAKES_USER_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_PR: ${{ inputs.release_pr }}
+          APPROVED_SHA: ${{ inputs.approved_sha }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          moonx scripts/publish.mbtx --dry-run
+          moonx scripts/publish.mbtx
+      - name: Publish matching CLI archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_PR: ${{ inputs.release_pr }}
+          APPROVED_SHA: ${{ inputs.approved_sha }}
+        run: >-
+          gh release create "v$RELEASE_VERSION"
+          release-artifacts/release-linux-x64/*.tar.gz
+          release-artifacts/release-linux-x64/*.sha256
+          release-artifacts/release-macos-arm64/*.tar.gz
+          release-artifacts/release-macos-arm64/*.sha256
+          --target "$GITHUB_SHA" --title "Telescope $RELEASE_VERSION"
+          --notes "Manual owner/admin approval for $APPROVED_SHA, release PR $RELEASE_PR. Adoption remains gated on real published consumer qualification."
+      - name: Real published consumer qualification
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: mise run test:consumer -- --published "$RELEASE_VERSION"

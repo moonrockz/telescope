@@ -1,0 +1,108 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/extensions"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/telescope/model",
+}
+
+// Values
+pub let contract_version : Int32
+
+pub fn empty_registry() -> Registry
+
+pub fn islands_for_route(Registry, String) -> Array[IslandAdapter]
+
+pub fn render_fence(Registry, RenderInput) -> Result[RenderOutput, Array[@model.Problem]]
+
+pub fn render_page(Registry, RenderInput) -> Result[RenderOutput?, Array[@model.Problem]]
+
+pub fn validate_registry(Registry) -> Array[@model.Problem]
+
+// Errors
+
+// Types and methods
+pub(all) struct AdapterError {
+  message : String
+  stage : String
+} derive(Eq, @debug.Debug)
+pub fn AdapterError::equal(Self, Self) -> Bool
+pub fn AdapterError::not_equal(Self, Self) -> Bool
+pub fn AdapterError::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Artifact {
+  path : String
+  media_type : String
+} derive(Eq, @debug.Debug)
+pub fn Artifact::equal(Self, Self) -> Bool
+pub fn Artifact::not_equal(Self, Self) -> Bool
+pub fn Artifact::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FenceAdapter {
+  id : String
+  contract_version : Int32
+  labels : Array[String]
+  render : (RenderInput) -> Result[RenderOutput, AdapterError]
+}
+
+pub(all) struct Heading {
+  id : String
+  text : String
+  level : Int32
+} derive(Eq, @debug.Debug)
+pub fn Heading::equal(Self, Self) -> Bool
+pub fn Heading::not_equal(Self, Self) -> Bool
+pub fn Heading::to_repr(Self) -> @debug.Repr
+
+pub(all) struct IslandAdapter {
+  id : String
+  contract_version : Int32
+  routes : Array[String]
+  mount_id : String
+  script : Artifact
+  stylesheet : Artifact?
+  fallback_html : String
+} derive(Eq, @debug.Debug)
+pub fn IslandAdapter::equal(Self, Self) -> Bool
+pub fn IslandAdapter::not_equal(Self, Self) -> Bool
+pub fn IslandAdapter::to_repr(Self) -> @debug.Repr
+
+pub(all) struct PageAdapter {
+  id : String
+  contract_version : Int32
+  route : String
+  render : (RenderInput) -> Result[RenderOutput, AdapterError]
+}
+
+pub(all) struct Registry {
+  pages : Array[PageAdapter]
+  fences : Array[FenceAdapter]
+  islands : Array[IslandAdapter]
+}
+
+pub(all) struct RenderInput {
+  source : String
+  route : String
+  base_path : String
+  body : String
+  language : String
+  ordinal : Int32
+} derive(Eq, @debug.Debug)
+pub fn RenderInput::equal(Self, Self) -> Bool
+pub fn RenderInput::not_equal(Self, Self) -> Bool
+pub fn RenderInput::to_repr(Self) -> @debug.Repr
+
+pub(all) struct RenderOutput {
+  body_html : String
+  text : String
+  headings : Array[Heading]
+  assets : Array[Artifact]
+  problems : Array[@model.Problem]
+} derive(Eq, @debug.Debug)
+pub fn RenderOutput::equal(Self, Self) -> Bool
+pub fn RenderOutput::not_equal(Self, Self) -> Bool
+pub fn RenderOutput::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

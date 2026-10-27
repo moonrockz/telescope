@@ -1,0 +1,10 @@
+import {
+  "moonrockz/telescope/host",
+  "moonrockz/telescope/extensions",
+  "moonbitlang/async",
+  "moonbitlang/core/env",
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")
