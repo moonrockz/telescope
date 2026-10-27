@@ -1,0 +1,21 @@
+{
+  "name": "qualification/observatory-api",
+  "traits": [],
+  "errors": [],
+  "types": [],
+  "typealias": [],
+  "values": [
+    {
+      "name": "increment",
+      "docstring": " Add one to an observation count.",
+      "signature": "fn increment(value : Int) -> Int",
+      "loc": {
+        "path": "qualification/observatory-api",
+        "file": "sample.mbt",
+        "line": 2,
+        "column": 8
+      }
+    }
+  ],
+  "misc": []
+}

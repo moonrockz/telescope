@@ -41,15 +41,20 @@ async fn main {
   run("moon", [
     "-C", "apps/telescope", "build", "--target", "native", "--release",
   ])
+  // Replace the executable through a fresh inode. Truncating a running preview
+  // binary can leave macOS rejecting the replacement with SIGKILL even when its
+  // bytes and on-disk signature match the compiler output.
+  let staged_cli = "_build/telescope/telescope.next"
   @fs.write_file(
-    "_build/telescope/telescope",
+    staged_cli,
     @fs.read_file(
       "_build/native/release/build/moonrockz/telescope-cli/cmd/cmd.exe",
     ).binary(),
     create_mode=CreateOrTruncate,
     permission=0o755,
   )
-  @fs.chmod("_build/telescope/telescope", 0o755)
+  @fs.chmod(staged_cli, 0o755)
+  @fs.rename(staged_cli, "_build/telescope/telescope")
   run("_build/telescope/telescope", ["--version"])
 }
 

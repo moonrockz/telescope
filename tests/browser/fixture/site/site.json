@@ -7,7 +7,18 @@
   "repo_url": "https://example.test/observatory",
   "repo_ref": "browser-fixture",
   "packages": [],
-  "api": [],
-  "gallery": {"manifest": "gallery.json", "root": "examples"},
-  "source_roots": ["docs", "site/pages", "site/articles"]
+  "api": [
+    "modules/sample"
+  ],
+  "gallery": {
+    "manifest": "gallery.json",
+    "root": "examples"
+  },
+  "source_roots": [
+    "docs",
+    "site/pages",
+    "site/articles"
+  ],
+  "api_output": "api-metadata",
+  "api_generate": false
 }

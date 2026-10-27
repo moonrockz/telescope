@@ -33,7 +33,7 @@ async fn main {
     repository != "" &&
     sha != "" &&
     actor != "" &&
-    version == "0.1.1" &&
+    version == "0.2.0" &&
     approved_sha == sha &&
     url.has_prefix("https://github.com/\{repository}/pull/") else {
     eprintln(
@@ -149,26 +149,26 @@ test "dispatch gate refuses dry-run and mismatched candidate evidence" {
     "inputs": {
       "publish": "true",
       "approved_sha": "abc",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "release_pr": "pr",
     },
   }
-  assert_true(dispatch_matches(event, "abc", "0.1.1", "pr"))
-  assert_false(dispatch_matches(event, "def", "0.1.1", "pr"))
-  assert_false(dispatch_matches(event, "abc", "0.2.0", "pr"))
-  assert_false(dispatch_matches(event, "abc", "0.1.1", "other-pr"))
+  assert_true(dispatch_matches(event, "abc", "0.2.0", "pr"))
+  assert_false(dispatch_matches(event, "def", "0.2.0", "pr"))
+  assert_false(dispatch_matches(event, "abc", "0.1.1", "pr"))
+  assert_false(dispatch_matches(event, "abc", "0.2.0", "other-pr"))
   assert_false(
     dispatch_matches(
       {
         "inputs": {
           "publish": "false",
           "approved_sha": "abc",
-          "version": "0.1.1",
+          "version": "0.2.0",
           "release_pr": "pr",
         },
       },
       "abc",
-      "0.1.1",
+      "0.2.0",
       "pr",
     ),
   )

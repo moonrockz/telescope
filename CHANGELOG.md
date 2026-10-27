@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0, candidate
+
+- Align the shared light and dark defaults with Smithy's indigo and cool neutral palette.
+- Present gallery examples as responsive preview cards with local family and text filtering.
+- Add accessible Preview and Source inspection, source copying and explicit downloads.
+- Preserve manifest version 1, stable routes, artifact bytes and static content without JavaScript.
+- Add an optional source-text input to the pure gallery planner; the native host supplies verified text.
+- Preserve download-only source files during checks while retaining validation of active resources.
+- Replace the local CLI atomically so rebuilding does not invalidate a running macOS preview.
+
+Publication is pending owner approval of the release commit and version.
+
 ## 0.1.1, 2026-10-27
 
 - Show the enabled gallery in shared navigation, with the correct current link.

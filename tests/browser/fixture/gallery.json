@@ -1,1 +1,83 @@
-{"schema_version":1,"entries":[{"id":"signal","family":"Sequence","title":"Signal path","status":"implemented","sources":[{"path":"sources/signal.txt","media_type":"text/plain"}],"preview":{"path":"previews/signal.svg","media_type":"image/svg+xml"}},{"id":"future","family":"Future formats","title":"Future format","status":"planned"}]}
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "signal",
+      "family": "Sequence",
+      "title": "Signal path",
+      "status": "implemented",
+      "sources": [
+        {
+          "path": "sources/signal.txt",
+          "media_type": "text/plain"
+        },
+        {
+          "path": "sources/settings.json",
+          "media_type": "application/json"
+        },
+        {
+          "path": "sources/binary.bin",
+          "media_type": "application/octet-stream"
+        },
+        {
+          "path": "sources/invalid.txt",
+          "media_type": "text/plain"
+        }
+      ],
+      "preview": {
+        "path": "previews/signal.svg",
+        "media_type": "image/svg+xml"
+      },
+      "description": "Request crossing the observatory boundary",
+      "scope": "Supplied static message flow; no renderer execution.",
+      "preview_dark": {
+        "path": "previews/signal-dark.svg",
+        "media_type": "image/svg+xml"
+      },
+      "player": {
+        "path": "players/signal.html",
+        "media_type": "text/html"
+      }
+    },
+    {
+      "id": "reply",
+      "family": "Sequence",
+      "title": "Acknowledged reply",
+      "description": "Return traffic after the signal",
+      "status": "implemented",
+      "sources": [
+        {
+          "path": "sources/signal.txt",
+          "media_type": "text/plain"
+        }
+      ],
+      "preview": {
+        "path": "previews/signal.svg",
+        "media_type": "image/svg+xml"
+      }
+    },
+    {
+      "id": "settings",
+      "family": "JSON",
+      "title": "Settings structure",
+      "description": "Nested configuration object",
+      "status": "implemented",
+      "sources": [
+        {
+          "path": "sources/settings.json",
+          "media_type": "application/json"
+        }
+      ],
+      "preview": {
+        "path": "previews/signal.svg",
+        "media_type": "image/svg+xml"
+      }
+    },
+    {
+      "id": "future",
+      "family": "Future formats",
+      "title": "Future format",
+      "status": "planned"
+    }
+  ]
+}

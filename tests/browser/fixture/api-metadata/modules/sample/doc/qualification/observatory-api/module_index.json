@@ -1,0 +1,19 @@
+{
+  "name": "qualification",
+  "package": null,
+  "childs": [
+    {
+      "name": "observatory-api",
+      "package": {
+        "path": "qualification/observatory-api",
+        "traits": [],
+        "errors": [],
+        "types": [],
+        "typealias": [],
+        "values": [ "increment" ],
+        "misc": []
+      },
+      "childs": []
+    }
+  ]
+}

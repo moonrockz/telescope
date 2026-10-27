@@ -44,7 +44,9 @@ fn main {
   if element_exists("site-nav") {
     @rabbita.new(menu_toggle).mount("site-nav")
   }
-  add_copy_buttons(".prose pre")
+  gallery_browser()
+  gallery_detail()
+  add_copy_buttons(".prose pre:not(.gallery-source pre)")
   if element_exists("site-toc") {
     track_toc("site-toc")
   }

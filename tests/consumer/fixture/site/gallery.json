@@ -1,0 +1,1 @@
+{"schema_version":1,"entries":[{"id":"signal","title":"Signal path","family":"Sequence","status":"implemented","description":"An independently supplied signal artifact.","scope":"Static supplied output.","sources":[{"path":"signal.txt","media_type":"text/plain"}],"preview":{"path":"signal.svg","media_type":"image/svg+xml"}}]}

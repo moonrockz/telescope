@@ -1,13 +1,13 @@
 name = "qualification/diagrams-consumer"
 
-version = "0.1.1"
+version = "0.2.0"
 
 license = "Apache-2.0"
 
 preferred_target = "native"
 
 import {
-  "moonrockz/telescope@0.1.1",
+  "moonrockz/telescope@0.2.0",
   "moonbitlang/async@0.22.5",
   "bobzhang/beautiful_mermaid@0.2.0",
   "moonrockz/diagrams-mermaid@0.2.0",

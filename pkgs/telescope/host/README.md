@@ -40,3 +40,12 @@ The clean candidate-consumer test imports this public host from the packaged
 version and registers a small custom fence provider outside Telescope's workspace.
 It demonstrates provider-driven rendering without copying host implementation
 or importing a consumer domain engine into Telescope.
+
+Gallery builds verify every artifact before reading source text. Declared UTF-8
+text sources feed the pure gallery planner through its optional `source_text=`
+map, keyed by source path. The host renders all available text into the static
+detail HTML and escapes it literally. Unsupported media, malformed UTF-8 and
+NUL-bearing binary sources retain labeled downloads. A source declaration does
+not exempt previews, players or companions from their resource checks. The copy
+plan and download bytes remain unchanged. See the [gallery contract](../gallery/README.md)
+for supported MIME types, progressive controls and no-script behavior.
