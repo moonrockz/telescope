@@ -5,7 +5,7 @@ name: Release candidate
       version:
         description: Exact version matching both module manifests
         required: true
-        default: 0.2.0
+        default: 0.2.1
       publish:
         description: Publish after repository owner approves the release PR
         type: boolean

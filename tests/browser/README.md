@@ -70,9 +70,9 @@ Evidence goes under `_build/browser/`:
 No gallery hashes or output digest manifests are generated. Native release
 archive checksums remain part of the separate packaging workflow.
 
-## Smithy palette and specimen gallery candidate
+## Smithy palette and specimen gallery in 0.2.0
 
-The current candidate adds `palette.spec.ts` for shared colors across page types,
+The 0.2.0 release adds `palette.spec.ts` for shared colors across page types,
 explicit/system theme combinations and measured text/control/focus contrast.
 `gallery.spec.ts` exercises preview cards, family/text filtering, reset and hash
 navigation, keyboard Preview/Source tabs, source copy and clipboard denial,
@@ -81,7 +81,7 @@ The gallery fixture remains unrelated to diagrams.mbt and includes a planned
 entry, an unsupported binary source and invalid UTF-8 fallback.
 
 Current results are generated under `_build/browser/` by `mise run test:browser`.
-The historical 0.1 candidate `verification.json` does not qualify this candidate.
+The historical 0.1 candidate `verification.json` does not qualify 0.2.0.
 
 Version-tree source regression covers literal site URLs and exact copied/downloaded
 text across root, next, latest and both minor-version trees at both base paths.
