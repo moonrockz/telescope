@@ -60,6 +60,10 @@ run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/b
 description = "Qualify packaged candidate in a clean consumer without workspace overrides"
 run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/test-consumer.mbtx'
 
+[tasks."test:consumer-environment"]
+description = "Resolve a real public dependency in a fresh consumer registry"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moon test scripts/test-consumer.mbtx --deny-warn'
+
 [tasks.package]
 description = "Prepare native CLI archive, library package and download checksum"
 run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/package.mbtx'

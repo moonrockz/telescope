@@ -214,6 +214,9 @@ async fn main {
       #|}
     ),
   )
+  if published {
+    initialize_public_registry(home, consumer)
+  }
   run(
     "moon",
     ["test", "--target", "native", "--deny-warn"],
@@ -343,6 +346,49 @@ async fn main {
     create_mode=CreateOrTruncate,
   )
   println(evidence.stringify(indent=2))
+}
+
+///|
+async fn initialize_public_registry(home : String, project : String) -> Unit {
+  run(
+    "moon",
+    ["update"],
+    cwd=project,
+    extra_env=Map::from_array([("MOON_HOME", home)]),
+  )
+}
+
+///|
+async test "published consumer resolves a real dependency from a fresh public index" {
+  let toolchain = @env.get_env_var("MOON_HOME").unwrap()
+  let temp = @fs.tmpdir(prefix="telescope-public-consumer")
+  defer @fs.rmdir(temp, recursive=true)
+  let home = temp + "/home"
+  @fs.mkdir(home)
+  for name in ["bin", "lib", "include"] {
+    if @fs.exists(toolchain + "/" + name) {
+      @fs.symlink(target=toolchain + "/" + name, home + "/" + name)
+    }
+  }
+  let project = temp + "/consumer"
+  @fs.mkdir(project)
+  @fs.write_file(
+    project + "/moon.mod",
+    "name = \"qualification/public-index\"\nversion = \"1.0.0\"\nimport { \"moonrockz/expect@0.6.1\" }\npreferred_target = \"native\"\n",
+  )
+  @fs.write_file(project + "/moon.pkg", "")
+  @fs.write_file(project + "/main.mbt", "pub fn value() -> Int { 1 }\n")
+  initialize_public_registry(home, project)
+  let (code, output, error) = @process.collect_output(
+    toolchain + "/bin/moon",
+    ["check", "--target", "native"],
+    cwd=project,
+    extra_env=Map::from_array([("MOON_HOME", home)]),
+  )
+  assert_eq(code, 0, msg=output.text() + error.text())
+  assert_true(@fs.exists(project + "/.mooncakes/moonrockz/expect/moon.mod"))
+  assert_false(@fs.exists(project + "/moon.work"))
+  assert_false(@fs.exists(home + "/credentials.json"))
 }
 
 ///|

@@ -4,8 +4,10 @@ Status: Implementation and 0.1.0 publication approved. The candidate is unpublis
 packaging and isolated-consumer CI pass on Linux x64 and macOS arm64; all 38
 browser checks pass on Linux and locally on macOS. The actual diagrams fixture
 preserves 77 routes, 5,376 anchors and 40 artifact copies. The approved Actions
-attempts failed before publication: the artifact-path repair merged in PR 2;
-the publisher-home registry repair and its isolated packaging regression await merge. Downstream adoption remains blocked until
+attempts stopped before publication: artifact paths and the publisher registry
+were repaired in PRs 2 and 3. Mooncakes then accepted the server dry run, but the
+pinned CLI reported that HTTP 202 as an error. The exact-receipt compatibility
+fix and fresh-consumer bootstrap verification await merge. Downstream adoption remains blocked until
 real published-consumer verification succeeds. Stories stay open until merge.
 
 ## 1. Prove an independent packaged consumer
@@ -114,11 +116,11 @@ after owner approval. A clean consumer installs both from real distribution
 sources, verifies checksums and builds/checks without any local overrides.
 
 The workflow, archives, checksums, notices and candidate CI are implemented.
-Task 7.1 remains open for the credential-dependent publication dry run, which the
-pinned Moon CLI refuses without credentials. It runs only in owner-approved
-Actions alongside publication; no local credential was created to bypass it.
+The owner-approved server dry run succeeded in Actions run 40461111541. The
+pinned CLI's exit handling requires the scoped compatibility repair described
+above; no local credential was created and no real upload has run.
 
-- [ ] 7.1 Prepare an owner-gated GitHub Actions release workflow and release PR with semantic version, changelog, supported-platform archives, SHA-256 checksums, registry metadata and complete notices; verify package dry-run, all checks and reproducible candidate installation instructions.
+- [x] 7.1 Prepare an owner-gated GitHub Actions release workflow and release PR with semantic version, changelog, supported-platform archives, SHA-256 checksums, registry metadata and complete notices; verify package dry-run, all checks and reproducible candidate installation instructions.
 - [x] 7.2 Obtain and record explicit Telescope repository-owner approval of publication before executing it; verify the approval identifies the release PR/version and keep publication and downstream readiness blocked if absent.
 - [ ] 7.3 After that approval, publish through GitHub Actions the library to Mooncakes and matching CLI archives/checksums to the versioned GitHub release; verify both real coordinates exist and report partial-publication failure without claiming readiness.
 - [ ] 7.4 Run `mise run test:consumer -- --published <actual-version>` in a clean environment against the real registry and downloads; verify exact pins, CLI version, checksums, both deployment bases and no candidate registry, local paths or workspace overrides.
