@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1, unpublished
+## 0.1.1, 2026-10-27
 
 - Show the enabled gallery in shared navigation, with the correct current link.
 - Group gallery examples by family, link details back to their family and offer

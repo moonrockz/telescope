@@ -1,6 +1,6 @@
 # Contributing to Telescope
 
-Telescope 0.1.0 is published. Review the accepted specifications and public
+Telescope 0.1.1 is published. Review the accepted specifications and public
 package contracts before changing the engine. Implementation approval does not
 authorize a new publication or a downstream migration.
 

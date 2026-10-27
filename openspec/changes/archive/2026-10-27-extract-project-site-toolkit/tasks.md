@@ -1,13 +1,13 @@
 # Tasks
 
-Status: Owner-approved 0.1.0 publication succeeded in Actions run 40520332727 at
-f119b0621d4a6dfe02a5e84615027a133e7f460f. Clean actual published consumers pass
-on Linux x64 and macOS arm64. Diagrams resolves that real pin and preserves
-77 routes, 5,376 anchors and 40 artifacts in root and next output. Integration
-found missing gallery primary/family navigation and latest canonical insertion.
-The working source prepares an unpublished 0.1.1 patch with shared fixes and
-regressions. That new publication requires owner approval. Keep final readiness
-and archive pending the patched released consumer. Stories stay open until merge.
+Status: Owner-approved 0.1.1 publication succeeded in Actions run 40531421002 at
+4c2c7ebb235425c917780fccfc874a5beb06c156. Both actual public distributions exist
+and clean published consumers pass on Linux x64 and macOS arm64. The diagrams
+workspace acknowledged the exact release, archive checksums and registry pin.
+The shared gallery and canonical fixes pass 224 native and 42 browser checks.
+Version-specific install/API docs and both published-consumer reports are retained
+under docs/release/. All tasks are verified; story 7 stays open until this final
+verification/documentation and archive PR merges. Diagrams owns final site acceptance.
 
 ## 1. Prove an independent packaged consumer
 
@@ -116,13 +116,14 @@ sources, verifies checksums and builds/checks without any local overrides.
 
 The workflow, archives, checksums and notices were published for 0.1.0. Actual
 Linux and macOS published-install reports are retained under docs/release/.
-The patch candidate is not a released dependency or an approved publication.
+The owner also approved and published the 0.1.1 patch. Its real public-install
+reports and release coordinates are retained separately from candidate evidence.
 
 - [x] 7.1 Prepare an owner-gated GitHub Actions release workflow and release PR with semantic version, changelog, supported-platform archives, SHA-256 checksums, registry metadata and complete notices; verify package dry-run, all checks and reproducible candidate installation instructions.
 - [x] 7.2 Obtain and record explicit Telescope repository-owner approval of publication before executing it; verify the approval identifies the release PR/version and keep publication and downstream readiness blocked if absent.
 - [x] 7.3 After that approval, publish through GitHub Actions the library to Mooncakes and matching CLI archives/checksums to the versioned GitHub release; verify both real coordinates exist and report partial-publication failure without claiming readiness.
 - [x] 7.4 Run `mise run test:consumer -- --published <actual-version>` in a clean environment against the real registry and downloads; verify exact pins, CLI version, checksums, both deployment bases and no candidate registry, local paths or workspace overrides.
-- [ ] 7.5 Publish version-specific install/API/adapter compatibility documentation and send exact release coordinates and test evidence to `run:run_b3638d9bfa3d`; verify the diagrams maintainer can replace its adoption gate with those actual pins before removing its generator.
+- [x] 7.5 Publish version-specific install/API/adapter compatibility documentation and send exact release coordinates and test evidence to `run:run_b3638d9bfa3d`; verify the diagrams maintainer can replace its adoption gate with those actual pins before removing its generator.
 
 ## Workflow follow-up
 

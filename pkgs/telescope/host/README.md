@@ -1,9 +1,9 @@
 # Native host
 
-The 0.1.1 candidate restores latest-tree canonical links during assembly when
+Since 0.1.1, the host restores latest-tree canonical links during assembly when
 `site_url` is supplied and the page exists in the latest release. It preserves
 authored canonical links. The published 0.1.0 host does not insert missing
-canonical links; publication of 0.1.1 is pending.
+canonical links.
 
 Import `moonrockz/telescope/host` from the published library for filesystem,
 rendering and process orchestration. It supports the native target. Pure
