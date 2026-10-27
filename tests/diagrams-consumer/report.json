@@ -29,14 +29,14 @@
     ],
     "other": []
   },
-  "source_ref": "31302b06c3a93cdc93a399884dd785d7337c54b3",
+  "source_ref": "aa02a46b921eb04a30553af73605b17cb127fb28",
   "engine_ref": "e0a541033c77590d4c51ecfeb7fb2932e5c478c4",
   "telescope_version": "0.1.0",
   "telescope_source": "Copied working source, not an installed distribution",
   "baseline_source_ref": "31302b06c3a93cdc93a399884dd785d7337c54b3",
   "preparation_ref": "31302b06c3a93cdc93a399884dd785d7337c54b3",
   "source_root": "/Users/damian/code/github/moonrockz/diagrams.mbt",
-  "working_tree_status": "M apps/site/fixtures/compatibility/routes.json\n M scripts/site-compatibility.mbtx\n?? openspec/changes/add-bpmn-diagrams-and-animation/\n?? openspec/changes/add-mermaid-zenuml-and-architecture/",
+  "working_tree_status": "?? openspec/changes/add-bpmn-diagrams-and-animation/\n?? openspec/changes/add-mermaid-zenuml-and-architecture/",
   "source_unchanged": true,
   "command": "moonx scripts/test-diagrams-consumer.mbtx --repo-root /Users/damian/code/github/moonrockz/diagrams.mbt"
 }
