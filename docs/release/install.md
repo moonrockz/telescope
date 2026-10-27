@@ -1,11 +1,11 @@
 # Installation and qualification
 
-Telescope 0.2.0 is published. Use the exact library pin, native CLI downloads,
-checksums and supported toolchain in [the version-specific instructions](0.2.0.md).
+Telescope 0.2.1 is published. Use the exact library pin, native CLI downloads,
+checksums and supported toolchain in [the version-specific instructions](0.2.1.md).
 Repeat actual released-install qualification with:
 
 ```sh
-mise run test:consumer -- --published 0.2.0
+mise run test:consumer -- --published 0.2.1
 ```
 
 Linux x64 and macOS arm64 passed. Retained reports are linked from the
@@ -17,7 +17,7 @@ mise run package
 mise run test:consumer -- --prepared
 ```
 
-The current development candidate is 0.2.1; it is not published.
+The package task uses the checked-out source version, currently 0.2.1.
 The package task creates `_build/publish/moonrockz-telescope-0.2.1.zip` and the
 current platform's archive under `_build/package/`. Supported qualification
 platforms are Linux x64 and macOS arm64. The native archive contains `telescope`,
@@ -33,10 +33,9 @@ availability.
 
 The candidate consumer pins `moonrockz/telescope@0.2.1`; published mode uses the
 explicitly requested public version. Neither has a moon.work or local path
-dependency. The harness compiles three library tests, including public host.build with a compiled custom
-fence provider and static gallery source inspection, verifies the CLI archive
-SHA-256 and
-version, then builds and checks its own mixed content at `/` and `/example/`.
+dependency. The harness compiles three library tests, including public host.build
+with a compiled custom fence provider and static gallery source inspection, verifies the CLI archive
+SHA-256 and version, then builds and checks its own mixed content at `/` and `/example/`.
 No reference checkout is consulted. Evidence is written to
 `_build/evidence/consumer-<platform>.json`; temporary consumers and caches are
 removed afterwards.
@@ -65,4 +64,4 @@ mode creates an empty registry home, resolves the real Mooncakes version, fetche
 the matching GitHub CLI release archive/checksum and repeats qualification.
 It never seeds the local candidate entry. Failure to find either distribution
 keeps adoption blocked. Record real registry and release URLs only after this
-command succeeds. Actual 0.1.0 and 0.1.1 proofs are retained beside these instructions.
+command succeeds. Actual 0.1.0, 0.1.1 and 0.2.0 proofs are retained beside these instructions.

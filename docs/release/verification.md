@@ -1,5 +1,27 @@
 # Release verification
 
+## Published 0.2.1, 2026-10-27
+
+Owner-approved PR 8 merged as `1f84c6c8de780ea9322db6eef14c10395a4670f9`,
+retaining the exact qualified tree of `4e6dc1d2b7db47a86a77d7efb9c407c6a4b4b7e7`.
+[Release run 40594390130](https://github.com/moonrockz/telescope/actions/runs/40594390130)
+passed both native qualifiers and the exact-commit owner/admin gate, then
+published `moonrockz/telescope@0.2.1` and matching native CLI archives.
+
+Both qualifiers passed 232 native tests, two release-gate tests, two publisher
+regressions, public-index bootstrap, all-target pure checks, packaging and
+prepared consumers. Linux passed all 56 browser cases and a real public install.
+An independent macOS public install passed with
+`mise run test:consumer -- --published 0.2.1`. Both started from empty registries
+without local paths, workspace overrides or candidate entries.
+
+[The release guide](0.2.1.md) records exact public coordinates and verified
+checksums. Reports are [Linux](consumer-0.2.1-linux-x64.json) and
+[macOS](consumer-0.2.1-macos-arm64.json). They retain root/nested deterministic
+builds, manifest version 1, exact source/artifact bytes and public API coverage.
+The patch aligns gallery reset controls and uses the shared indigo fill.
+
+
 ## Published 0.2.0, 2026-10-27
 
 The owner approved PR 7 and publication of 0.2.0. Its squash merge
