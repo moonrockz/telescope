@@ -9,7 +9,7 @@ import {
 // Values
 pub fn parse_manifest(String, source? : String) -> Result[Manifest, Array[@model.Problem]]
 
-pub fn plan(Manifest, String) -> Result[GalleryPlan, Array[@model.Problem]]
+pub fn plan(Manifest, String, source_text? : Map[String, String]) -> Result[GalleryPlan, Array[@model.Problem]]
 
 pub fn valid_relative_path(String) -> Bool
 

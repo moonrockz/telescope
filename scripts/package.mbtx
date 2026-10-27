@@ -39,7 +39,7 @@ async fn main {
       return
     }
   }
-  let dir = "_build/package/telescope-0.1.1-\{platform}"
+  let dir = "_build/package/telescope-0.2.0-\{platform}"
   if @fs.exists(dir) {
     @fs.rmdir(dir, recursive=true)
   }
@@ -70,10 +70,10 @@ async fn main {
     permission=0o755,
   )
   @fs.chmod("\{dir}/telescope", 0o755)
-  let archive = "telescope-0.1.1-\{platform}.tar.gz"
+  let archive = "telescope-0.2.0-\{platform}.tar.gz"
   run(
     "tar",
-    ["-czf", archive, "telescope-0.1.1-\{platform}"],
+    ["-czf", archive, "telescope-0.2.0-\{platform}"],
     cwd="_build/package",
   )
   let (status, digest, _) = @process.collect_output(

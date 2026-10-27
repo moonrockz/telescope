@@ -40,3 +40,10 @@ The native host in pkgs/telescope/host adapts diagrams.mbt's apps/site/generate,
 apps/site/check, apps/site/assemble and scripts/serve-site.mbtx from the
 Apache-2.0 source baseline documented above. Subsequent provider-anchor behavior
 also follows diagrams.mbt commit e0a541033c77590d4c51ecfeb7fb2932e5c478c4.
+
+The default shell palette in pkgs/telescope/assets/site.css is adapted from
+moonrockz/smithy site/public/styles.css, revision
+b97203cea93ed2b71affc1580817ecfd41a6b515, under Apache-2.0.
+Changes map indigo and cool-neutral tokens to Telescope's existing variable
+names, distinguish essential control boundaries, and retain semantic statuses.
+No Smithy domain engine, branding or gallery runtime is included.

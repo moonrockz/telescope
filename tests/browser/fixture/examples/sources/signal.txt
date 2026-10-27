@@ -1,1 +1,4 @@
 Observatory -> Telescope: signal
+<script>window.sourceExecuted = true</script>
+<literal> & "quoted" café
+body { background: url(missing.png); }

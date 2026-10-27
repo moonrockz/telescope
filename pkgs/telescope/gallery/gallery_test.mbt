@@ -37,9 +37,9 @@ test "implemented and planned pages preserve status base paths escaping and decl
     assert_true(
       detail.contains("src=\"\{base}gallery/artifacts/previews/review.svg\""),
     )
-    assert_true(detail.contains("download>sources/review.mmd"))
+    assert_true(detail.contains("download>Download source: sources/review.mmd"))
     assert_true(detail.contains("\{base}gallery/artifacts/players/review.html"))
-    assert_true(detail.contains("background:#fff"))
+    assert_true(detail.contains("gallery-light-only"))
     let planned_body = output.pages[2].body_html
     assert_true(planned_body.contains("Planned"))
     assert_false(planned_body.contains("<img"))
@@ -73,13 +73,9 @@ test "families have grouped navigation and SVG previews have download links" {
     let index = output.pages[0].body_html
     assert_true(index.contains("aria-label=\"Gallery families\""))
     assert_true(index.contains("href=\"#family-first\""))
+    assert_true(index.contains("id=\"family-first\"><h2>sequence</h2>"))
     assert_true(
-      index.contains("<section id=\"family-first\"><h2>sequence</h2>"),
-    )
-    assert_true(
-      index.contains(
-        "<section id=\"family-future\"><h2>Future &amp; formats</h2>",
-      ),
+      index.contains("id=\"family-future\"><h2>Future &amp; formats</h2>"),
     )
     for page in [output.pages[1], output.pages[3]] {
       assert_true(
@@ -263,4 +259,61 @@ test "producer is optional informational provenance with shape validation" {
       "producer.project",
     ),
   )
+}
+
+///|
+test "optional source text is escaped and cannot alter routes or artifact copies" {
+  let manifest = @gallery.parse_manifest(manifest_json(implemented("review"))).unwrap()
+  let original = @gallery.plan(manifest, "/example/next/").unwrap()
+  let source = "<script>alert('source & only')</script>\r\n\"quoted\"\n"
+  let enriched = @gallery.plan(
+    manifest,
+    "/example/next/",
+    source_text=Map::from_array([
+      ("sources/review.mmd", source),
+      ("undeclared.txt", "must never be displayed"),
+    ]),
+  ).unwrap()
+  assert_eq(enriched.copies, original.copies)
+  assert_eq(
+    enriched.pages.map(page => page.route),
+    original.pages.map(page => page.route),
+  )
+  let detail = enriched.pages[1].body_html
+  assert_true(
+    detail.contains(
+      "&lt;script&gt;alert&#40;&#39;source &amp; only&#39;&#41;&lt;/script&gt;&#13;\n&quot;quoted&quot;\n",
+    ),
+  )
+  assert_false(detail.contains(source))
+  assert_false(detail.contains("must never be displayed"))
+  assert_false(detail.contains(" hidden"))
+  assert_true(original.pages[1].body_html.contains("Inline source unavailable"))
+  assert_true(
+    original.pages[1].body_html.contains("Download source: sources/review.mmd"),
+  )
+}
+
+///|
+test "every declared source is inspectable or has a labeled download" {
+  let text = manifest_json(implemented("review")).replace(
+    old="\"sources\":[{",
+    new="\"sources\":[{\"path\":\"second.json\",\"media_type\":\"application/json\"},{\"path\":\"binary.bin\",\"media_type\":\"application/octet-stream\"},{",
+  )
+  let manifest = @gallery.parse_manifest(text).unwrap()
+  let plan = @gallery.plan(
+    manifest,
+    "/",
+    source_text=Map::from_array([
+      ("sources/review.mmd", "First source"),
+      ("second.json", "{\"name\":\"second\"}"),
+    ]),
+  ).unwrap()
+  let detail = plan.pages[1].body_html
+  assert_true(detail.contains("First source"))
+  assert_true(detail.contains("{&quot;name&quot;:&quot;second&quot;}"))
+  for path in ["sources/review.mmd", "second.json", "binary.bin"] {
+    assert_true(detail.contains("Download source: " + path))
+  }
+  assert_true(detail.contains("Inline source unavailable"))
 }

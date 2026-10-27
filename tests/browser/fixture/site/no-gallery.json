@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "title": "Independent Observatory",
+  "description": "Telescope browser qualification fixture",
+  "base_path": "/",
+  "site_url": "https://observatory.example/",
+  "repo_url": "https://example.test/observatory",
+  "repo_ref": "browser-fixture",
+  "packages": [],
+  "api": [],
+  "source_roots": [
+    "docs",
+    "site/pages",
+    "site/articles"
+  ]
+}

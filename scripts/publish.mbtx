@@ -112,7 +112,7 @@ test "only the exact server-accepted dry run can override a failed CLI exit" {
   assert_true(publication_succeeded(255, true, "0.1.0", receipt))
   assert_false(publication_succeeded(255, false, "0.1.0", receipt))
   assert_false(publication_succeeded(-9, true, "0.1.0", receipt))
-  assert_false(publication_succeeded(255, true, "0.1.1", receipt))
+  assert_false(publication_succeeded(255, true, "0.2.0", receipt))
   assert_false(publication_succeeded(255, true, "0.1.0", "Check failed"))
   assert_false(
     publication_succeeded(

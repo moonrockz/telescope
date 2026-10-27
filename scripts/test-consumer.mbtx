@@ -33,7 +33,7 @@ async fn run(
 async fn main {
   let args = @env.args()
   let published = args.contains("--published")
-  let mut version = "0.1.1"
+  let mut version = "0.2.0"
   if published {
     let mut i = 0
     while i < args.length() && args[i] != "--published" {
@@ -73,7 +73,7 @@ async fn main {
     for name in ["index", "cache"] {
       run("cp", ["-R", toolchain + "/registry/" + name, registry + "/" + name])
     }
-    let archive = "_build/publish/moonrockz-telescope-0.1.1.zip"
+    let archive = "_build/publish/moonrockz-telescope-0.2.0.zip"
     let (code, sha, _) = @process.collect_output("shasum", [
       "-a", "256", archive,
     ])
@@ -88,7 +88,7 @@ async fn main {
       allow_exist=true,
     )
     @fs.write_file(
-      registry + "/cache/moonrockz/telescope/0.1.1.zip",
+      registry + "/cache/moonrockz/telescope/0.2.0.zip",
       @fs.read_file(archive).binary(),
       create_mode=CreateOrTruncate,
     )
@@ -196,6 +196,22 @@ async fn main {
       #|}
     ),
   )
+  @fs.write_file(
+    consumer + "/gallery_test.mbt",
+    (
+      #|async test "installed host renders supplied gallery and static source" {
+      #|  let root = @fs.realpath(".")
+      #|  ignore(@host.build(root,"site/gallery-site.json","gallery-host-out"))
+      #|  let index = @fs.read_file("gallery-host-out/gallery/index.html").text()
+      #|  let detail = @fs.read_file("gallery-host-out/gallery/signal/index.html").text()
+      #|  assert_true(index.contains("Signal path"))
+      #|  assert_true(index.contains("gallery-card"))
+      #|  assert_true(detail.contains("signal -&gt; observatory"))
+      #|  assert_true(@fs.read_file("gallery-host-out/gallery/artifacts/signal.txt").binary() == @fs.read_file("examples/signal.txt").binary())
+      #|  assert_true(@fs.read_file("gallery-host-out/assets/site.css").text().contains("--accent: #4f46e5"))
+      #|}
+    ),
+  )
   let isolated_env = Map::from_array([("MOON_HOME", home)])
   @fs.write_file(
     consumer + "/provider_test.mbt",
@@ -243,6 +259,33 @@ async fn main {
       ],
       cwd=consumer,
     )
+    run(
+      cli,
+      [
+        "build", "--config", "site/gallery-site.json", "--out", "gallery-out", "--base",
+        base,
+      ],
+      cwd=consumer,
+    )
+    run(
+      cli,
+      [
+        "check", "--config", "site/gallery-site.json", "--out", "gallery-out", "--base",
+        base, "--format", "json",
+      ],
+      cwd=consumer,
+    )
+    let gallery_html = @fs.read_file(
+      consumer + "/gallery-out/gallery/signal/index.html",
+    ).text()
+    guard gallery_html.contains("signal -&gt; observatory") &&
+      gallery_html.contains(base + "gallery/artifacts/signal.txt") &&
+      @fs.read_file(consumer + "/gallery-out/gallery/artifacts/signal.txt").binary() ==
+      @fs.read_file(consumer + "/examples/signal.txt").binary() else {
+      eprintln("Installed CLI gallery source, download path or bytes differ")
+      @sys.exit(1)
+      return
+    }
     let before = snapshot(consumer + "/out")
     run(
       cli,
@@ -338,6 +381,8 @@ async fn main {
     "library": "moonrockz/telescope@" + version,
     "cli_archive": archive,
     "workspace_overrides": false,
+    "gallery_manifest_version": 1,
+    "gallery_static_source_and_artifact_bytes": true,
     "bases": ["/", "/example/"],
   }
   @fs.write_file(

@@ -1,5 +1,9 @@
 # Telescope
 
+The **0.2.0 candidate** adds Smithy-aligned themes and a component-style gallery.
+It is not published. The current public release is 0.1.1. See the
+[default presentation](docs/presentation.md) and candidate qualification below.
+
 Telescope is a MoonBit and Rabbita toolkit for static project documentation.
 The `moonrockz/telescope` library supplies configuration, content, views and
 site planning, with reusable native IO in `moonrockz/telescope/host`. The matching native `telescope` CLI builds, checks, previews and

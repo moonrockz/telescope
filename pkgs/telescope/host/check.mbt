@@ -95,6 +95,42 @@ pub async fn check(out : String, base : String) -> Array[@model.Problem] {
 }
 
 ///|
+fn existing_target(known : Map[String, Bool], target : String) -> String {
+  if known.contains(target) {
+    target
+  } else if known.contains(target + "/index.html") {
+    target + "/index.html"
+  } else {
+    target
+  }
+}
+
+///|
+/// Separate generated download anchors from loaded/navigated resource links.
+/// Gallery planning escapes attribute delimiters and emits `download` last.
+fn gallery_download_links(text : String) -> (Array[String], String) {
+  let downloads = []
+  let active = StringBuilder()
+  let mut offset = 0
+  while offset < text.length() {
+    guard text[offset:].find("<a ") is Some(start) else { break }
+    let begin = offset + start
+    guard text[begin:].find(">") is Some(end) else { break }
+    let finish = begin + end
+    let tag = text[begin:finish].to_owned()
+    active.write_string(text[offset:begin].to_owned())
+    if tag.has_suffix(" download") {
+      downloads.append(attributes(tag, "href"))
+    } else {
+      active.write_string(text[begin:finish + 1].to_owned())
+    }
+    offset = finish + 1
+  }
+  active.write_string(text[offset:].to_owned())
+  (downloads, active.to_string())
+}
+
+///|
 async fn check_tree(
   out : String,
   base : String,
@@ -114,20 +150,77 @@ async fn check_tree(
   if !known.contains("index.html") {
     problems.push(@model.problem(out, "missing index.html"))
   }
+  let documents : Map[String, String] = Map([])
+  let active_text : Map[String, String] = Map([])
+  let downloads : Map[String, Bool] = Map([])
+  let checkable : Array[String] = []
   for file in all {
-    if file.has_suffix(".html") || file.has_suffix(".svg") {
-      ids[file] = @content.ids_in(
-        @fs.read_file(checked_file(root, file)).text(),
-      )
-    }
-  }
-  for file in all {
-    if ![".html", ".xml", ".svg", ".css"]
-      .iter()
-      .any(ext => file.has_suffix(ext)) {
+    if ![".html", ".xml", ".svg", ".css"].any(ext => file.has_suffix(ext)) {
       continue
     }
-    let text = @fs.read_file(checked_file(root, file)).text()
+    checkable.push(file)
+    let data = @fs.read_file(checked_file(root, file))
+    let text = try @utf8.decode(data.binary()) catch {
+      _ => None
+    } noraise {
+      text => Some(text)
+    }
+    if text is Some(text) && !text.contains("\u{0}") {
+      documents[file] = text
+      let (links, active) = gallery_download_links(text)
+      active_text[file] = active
+      // Only generated gallery detail downloads qualify for opaque treatment.
+      if file.has_prefix("gallery/") &&
+        !file.has_prefix("gallery/artifacts/") &&
+        text.contains("data-gallery-detail") {
+        for link in links {
+          if resolve(base, file, link) is Ok((target, _)) &&
+            target.has_prefix("gallery/artifacts/") {
+            downloads[target] = true
+          }
+        }
+      }
+    }
+  }
+  // A download used by a player, preview or any ordinary resource is active.
+  // Walk from non-download documents so literal source files do not create
+  // dependencies merely because they contain markup or CSS examples.
+  let active : Map[String, Bool] = Map([])
+  let pending = checkable.filter(file => !downloads.contains(file))
+  let mut next = 0
+  while next < pending.length() {
+    let file = pending[next]
+    next += 1
+    for link in resource_links(active_text.get(file).unwrap_or("")) {
+      if link == "" || link.contains(":") || link.has_prefix("//") {
+        continue
+      }
+      if resolve(base, file, link) is Ok((target, _)) {
+        let target = existing_target(known, target)
+        if downloads.contains(target) && !active.contains(target) {
+          active[target] = true
+          pending.push(target)
+        }
+      }
+    }
+  }
+  for file in checkable {
+    if downloads.contains(file) && !active.contains(file) {
+      continue
+    }
+    if documents.get(file) is Some(text) &&
+      (file.has_suffix(".html") || file.has_suffix(".svg")) {
+      ids[file] = @content.ids_in(text)
+    }
+  }
+  for file in checkable {
+    if downloads.contains(file) && !active.contains(file) {
+      continue
+    }
+    guard documents.get(file) is Some(text) else {
+      problems.push(@model.problem(file, "resource is not valid UTF-8 text"))
+      continue
+    }
     if file.has_suffix(".html") && !@model.has_title(text) {
       problems.push(@model.problem(file, "missing nonempty title"))
     }
@@ -151,13 +244,7 @@ async fn check_tree(
         Err(message) =>
           problems.push(@model.problem(file, "\{link}: \{message}"))
         Ok((target, fragment)) => {
-          let target = if known.contains(target) {
-            target
-          } else if known.contains(target + "/index.html") {
-            target + "/index.html"
-          } else {
-            target
-          }
+          let target = existing_target(known, target)
           if !known.contains(target) {
             problems.push(
               @model.problem(file, "broken resource \{link} -> \{target}"),
