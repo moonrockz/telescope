@@ -4,7 +4,8 @@ Status: Implementation and 0.1.0 publication approved. The candidate is unpublis
 packaging and isolated-consumer CI pass on Linux x64 and macOS arm64; all 38
 browser checks pass on Linux and locally on macOS. The actual diagrams fixture
 preserves 77 routes, 5,376 anchors and 40 artifact copies. The approved Actions
-attempt failed before publication at artifact extraction; its path repair awaits merge. Downstream adoption remains blocked until
+attempts failed before publication: the artifact-path repair merged in PR 2;
+the publisher-home registry repair and its isolated packaging regression await merge. Downstream adoption remains blocked until
 real published-consumer verification succeeds. Stories stay open until merge.
 
 ## 1. Prove an independent packaged consumer

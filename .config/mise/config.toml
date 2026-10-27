@@ -64,6 +64,10 @@ run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/b
 description = "Prepare native CLI archive, library package and download checksum"
 run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/package.mbtx'
 
+[tasks."test:publish-environment"]
+description = "Package the qualified library in the isolated publisher home without credentials"
+run = 'TELESCOPE_PACKAGE_ARCHIVE="$PWD/_build/publish/moonrockz-telescope-0.1.0.zip" MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moon test scripts/publish.mbtx --deny-warn'
+
 [tasks."test:browser"]
 description = "Qualify shell and islands with pinned Chromium browser tests"
 run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/test-browser.mbtx'

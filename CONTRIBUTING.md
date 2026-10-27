@@ -41,6 +41,9 @@ host adapter is native; pure content analysis remains portable.
 and JS into the native CLI, packages the library and creates the native archive
 with a download checksum. `mise run test:consumer -- --prepared` consumes those
 artifacts outside the workspace using an explicitly seeded prerelease cache.
+After packaging, `mise run test:publish-environment` checks that the publisher's
+isolated Moon home resolves the qualified library's dependencies and packages it
+without a credential. PR and release qualification enforce this boundary.
 This proves packaging shape, not publication. See [CLI usage](docs/cli.md),
 [candidate install](docs/release/install.md) and [release gates](docs/release/README.md).
 

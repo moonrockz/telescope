@@ -15,6 +15,14 @@ both native checksums and ZIP integrity checks pass, and the extracted Linux
 library passes strict native compilation. A fresh source compatibility run also
 preserves all 77 diagrams routes, 5,376 anchors and 40 artifact copies.
 
+The [second approved attempt](https://github.com/moonrockz/telescope/actions/runs/40458124684)
+extracted those artifacts successfully, then its publication dry run failed
+because the temporary Moon home had no dependency registry. No upload ran.
+The publisher now links the qualified toolchain's registry into that home.
+`mise run test:publish-environment`, after `mise run package`, uses the same home
+preparation to package the actual qualified ZIP without creating credentials.
+Both PR and release qualification run this check before promotion.
+
 PR CI qualifies the exact source on Linux x64 and macOS arm64. Each job runs setup
 validation, all-target pure checks, strict native compilation and native tests,
 then builds one native artifact and consumes that same archive in a clean
