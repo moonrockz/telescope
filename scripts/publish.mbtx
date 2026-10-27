@@ -46,24 +46,98 @@ async fn main {
     credential.stringify(),
     permission=0o600,
   )
-  let command = if @env.args().contains("--dry-run") {
-    ["publish", "--dry-run"]
-  } else {
-    ["publish"]
-  }
-  let code = @process.run(
+  let dry_run = @env.args().contains("--dry-run")
+  let command = if dry_run { ["publish", "--dry-run"] } else { ["publish"] }
+  let (code, output, error) = @process.collect_output(
     "moon",
     command,
     cwd=@env.get_env_var("RUNNER_TEMP").unwrap() + "/telescope-library",
     extra_env=Map::from_array([("MOON_HOME", home)]),
-    stdout=@stdio.stdout,
-    stderr=@stdio.stderr,
   )
-  guard code == 0 else {
+  if output.text() != "" {
+    println(output.text())
+  }
+  if error.text() != "" {
+    eprintln(error.text())
+  }
+  guard publication_succeeded(
+    code,
+    dry_run,
+    @env.get_env_var("RELEASE_VERSION").unwrap(),
+    output.text() + "\n" + error.text(),
+  ) else {
     eprintln("Library publication failed; CLI release was not created")
     @sys.exit(1)
     return
   }
+  if code != 0 {
+    println(
+      "Mooncakes confirmed the exact dry run; accepted the pinned CLI's HTTP 202 exit-code quirk.",
+    )
+  }
+}
+
+///|
+/// The pinned CLI reports an error for the server's successful dry-run HTTP 202.
+/// Only that exact receipt for this module/version can override a dry-run exit.
+fn publication_succeeded(
+  code : Int32,
+  dry_run : Bool,
+  version : String,
+  output : String,
+) -> Bool {
+  if code == 0 {
+    return true
+  }
+  if !dry_run || code < 1 || version == "" {
+    return false
+  }
+  let statuses = output
+    .split("\n")
+    .map(line => line.trim().to_owned())
+    .filter(line => line.has_prefix("Server status: "))
+    .collect()
+  statuses ==
+  [
+    "Server status: 202 Accepted, detail: Dry run completed successfully. No changes were made. The dry-run was made for package moonrockz/telescope version " +
+    version +
+    ".",
+  ]
+}
+
+///|
+test "only the exact server-accepted dry run can override a failed CLI exit" {
+  let receipt = "Server status: 202 Accepted, detail: Dry run completed successfully. No changes were made. The dry-run was made for package moonrockz/telescope version 0.1.0."
+  assert_true(publication_succeeded(0, false, "0.1.0", ""))
+  assert_true(publication_succeeded(255, true, "0.1.0", receipt))
+  assert_false(publication_succeeded(255, false, "0.1.0", receipt))
+  assert_false(publication_succeeded(-9, true, "0.1.0", receipt))
+  assert_false(publication_succeeded(255, true, "0.1.1", receipt))
+  assert_false(publication_succeeded(255, true, "0.1.0", "Check failed"))
+  assert_false(
+    publication_succeeded(
+      255,
+      true,
+      "0.1.0",
+      receipt.replace(old="moonrockz/telescope", new="moonrockz/other"),
+    ),
+  )
+  assert_false(
+    publication_succeeded(
+      255,
+      true,
+      "0.1.0",
+      receipt.replace(old="202 Accepted", new="403 Forbidden"),
+    ),
+  )
+  assert_false(
+    publication_succeeded(
+      255,
+      true,
+      "0.1.0",
+      receipt + "\nServer status: 500 Internal Server Error",
+    ),
+  )
 }
 
 ///|

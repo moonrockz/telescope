@@ -27,6 +27,7 @@ jobs:
       - run: mise run format && git diff --exit-code
       - run: mise run check:setup
       - run: mise run check
+      - run: mise run test:consumer-environment
       - run: mise run package
       - run: mise run test:publish-environment
       - run: mise run test:browser

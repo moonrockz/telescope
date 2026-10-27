@@ -44,6 +44,8 @@ artifacts outside the workspace using an explicitly seeded prerelease cache.
 After packaging, `mise run test:publish-environment` checks that the publisher's
 isolated Moon home resolves the qualified library's dependencies and packages it
 without a credential. PR and release qualification enforce this boundary.
+`mise run test:consumer-environment` separately verifies public-index bootstrap
+for a fresh published consumer, without a candidate registry or credentials.
 This proves packaging shape, not publication. See [CLI usage](docs/cli.md),
 [candidate install](docs/release/install.md) and [release gates](docs/release/README.md).
 

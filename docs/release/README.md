@@ -23,6 +23,18 @@ The publisher now links the qualified toolchain's registry into that home.
 preparation to package the actual qualified ZIP without creating credentials.
 Both PR and release qualification run this check before promotion.
 
+The [third approved attempt](https://github.com/moonrockz/telescope/actions/runs/40461111541)
+passed packaging and the server accepted its dry run for `moonrockz/telescope@0.1.0`
+with HTTP 202 and an explicit statement that no changes were made. The pinned CLI
+nevertheless exited unsuccessfully, so no real upload ran. The publisher accepts
+that exact receipt only for a dry run of the requested module/version. Conflicting
+statuses, other versions, cancellation and real publication failures remain errors.
+
+Fresh published consumers initialize their empty registry from the public index
+before resolving the exact version. `mise run test:consumer-environment` checks
+that bootstrap using a real public dependency and no credentials, candidate cache
+or workspace override. PR and release qualification run it before packaging.
+
 PR CI qualifies the exact source on Linux x64 and macOS arm64. Each job runs setup
 validation, all-target pure checks, strict native compilation and native tests,
 then builds one native artifact and consumes that same archive in a clean
