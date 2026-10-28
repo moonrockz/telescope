@@ -1,0 +1,31 @@
+{
+  "version": "0.3.0",
+  "library": "moonrockz/telescope@0.3.0",
+  "published": true,
+  "approved_source_commit": "6afd8622e81a1778467fc55a8242d2071d3c39d0",
+  "release_pr": "https://github.com/moonrockz/telescope/pull/11",
+  "actions_run": "https://github.com/moonrockz/telescope/actions/runs/40637807149",
+  "actions_actor": "DamianReeves",
+  "release_url": "https://github.com/moonrockz/telescope/releases/tag/v0.3.0",
+  "published_at": "2026-10-28T05:30:55Z",
+  "platforms": {
+    "linux-x64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.3.0/telescope-0.3.0-linux-x64.tar.gz",
+      "cli_sha256": "bd4c1d8cda1d677c97bdaf65f7c89560d7d4176419d483290291c1c36da24bf9",
+      "consumer_report": "consumer-0.3.0-linux-x64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.3.0-linux-x64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Actions published consumer step"
+    },
+    "macos-arm64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.3.0/telescope-0.3.0-macos-arm64.tar.gz",
+      "cli_sha256": "52bf784ded3a463a07cd5614e36de99a6894b8b88d01f2a23469fd5bccad02c7",
+      "consumer_report": "consumer-0.3.0-macos-arm64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.3.0-macos-arm64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Local mise run test:consumer -- --published 0.3.0"
+    }
+  }
+}

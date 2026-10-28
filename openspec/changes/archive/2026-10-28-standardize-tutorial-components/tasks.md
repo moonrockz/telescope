@@ -98,16 +98,18 @@ Verification: Required repository checks, packaged qualification on Linux x64 an
 
 - [x] 6.1 Run standalone code-editor/formatter, tutorial and existing gallery/extension/version regressions through `mise run format`, `mise run check:setup`, `mise exec -- openspec validate --all --strict`, `mise run check` and `mise run test:browser`; verify the scenario-to-test matrix has no uncovered behavior, editor packages have no tutorial dependency and unchanged consumers still pass.
 - [x] 6.2 Package the matching library/CLI candidate and run `mise run test:consumer -- --prepared` plus the existing release qualification on supported platforms; verify license/asset inventories, deterministic output and recorded candidate provenance without treating it as publication.
-- [ ] 6.3 Prepare the release notes, install/provider compatibility guidance and exact release commit/version for owner review; verify the existing release process blocks publication until its explicit owner approval and record actual Actions publication evidence only after that gate passes.
-- [ ] 6.4 Qualify a new consumer against the real published registry package and checksum-verified CLI archive without prerelease caches or local overrides; verify standalone editor/Formatter use without tutorials, tutorial build/composition, consumer case execution and browser assets, recording actual artifacts and compatibility results in final verification documentation.
+- [x] 6.3 Prepare the release notes, install/provider compatibility guidance and exact release commit/version for owner review; verify the existing release process blocks publication until its explicit owner approval and record actual Actions publication evidence only after that gate passes.
+- [x] 6.4 Qualify a new consumer against the real published registry package and checksum-verified CLI archive without prerelease caches or local overrides; verify standalone editor/Formatter use without tutorials, tutorial build/composition, consumer case execution and browser assets, recording actual artifacts and compatibility results in final verification documentation.
 
-Local and CI qualification pass for the 0.3.0 candidate on Linux x64 and macOS
-arm64, including clean packaged consumers and 108 Chromium scenarios. Evidence:
-`docs/release/candidate-0.3.0-ci.json`, Actions run 40635105037.
-Release notes and compatibility guidance for 6.3 are prepared in
-`docs/release/0.3.0.md`; its publication-evidence clause remains owner gated.
-Task 6.4 requires actual published artifacts and is deliberately unchecked.
-No archive is permitted while these publication-dependent tasks remain open.
+All 35 tasks are verified. The owner approved publication of 0.3.0 from
+`6afd8622e81a1778467fc55a8242d2071d3c39d0` after PR 11 merged.
+[Actions run 40637807149](https://github.com/moonrockz/telescope/actions/runs/40637807149)
+published the matching Mooncakes library and CLI. Real public consumers passed
+on Linux x64 and macOS arm64 without candidate caches or workspace overrides,
+including standalone editor/Formatter, seven tutorial cases and Chromium edits
+at both deployment bases. Actual artifacts, checksums and reports are retained
+in `docs/release/0.3.0.md` and `docs/release/publication-0.3.0.json`.
+The release story and epic close only after the final verification/archive PR merges.
 
 ## Workflow follow-up
 

@@ -176,3 +176,7 @@ owner approval of the exact version and commit through the Actions release gate.
 Fresh installs of the actual published registry package and checksum-verified CLI
 archives require separate post-publication evidence. No downstream migration is
 implied by candidate qualification.
+
+Published 0.3.0 passes that separate gate on Linux x64 and macOS arm64; see the
+[actual release and consumer reports](release/0.3.0.md). Repeat it with
+`mise run test:consumer -- --published 0.3.0`.

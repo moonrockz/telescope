@@ -1,13 +1,13 @@
 # Telescope library
 
-`moonrockz/telescope` is a project site library. Version `0.2.1` is published with
+`moonrockz/telescope` is a project site library. Version `0.3.0` is published with
 a matching native CLI. The CLI is built from `apps/telescope` in this repository.
 See the repository's version-specific release documentation for installation
 and compatibility evidence. New publications require owner approval.
 
-The checkout prepares candidate 0.3.0 with optional [tutorials](../../docs/tutorials.md)
-and the standalone [editor/Formatter](../../docs/editor.md). It is not a published
-dependency until the release gate and clean published-consumer qualification pass.
+The release includes optional [tutorials](../../docs/tutorials.md) and the standalone
+[editor/Formatter](../../docs/editor.md), with shipped MoonBit highlighting.
+[Actual public installs](../../docs/release/0.3.0.md) pass on Linux x64 and macOS arm64.
 
 | Package | Responsibility | Targets |
 | --- | --- | --- |

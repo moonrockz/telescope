@@ -1,9 +1,10 @@
-# Tutorial candidate verification
+# Tutorial verification
 
-Candidate 0.3.0 adds opt-in TOML courses, a general editor with a public Formatter,
-MoonBit rich editing and explicit consumer execution/check contracts. It is a
-prerelease candidate until the owner approves its exact merge commit/version and
-the Actions publication and real published-consumer checks pass.
+Published 0.3.0 adds opt-in TOML courses, a general editor with a public Formatter,
+MoonBit rich editing and explicit consumer execution/check contracts. The owner
+approved its exact merged commit and version; Actions publication and real public
+installs passed on Linux x64 and macOS arm64. See the
+[release proof and consumer reports](release/0.3.0.md).
 
 The accepted 0.2.1 site records and extension registry remain source compatible.
 General editor packages import no tutorial packages. Tests use a neutral text
@@ -41,7 +42,7 @@ and [qualification run](https://github.com/moonrockz/telescope/actions/runs/4063
 
 ## Smithy parity boundary
 
-The source inventory is pinned in the active OpenSpec design to Smithy main
+The source inventory is pinned in the [archived OpenSpec design](../openspec/changes/archive/2026-10-28-standardize-tutorial-components/design.html) to Smithy main
 `caa78a677b88fdf506eb77953453d2519f1f4786` and codec workspace
 `e3c140d11dba72b5f642c1e634bd94ec4adc2c94`.
 
@@ -59,6 +60,9 @@ The source inventory is pinned in the active OpenSpec design to Smithy main
 | Start/overlay cases and reference claims | Independent runners, comparator and reference hook | Smithy engine, Java/reference tooling and Morphir claims |
 | Open in workbench | Explicit consumer encoding with destination/size checks | Supported modes, encoding and destination |
 
-Telescope does not edit Smithy, its codec workspace or diagrams.mbt. Publication
-and real public installs are separate evidence gates. The active OpenSpec change
-and release story remain open until that evidence exists.
+The actual public consumers repeat standalone Formatter use, native/worker
+parity, all seven cases, browser assets and edits at both deployment bases.
+Their reports identify public registry/archive sources and no workspace overrides.
+Telescope has not edited Smithy, its codec workspace or diagrams.mbt. This release
+makes no downstream adoption claim. The release story closes after the final
+verification/archive PR merges.
