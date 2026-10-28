@@ -18,7 +18,13 @@
   --dv-accent-ink: var(--diagram-viewer-accent-ink, #111827);
   color-scheme: dark;
 }
-.diagram-viewer[data-viewer-theme="light"], .diagram-viewer[data-viewer-resolved-theme="light"] { color-scheme: light; }
+.diagram-viewer[data-viewer-theme="light"], .diagram-viewer[data-viewer-resolved-theme="light"] {
+  --dv-bg: var(--diagram-viewer-bg, #f9fafb); --dv-surface: var(--diagram-viewer-surface, #ffffff);
+  --dv-ink: var(--diagram-viewer-ink, #111827); --dv-muted: var(--diagram-viewer-muted, #6b7280);
+  --dv-border: var(--diagram-viewer-border, #d1d5db); --dv-accent: var(--diagram-viewer-accent, #4f46e5);
+  --dv-accent-ink: var(--diagram-viewer-accent-ink, #ffffff);
+  color-scheme: light;
+}
 .diagram-viewer__viewport { position: relative; border: 1px solid var(--dv-border); border-radius: var(--diagram-viewer-panel-radius, .75rem); background: var(--diagram-viewer-canvas-bg, var(--dv-surface)); }
 .diagram-viewer__content > :is(svg, img) { display: block; max-width: 100%; height: auto; }
 .diagram-viewer[data-viewer-ready="true"] .diagram-viewer__viewport { height: var(--diagram-viewer-height, clamp(18rem, 60vh, 48rem)); overflow: hidden; isolation: isolate; }

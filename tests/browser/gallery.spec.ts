@@ -378,3 +378,44 @@ test('detail native fullscreen retains viewport controls and returns focus', asy
   await root.getByRole('button', { name: 'Fit diagram', exact: true }).click();
   await expect(viewport).toHaveAttribute('data-viewer-scale', '1');
 });
+
+test('instance themes select light tokens on a dark site independently of system colors', async ({ page, site }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.addInitScript(() => localStorage.setItem('site-theme', 'dark'));
+  await page.goto(site.plain + site.base + 'gallery/signal/');
+  const root = page.locator('.gallery-dark[data-diagram-viewer]');
+  await expect(root).toHaveAttribute('data-viewer-resolved-theme', 'dark');
+  await root.evaluate(node => node.setAttribute('data-viewer-theme', 'light'));
+  await expect(root).toHaveAttribute('data-viewer-resolved-theme', 'light');
+  await expect(root).toHaveCSS('background-color', 'rgb(249, 250, 251)');
+  await expect(root).toHaveCSS('color', 'rgb(17, 24, 39)');
+  await root.evaluate(node => node.setAttribute('data-viewer-theme', 'system'));
+  await expect(root).toHaveCSS('background-color', 'rgb(249, 250, 251)');
+  await expect(root).toHaveCSS('color', 'rgb(17, 24, 39)');
+});
+
+test('applied site theme overrides stale denied storage for viewer colors and exports', async ({ page, site }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() => {
+    Object.defineProperty(Storage.prototype, 'getItem', { value(key: string) { return key === 'site-theme' ? 'dark' : null; } });
+    Object.defineProperty(Storage.prototype, 'setItem', { value() { throw new DOMException('Denied', 'SecurityError'); } });
+  });
+  await page.goto(site.plain + site.base + 'gallery/signal/');
+  await page.getByRole('button', { name: 'Theme: dark', exact: true }).click();
+  await page.getByRole('button', { name: 'Theme: system', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  const root = page.locator('.gallery-light[data-diagram-viewer]');
+  await expect(root).toHaveAttribute('data-viewer-resolved-theme', 'light');
+  await expect(root).toHaveCSS('background-color', 'rgb(249, 250, 251)');
+  await root.getByText('Export image', { exact: true }).click();
+  const download = page.waitForEvent('download');
+  await root.getByRole('button', { name: 'Download PNG', exact: true }).click();
+  await download;
+  expect(await page.evaluate(() => (window as Window & {rasterRequest?: {options: {theme: string}}}).rasterRequest?.options.theme)).toBe('light');
+  await page.getByRole('button', { name: 'Theme: light', exact: true }).click();
+  await page.getByRole('button', { name: 'Theme: dark', exact: true }).click();
+  await expect(page.locator('html')).not.toHaveAttribute('data-theme', /.+/);
+  await expect(page.locator('.gallery-dark[data-diagram-viewer]')).toHaveAttribute('data-viewer-resolved-theme', 'dark');
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(page.locator('.gallery-light[data-diagram-viewer]')).toHaveAttribute('data-viewer-resolved-theme', 'light');
+});

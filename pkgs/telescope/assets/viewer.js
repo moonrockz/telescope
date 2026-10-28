@@ -9,17 +9,23 @@
     root.dataset.viewerReady = 'true';
     root.classList.add('diagram-viewer');
     const scheme = matchMedia('(prefers-color-scheme: dark)');
+    let documentThemeChanged = false;
     function resolveTheme() {
       let preference = root.dataset.viewerTheme;
       if (!['light', 'dark', 'system'].includes(preference)) {
-        try { preference = localStorage.getItem('site-theme'); } catch { preference = 'system'; }
+        const applied = document.documentElement.dataset.theme;
+        if (applied === 'light' || applied === 'dark') preference = applied;
+        else if (documentThemeChanged) preference = 'system';
+        else {
+          try { preference = localStorage.getItem('site-theme'); } catch { preference = 'system'; }
+        }
       }
       root.dataset.viewerResolvedTheme = preference === 'light' || preference === 'dark' ? preference : scheme.matches ? 'dark' : 'light';
     }
     scheme.addEventListener('change', resolveTheme);
     window.addEventListener('storage', event => { if (event.key === 'site-theme') resolveTheme(); });
     new MutationObserver(resolveTheme).observe(root, { attributes: true, attributeFilter: ['data-viewer-theme'] });
-    new MutationObserver(resolveTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    new MutationObserver(() => { documentThemeChanged = true; resolveTheme(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     resolveTheme();
     viewport.tabIndex = 0;
     viewport.setAttribute('aria-label', viewport.getAttribute('aria-label') || 'Diagram viewport. Zoom in to pan with arrow keys or drag.');
