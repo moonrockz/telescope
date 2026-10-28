@@ -1,0 +1,6 @@
+import {
+  "moonrockz/telescope/editor",
+  "moonbitlang/core/json",
+}
+
+supported_targets = "js"

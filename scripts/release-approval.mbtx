@@ -33,7 +33,7 @@ async fn main {
     repository != "" &&
     sha != "" &&
     actor != "" &&
-    version == "0.2.1" &&
+    version == "0.3.0" &&
     approved_sha == sha &&
     url.has_prefix("https://github.com/\{repository}/pull/") else {
     eprintln(

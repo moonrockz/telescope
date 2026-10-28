@@ -1,0 +1,42 @@
+.telescope-editor { min-width:0; max-width:100%; border:1px solid var(--border,#adb5bd); border-radius:.4rem; overflow:hidden; background:var(--surface,var(--te-bg,#fff)); color:var(--page-fg,var(--te-fg,#222)); }
+.te-toolbar { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; padding:.5rem; border-bottom:1px solid var(--border,#adb5bd); }
+.te-toolbar label { display:flex; gap:.4rem; align-items:center; min-width:0; }
+.te-toolbar select { max-width:100%; min-width:0; }
+.te-toolbar button,.te-toolbar select { color:inherit; background:var(--surface,var(--te-bg,#fff)); border:1px solid var(--control-border,#6b7280); border-radius:.25rem; padding:.35rem .6rem; font:inherit; }
+.te-toolbar button:focus-visible,.te-toolbar select:focus-visible { outline:2px solid var(--accent,#4f46e5); outline-offset:2px; }
+.te-input { min-width:0; max-width:100%; }
+.te-plain { display:block; width:100%; max-width:100%; min-height:14rem; box-sizing:border-box; resize:vertical; border:0; padding:.75rem; color:inherit; background:inherit; font:14px/1.6 ui-monospace,monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
+.te-status { min-height:1.5rem; padding:.25rem .75rem; font-size:.875rem; }
+.telescope-editor .cm-editor { min-height:14rem; color:inherit; background:inherit; }
+.telescope-editor .cm-scroller { overflow:auto; font:14px/1.6 ui-monospace,monospace; }
+.telescope-editor .cm-content { caret-color:currentColor; overflow-wrap:anywhere; }
+.telescope-editor .cm-gutters { background:var(--surface,#f1f3f5); color:var(--muted,#555); border-color:var(--border,#adb5bd); }
+.telescope-editor .cm-cursor { border-left-color:currentColor; }
+.telescope-editor .cm-selectionBackground { background:#bfd7ff!important; }
+.te-token-keyword { color:#7232a4; font-weight:600; }
+.te-token-string { color:#125b33; }
+.te-token-number { color:#8b3e00; }
+.te-token-comment { color:#56616b; font-style:italic; }
+.te-token-annotation { color:#8d300a; }
+.te-token-namespace { color:#075f7b; }
+.te-token-type { color:#1743a8; }
+[data-theme="dark"] .telescope-editor { --te-bg:#17181f; --te-fg:#e5e7eb; }
+[data-theme="dark"] .te-token-keyword { color:#d7b6ff; }
+[data-theme="dark"] .te-token-string { color:#a2dfa6; }
+[data-theme="dark"] .te-token-number { color:#ffbf84; }
+[data-theme="dark"] .te-token-comment { color:#a6b2bf; }
+[data-theme="dark"] .te-token-annotation { color:#ffbf9e; }
+[data-theme="dark"] .te-token-namespace { color:#8ddced; }
+[data-theme="dark"] .te-token-type { color:#a6c9ff; }
+[data-theme="dark"] .telescope-editor .cm-selectionBackground { background:#374c76!important; }
+@media(prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) .telescope-editor { --te-bg:#17181f; --te-fg:#e5e7eb; }
+  :root:not([data-theme="light"]) .te-token-keyword { color:#d7b6ff; }
+  :root:not([data-theme="light"]) .te-token-string { color:#a2dfa6; }
+  :root:not([data-theme="light"]) .te-token-number { color:#ffbf84; }
+  :root:not([data-theme="light"]) .te-token-comment { color:#a6b2bf; }
+  :root:not([data-theme="light"]) .te-token-annotation { color:#ffbf9e; }
+  :root:not([data-theme="light"]) .te-token-namespace { color:#8ddced; }
+  :root:not([data-theme="light"]) .te-token-type { color:#a6c9ff; }
+}
+@media(max-width:420px) { .te-toolbar label { flex:1 1 100%; } .te-toolbar select { flex:1; } }

@@ -33,7 +33,7 @@ async fn run(
 async fn main {
   let args = @env.args()
   let published = args.contains("--published")
-  let mut version = "0.2.1"
+  let mut version = "0.3.0"
   if published {
     let mut i = 0
     while i < args.length() && args[i] != "--published" {
@@ -73,7 +73,7 @@ async fn main {
     for name in ["index", "cache"] {
       run("cp", ["-R", toolchain + "/registry/" + name, registry + "/" + name])
     }
-    let archive = "_build/publish/moonrockz-telescope-0.2.1.zip"
+    let archive = "_build/publish/moonrockz-telescope-0.3.0.zip"
     let (code, sha, _) = @process.collect_output("shasum", [
       "-a", "256", archive,
     ])
@@ -88,7 +88,7 @@ async fn main {
       allow_exist=true,
     )
     @fs.write_file(
-      registry + "/cache/moonrockz/telescope/0.2.1.zip",
+      registry + "/cache/moonrockz/telescope/0.3.0.zip",
       @fs.read_file(archive).binary(),
       create_mode=CreateOrTruncate,
     )
@@ -238,6 +238,23 @@ async fn main {
     ["test", "--target", "native", "--deny-warn"],
     cwd=consumer,
     extra_env=isolated_env,
+  )
+  run("moonx", [
+    "scripts/test-tutorial-consumer.mbtx",
+    consumer,
+    home,
+    cli,
+    if published {
+      "published"
+    } else {
+      "candidate"
+    },
+  ])
+  @fs.mkdir("_build/evidence", recursive=true, allow_exist=true)
+  @fs.write_file(
+    "_build/evidence/tutorial-consumer-" + platform + ".json",
+    @fs.read_file(consumer + "/tutorial-consumer-evidence.json").binary(),
+    create_mode=CreateOrTruncate,
   )
   guard !@fs.exists(consumer + "/moon.work") &&
     @fs.exists(consumer + "/.mooncakes/moonrockz/telescope/moon.mod") else {

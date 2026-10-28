@@ -1,0 +1,6 @@
+import {
+  "moonrockz/telescope/tutorial/model" @tutorial,
+  "moonrockz/telescope/model" @base,
+  "moonbitlang/core/json",
+  "moonbitlang/core/debug",
+}

@@ -1,0 +1,9 @@
+import {
+  "moonrockz/telescope/tutorial/model" @tutorial,
+  "moonrockz/telescope/editor",
+}
+
+import {
+  "moonrockz/telescope/tutorial/workspace",
+  "moonrockz/telescope/tutorial/model" @tutorial,
+} for "test"

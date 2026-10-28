@@ -1,0 +1,15 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/tutorial/views"
+
+// Values
+pub fn contents(@moonrockz/telescope/model.SiteConfig, @moonrockz/telescope/tutorial/model.Course, current? : String) -> String
+
+pub fn lesson(@moonrockz/telescope/model.SiteConfig, @moonrockz/telescope/tutorial/model.Course, @moonrockz/telescope/tutorial/model.Lesson, String, Array[@moonrockz/telescope/tutorial/model.File], Array[String]) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

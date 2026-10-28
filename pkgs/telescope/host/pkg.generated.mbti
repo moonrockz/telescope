@@ -3,31 +3,79 @@ package "moonrockz/telescope/host"
 
 import {
   "moonrockz/telescope/extensions",
-  "moonrockz/telescope/model",
+  "moonrockz/telescope/tutorial/check",
 }
 
 // Values
 pub async fn assemble(String, String) -> Unit
 
-pub async fn build(String, String, String, base? : String, providers? : @extensions.Registry, main_build? : Bool) -> Array[@model.Problem]
+pub async fn build(String, String, String, base? : String, providers? : @extensions.Registry, main_build? : Bool, tutorial_policies? : Array[@check.SourcePolicy], tutorial_guards? : Array[TutorialGuard]) -> Array[@moonrockz/telescope/model.Problem]
 
-pub async fn check(String, String) -> Array[@model.Problem]
+pub async fn check(String, String) -> Array[@moonrockz/telescope/model.Problem]
 
-pub async fn configuration(String, base? : String) -> @model.SiteConfig
+pub async fn check_tutorial_sources(String, String, policies? : Array[@check.SourcePolicy]) -> Array[TutorialSourceReport]
 
-pub fn diagnostics(Array[@model.Problem], String) -> String
+pub async fn check_tutorials(String, String, runners? : Array[TutorialRunner], policies? : Array[@check.SourcePolicy], references? : Array[TutorialReference], timeout_ms? : Int32, max_cases? : Int32, max_steps? : Int32) -> Array[@check.CaseReport]
+
+pub async fn configuration(String, base? : String) -> @moonrockz/telescope/model.SiteConfig
+
+pub fn diagnostics(Array[@moonrockz/telescope/model.Problem], String) -> String
 
 pub fn parent(String) -> String
+
+pub fn process_runner(@moonrockz/telescope/tutorial/model.Provider, String, Array[String], cwd? : String) -> TutorialRunner
 
 pub fn relative(String) -> Bool
 
 pub async fn serve(String, String, Int32) -> Unit
+
+pub async fn tutorial_input(String, Json, out? : String) -> TutorialInput?
 
 pub let version : String
 
 // Errors
 
 // Types and methods
+pub(all) struct TutorialGuard {
+  id : String
+  validate : (String, String, Array[@check.Include]) -> Array[@moonrockz/telescope/model.Problem]
+}
+
+pub(all) struct TutorialInput {
+  source : String
+  root : String
+  manifest : @moonrockz/telescope/tutorial/model.Manifest
+}
+
+pub(all) struct TutorialReference {
+  course : String
+  lesson : String
+  case_id : String
+  evidence : @check.ReferenceEvidence
+  registration : @check.ReferenceRegistration
+}
+
+pub(all) struct TutorialRunner {
+  provider : String
+  engine_version : String
+  contract_version : Int32
+  operations : Array[String]
+  evaluate : async (@moonrockz/telescope/tutorial/model.Request) -> Result[@moonrockz/telescope/tutorial/model.Response, String]
+}
+
+pub(all) struct TutorialSourceReport {
+  source : String
+  course : String
+  lesson : String
+  region : String
+  runner : String
+  source_revision : String
+  input_revision : String
+  covered : Bool
+  verified : Bool
+  problems : Array[String]
+} derive(ToJson)
+pub fn TutorialSourceReport::to_json(Self) -> Json
 
 // Type aliases
 

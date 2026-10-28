@@ -29,6 +29,17 @@ pub(all) struct Prepared {
 }
 
 ///|
+/// Optional tutorial composition, kept separate from existing public records.
+pub(all) struct TutorialSite {
+  pages : Array[Page]
+  assets : Array[(String, String)]
+  navigation : Array[(String, String)]
+}
+
+///|
+pub let no_tutorials : TutorialSite = { pages: [], assets: [], navigation: [], }
+
+///|
 fn file_stem(path : String) -> String {
   let name = match path.rev_find("/") {
     Some(i) => path[i + 1:].to_owned()
@@ -192,14 +203,29 @@ pub fn prepare(
   api~ : ApiSite = no_api,
   providers~ : @extensions.Registry = @extensions.empty_registry(),
   external_routes~ : Array[String] = [],
+  tutorials~ : TutorialSite = no_tutorials,
 ) -> Prepared raise @model.Invalid {
   let problems : Array[@model.Problem] = @extensions.validate_registry(
     providers,
   )
   let warnings : Array[@model.Problem] = []
-  let pages : Array[Page] = []
-  let assets : Array[(String, String)] = []
+  let pages : Array[Page] = tutorials.pages.copy()
+  let assets : Array[(String, String)] = tutorials.assets.copy()
+  for page in tutorials.pages {
+    if generated_routes.contains(page.route) ||
+      external_routes.contains(page.route) {
+      problems.push(
+        @model.problem(
+          page.source,
+          "tutorial route `\{page.route}` collides with a generated route",
+        ),
+      )
+    }
+  }
   for source in sources {
+    if tutorials.pages.iter().any(page => page.source == source.path) {
+      continue
+    }
     if !@model.relative_path(source.path) {
       problems.push(
         @model.problem(

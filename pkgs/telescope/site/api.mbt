@@ -416,6 +416,7 @@ pub async fn api_outputs(
   config : @model.SiteConfig,
   site : ApiSite,
   gallery~ : Bool = false,
+  tutorial_nav~ : Array[(String, String)] = [],
 ) -> Array[Output] {
   if site.modules.is_empty() {
     return []
@@ -458,6 +459,7 @@ pub async fn api_outputs(
             meta,
             @views.docs_page(meta, nav, body, None, toc~),
             gallery~,
+            tutorial_nav~,
           ),
         ),
       )
@@ -477,6 +479,7 @@ pub async fn api_outputs(
         index,
         @views.docs_page(index, nav, api_index_body(config, site), None),
         gallery~,
+        tutorial_nav~,
       ),
     ),
   )

@@ -4,6 +4,7 @@ async fn gallery_outputs(
   config : @model.SiteConfig,
   value : Json,
   out? : String,
+  tutorial_nav~ : Array[(String, String)] = [],
 ) -> Array[@site.Output] {
   guard value is Object(fields) &&
     fields.get("gallery") is Some(Object(gallery)) else {
@@ -179,7 +180,12 @@ async fn gallery_outputs(
       description: page.title,
       section: Docs,
     }
-    let html = @views.render(meta, @views.raw(page.body_html), gallery=true)
+    let html = @views.render(
+      meta,
+      @views.raw(page.body_html),
+      gallery=true,
+      tutorial_nav~,
+    )
     outputs.push(Text(@model.route_file(page.route), html))
   }
   outputs

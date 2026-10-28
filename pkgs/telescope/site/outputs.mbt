@@ -34,6 +34,7 @@ pub async fn build(
   api~ : ApiSite = no_api,
   providers~ : @extensions.Registry = @extensions.empty_registry(),
   external_routes~ : Array[String] = [],
+  tutorials~ : TutorialSite = no_tutorials,
 ) -> Built {
   let prepared = prepare(
     config,
@@ -42,6 +43,7 @@ pub async fn build(
     api~,
     providers~,
     external_routes~,
+    tutorials~,
   )
   let pages = prepared.pages
   let gallery = external_routes.contains("/gallery/") ||
@@ -76,7 +78,12 @@ pub async fn build(
         let summary = summaries[summaries
           .search_by(s => s.route == page.route)
           .unwrap()]
-        @views.render(m, @views.article_page(m, summary, page.html), gallery~)
+        @views.render(
+          m,
+          @views.article_page(m, summary, page.html),
+          gallery~,
+          tutorial_nav=tutorials.navigation,
+        )
       }
       Landing => {
         let m = meta(config, "/", config.title, config.description, Home)
@@ -84,6 +91,7 @@ pub async fn build(
           m,
           @views.home_page(m, page.html, summaries.iter().take(3).collect()),
           gallery~,
+          tutorial_nav=tutorials.navigation,
         )
       }
       _ => {
@@ -95,7 +103,8 @@ pub async fn build(
             m,
             nav,
             page.html,
-            if page.source.has_prefix("adapter:") {
+            if page.source.has_prefix("adapter:") ||
+              page.source.has_prefix("tutorial:") {
               None
             } else {
               Some(source)
@@ -104,6 +113,7 @@ pub async fn build(
             proposed=page.proposed,
           ),
           gallery~,
+          tutorial_nav=tutorials.navigation,
         )
       }
     }
@@ -124,7 +134,12 @@ pub async fn build(
     outputs.push(
       Text(
         "index.html",
-        @views.render(m, @views.home_page(m, html, summaries), gallery~),
+        @views.render(
+          m,
+          @views.home_page(m, html, summaries),
+          gallery~,
+          tutorial_nav=tutorials.navigation,
+        ),
       ),
     )
   }
@@ -134,7 +149,12 @@ pub async fn build(
     outputs.push(
       Text(
         "docs/index.html",
-        @views.render(m, @views.docs_page(m, nav, body, None), gallery~),
+        @views.render(
+          m,
+          @views.docs_page(m, nav, body, None),
+          gallery~,
+          tutorial_nav=tutorials.navigation,
+        ),
       ),
     )
   }
@@ -148,14 +168,21 @@ pub async fn build(
   outputs.push(
     Text(
       "articles/index.html",
-      @views.render(index, @views.articles_index(index, summaries), gallery~),
+      @views.render(
+        index,
+        @views.articles_index(index, summaries),
+        gallery~,
+        tutorial_nav=tutorials.navigation,
+      ),
     ),
   )
   outputs.push(Text("articles/atom.xml", atom_feed(config, articles)))
   outputs.push(
     Text("search-index.json", search_index(pages, api=api.search_entries())),
   )
-  outputs.append(api_outputs(config, api, gallery~))
+  outputs.append(
+    api_outputs(config, api, gallery~, tutorial_nav=tutorials.navigation),
+  )
   for copy in prepared.copies {
     if !outputs
       .iter()

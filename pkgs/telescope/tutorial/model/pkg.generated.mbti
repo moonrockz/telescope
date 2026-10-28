@@ -1,0 +1,277 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/tutorial/model"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+  "moonrockz/telescope/editor",
+}
+
+// Values
+pub fn canonical(Json) -> String
+
+pub fn input_revision(Provider, String, Json, Array[File]) -> String
+
+pub fn overlay_files(Array[File], Array[File]) -> Array[File]
+
+pub fn response_for(Request) -> Response
+
+pub fn response_problems(Request, Response) -> Array[String]
+
+pub fn revision(Json) -> String
+
+pub fn validate_evaluators(Array[Provider], Array[EvaluatorRegistration]) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub(all) struct CaseSource {
+  id : String
+  expect : String
+  files : Array[FileSource]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn CaseSource::equal(Self, Self) -> Bool
+pub fn CaseSource::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn CaseSource::not_equal(Self, Self) -> Bool
+pub fn CaseSource::to_json(Self) -> Json
+pub fn CaseSource::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Course {
+  id : String
+  title : String
+  route : String
+  lessons : Array[Lesson]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Course::equal(Self, Self) -> Bool
+pub fn Course::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Course::lesson_route(Self, Lesson) -> String
+pub fn Course::neighbors(Self, String) -> (Lesson?, Lesson?)
+pub fn Course::not_equal(Self, Self) -> Bool
+pub fn Course::to_json(Self) -> Json
+pub fn Course::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Diagnostic {
+  key : String
+  code : String
+  severity : String
+  message : String
+  file : String?
+  line : Int32?
+  column : Int32?
+  end_line : Int32?
+  end_column : Int32?
+} derive(Eq, @debug.Debug)
+pub fn Diagnostic::equal(Self, Self) -> Bool
+pub fn Diagnostic::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Diagnostic::not_equal(Self, Self) -> Bool
+pub fn Diagnostic::to_json(Self) -> Json
+pub fn Diagnostic::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Diagnostic
+pub impl @json.FromJson for Diagnostic
+
+pub(all) struct EvaluationError {
+  code : String
+  message : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn EvaluationError::equal(Self, Self) -> Bool
+pub fn EvaluationError::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EvaluationError::not_equal(Self, Self) -> Bool
+pub fn EvaluationError::to_json(Self) -> Json
+pub fn EvaluationError::to_repr(Self) -> @debug.Repr
+
+pub(all) struct EvaluatorRegistration {
+  provider : String
+  engine_version : String
+  contract_version : Int32
+  operations : Array[String]
+  evaluate : (Request) -> Result[Response, EvaluationError]
+}
+
+pub(all) struct Execution {
+  provider : String
+  operation : String
+  options : Json
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Execution::equal(Self, Self) -> Bool
+pub fn Execution::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Execution::not_equal(Self, Self) -> Bool
+pub fn Execution::to_json(Self) -> Json
+pub fn Execution::to_repr(Self) -> @debug.Repr
+
+pub(all) struct File {
+  name : String
+  text : String
+  language : String
+  group : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn File::equal(Self, Self) -> Bool
+pub fn File::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn File::not_equal(Self, Self) -> Bool
+pub fn File::to_json(Self) -> Json
+pub fn File::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FileSource {
+  name : String
+  source : String
+  language : String
+  group : String
+  formatter : @editor.Binding?
+} derive(Eq, @debug.Debug)
+pub fn FileSource::equal(Self, Self) -> Bool
+pub fn FileSource::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FileSource::not_equal(Self, Self) -> Bool
+pub fn FileSource::to_json(Self) -> Json
+pub fn FileSource::to_repr(Self) -> @debug.Repr
+pub impl ToJson for FileSource
+pub impl @json.FromJson for FileSource
+
+pub(all) struct Lesson {
+  slug : String
+  title : String
+  section : String
+  prose : String
+  references : Array[Reference]
+  files : Array[FileSource]
+  execution : Execution?
+  cases : Array[CaseSource]
+  editor : String?
+} derive(Eq, @debug.Debug)
+pub fn Lesson::equal(Self, Self) -> Bool
+pub fn Lesson::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Lesson::not_equal(Self, Self) -> Bool
+pub fn Lesson::to_json(Self) -> Json
+pub fn Lesson::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Lesson
+pub impl @json.FromJson for Lesson
+
+pub(all) struct Manifest {
+  schema_version : Int32
+  root : String
+  providers : Array[Provider]
+  editors : Array[@editor.EditorRegistration]
+  formatters : Array[@editor.FormatterRegistration]
+  languages : Map[String, @editor.Binding]
+  courses : Array[Course]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Manifest::equal(Self, Self) -> Bool
+pub fn Manifest::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Manifest::not_equal(Self, Self) -> Bool
+pub fn Manifest::parse(String, String) -> Self raise @moonrockz/telescope/model.Invalid
+pub fn Manifest::to_json(Self) -> Json
+pub fn Manifest::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Output {
+  id : String
+  label : String
+  language : String
+  text : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Output::equal(Self, Self) -> Bool
+pub fn Output::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Output::not_equal(Self, Self) -> Bool
+pub fn Output::to_json(Self) -> Json
+pub fn Output::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Provider {
+  id : String
+  contract_version : Int32
+  engine_version : String
+  operations : Array[String]
+  worker : String
+  assets : Array[String]
+  workbench : String?
+} derive(Eq, @debug.Debug)
+pub fn Provider::equal(Self, Self) -> Bool
+pub fn Provider::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Provider::not_equal(Self, Self) -> Bool
+pub fn Provider::to_json(Self) -> Json
+pub fn Provider::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Provider
+pub impl @json.FromJson for Provider
+
+pub(all) struct Reference {
+  label : String
+  url : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Reference::equal(Self, Self) -> Bool
+pub fn Reference::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Reference::not_equal(Self, Self) -> Bool
+pub fn Reference::to_json(Self) -> Json
+pub fn Reference::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Request {
+  contract_version : Int32
+  provider : String
+  engine_version : String
+  generation : Int32
+  request_id : Int32
+  input_revision : String
+  operation : String
+  files : Array[File]
+  options : Json
+  session : String?
+  position : Int32?
+} derive(Eq, @debug.Debug)
+pub fn Request::equal(Self, Self) -> Bool
+pub fn Request::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Request::not_equal(Self, Self) -> Bool
+pub fn Request::to_json(Self) -> Json
+pub fn Request::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Request
+pub impl @json.FromJson for Request
+
+pub(all) struct Response {
+  contract_version : Int32
+  provider : String
+  engine_version : String
+  generation : Int32
+  request_id : Int32
+  input_revision : String
+  status : String
+  diagnostics : Array[Diagnostic]
+  outputs : Array[Output]
+  blocked : String?
+  verdict : String?
+  steps : Steps?
+} derive(Eq, @debug.Debug)
+pub fn Response::equal(Self, Self) -> Bool
+pub fn Response::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Response::not_equal(Self, Self) -> Bool
+pub fn Response::to_json(Self) -> Json
+pub fn Response::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Response
+pub impl @json.FromJson for Response
+
+pub(all) struct StepRow {
+  id : String
+  label : String
+  diagnostics : Array[Diagnostic]
+  text : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn StepRow::equal(Self, Self) -> Bool
+pub fn StepRow::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn StepRow::not_equal(Self, Self) -> Bool
+pub fn StepRow::to_json(Self) -> Json
+pub fn StepRow::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Steps {
+  session : String
+  rows : Array[StepRow]
+  checked : Int32
+  complete : Bool
+  summary : String?
+} derive(Eq, @debug.Debug)
+pub fn Steps::equal(Self, Self) -> Bool
+pub fn Steps::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Steps::not_equal(Self, Self) -> Bool
+pub fn Steps::to_json(Self) -> Json
+pub fn Steps::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Steps
+pub impl @json.FromJson for Steps
+
+// Type aliases
+
+// Traits
+pub(open) trait Evaluator {
+  fn evaluate(Self, Request) -> Result[Response, EvaluationError]
+}

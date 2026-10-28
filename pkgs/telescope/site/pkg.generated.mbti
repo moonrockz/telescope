@@ -9,11 +9,11 @@ import {
 }
 
 // Values
-pub async fn api_outputs(@model.SiteConfig, ApiSite, gallery? : Bool) -> Array[Output]
+pub async fn api_outputs(@model.SiteConfig, ApiSite, gallery? : Bool, tutorial_nav? : Array[(String, String)]) -> Array[Output]
 
 pub fn atom_feed(@model.SiteConfig, Array[Page]) -> String
 
-pub async fn build(@model.SiteConfig, Array[SourceFile], main_build~ : Bool, api? : ApiSite, providers? : @extensions.Registry, external_routes? : Array[String]) -> Built
+pub async fn build(@model.SiteConfig, Array[SourceFile], main_build~ : Bool, api? : ApiSite, providers? : @extensions.Registry, external_routes? : Array[String], tutorials? : TutorialSite) -> Built
 
 pub fn build_grouped_nav(Array[@model.NavGroup], Array[NavEntry]) -> (Array[@model.NavItem], Array[String])
 
@@ -27,9 +27,11 @@ pub fn needs_text(String, @model.SiteConfig) -> Bool
 
 pub let no_api : ApiSite
 
+pub let no_tutorials : TutorialSite
+
 pub fn normalize(String) -> String
 
-pub fn prepare(@model.SiteConfig, Array[SourceFile], main_build~ : Bool, api? : ApiSite, providers? : @extensions.Registry, external_routes? : Array[String]) -> Prepared raise @model.Invalid
+pub fn prepare(@model.SiteConfig, Array[SourceFile], main_build~ : Bool, api? : ApiSite, providers? : @extensions.Registry, external_routes? : Array[String], tutorials? : TutorialSite) -> Prepared raise @model.Invalid
 
 pub fn resolve(LinkContext, String, String) -> Resolution
 
@@ -132,6 +134,12 @@ pub(all) struct Resolution {
 pub(all) struct SourceFile {
   path : String
   text : String?
+}
+
+pub(all) struct TutorialSite {
+  pages : Array[Page]
+  assets : Array[(String, String)]
+  navigation : Array[(String, String)]
 }
 
 // Type aliases

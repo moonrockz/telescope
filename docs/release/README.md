@@ -1,5 +1,8 @@
 # Release procedure
 
+[0.3.0 candidate](0.3.0.md) prepares tutorial/editor capabilities. Publication
+requires separate owner approval of its exact merged commit and version.
+
 Telescope 0.2.1 is published. [Install and compatibility evidence](0.2.1.md)
 records actual pins, CLI downloads, checksums and both clean public consumers.
 The owner-approved [release run](https://github.com/moonrockz/telescope/actions/runs/40594390130)

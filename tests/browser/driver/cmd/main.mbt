@@ -11,6 +11,37 @@ async fn main {
     fences: [],
     pages: [
       {
+        id: "standalone-editor",
+        contract_version: 1,
+        route: "/editor/",
+        render: input => {
+          Ok({
+            body_html: editor_page(input.base_path),
+            text: "Standalone MoonBit editor with optional text formatting.",
+            headings: [],
+            assets: [
+              {
+                path: "consumer/custom-editor.js",
+                media_type: "text/javascript",
+              },
+              {
+                path: "consumer/custom-language.js",
+                media_type: "text/javascript",
+              },
+              {
+                path: "consumer/moonbit-language.js",
+                media_type: "text/javascript",
+              },
+              {
+                path: "consumer/editor-whitespace-worker.js",
+                media_type: "text/javascript",
+              },
+            ],
+            problems: [],
+          })
+        },
+      },
+      {
         id: "observatory-workbench",
         contract_version: 1,
         route: "/workbench/",
@@ -46,5 +77,35 @@ async fn main {
       },
     ],
   }
-  ignore(@host.build(args[2], args[0], args[1], providers~))
+  let tutorial_policies = [
+    @tutorial_check.source_policy(
+      "tested.md",
+      ["cli", "api"],
+      ["shell", "moonbit"],
+      "sample.tested-source",
+    ),
+  ]
+  ignore(@host.build(args[2], args[0], args[1], providers~, tutorial_policies~))
+  let runner : @host.TutorialRunner = {
+    provider: "sample.text",
+    engine_version: "1.0.0",
+    contract_version: 1,
+    operations: ["evaluate", "start", "step", "run-all"],
+    evaluate: request => {
+      match @sample.evaluate(request) {
+        Ok(value) => Ok(value)
+        Err(error) => Err(error.message)
+      }
+    },
+  }
+  let reports = @host.check_tutorials(
+    args[2],
+    args[0],
+    runners=[runner],
+    policies=tutorial_policies,
+  )
+  let failures = reports.filter(report => !report.passed)
+  if !failures.is_empty() {
+    abort(@tutorial_check.reports_text(failures))
+  }
 }

@@ -1,0 +1,7 @@
+import {
+  "moonrockz/telescope/model" @base,
+  "moonbit-community/toml",
+  "moonrockz/telescope/editor",
+  "moonbitlang/core/json",
+  "moonbitlang/core/debug",
+}

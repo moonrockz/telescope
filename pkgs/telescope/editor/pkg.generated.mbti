@@ -1,0 +1,184 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/editor"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+  "moonrockz/telescope/model",
+}
+
+// Values
+pub let contract_version : Int32
+
+pub fn empty_registry() -> Registry
+
+pub fn[F : Formatter] formatter_reply(F, Json) -> Json
+
+pub fn request_is_current(FormatRequest, String, Int32, FormatterRegistration, Array[DocumentState]) -> Bool
+
+pub fn resolve_binding(Registry, Document, document_binding? : Binding?) -> Binding?
+
+pub fn validate_binding(Array[FormatterRegistration], String, Binding) -> Array[@model.Problem]
+
+pub fn validate_editor_binding(Array[EditorRegistration], String, Array[String]) -> Array[@model.Problem]
+
+pub fn validate_registry(Registry) -> Array[@model.Problem]
+
+// Errors
+
+// Types and methods
+pub(all) struct Binding {
+  provider : String
+  options : Json
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Binding::equal(Self, Self) -> Bool
+pub fn Binding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Binding::not_equal(Self, Self) -> Bool
+pub fn Binding::to_json(Self) -> Json
+pub fn Binding::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Document {
+  id : String
+  name : String
+  text : String
+  language : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Document::equal(Self, Self) -> Bool
+pub fn Document::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Document::not_equal(Self, Self) -> Bool
+pub fn Document::to_json(Self) -> Json
+pub fn Document::to_repr(Self) -> @debug.Repr
+
+pub struct DocumentState {
+  mut document : Document
+  mut selection : Selection
+  mut revision : Int32
+  mut generation : Int32
+  undo_stack : Array[Snapshot]
+  redo_stack : Array[Snapshot]
+}
+pub fn DocumentState::document(Self) -> Document
+pub fn DocumentState::edit(Self, String) -> Bool
+pub fn DocumentState::generation(Self) -> Int32
+pub fn DocumentState::new(Document) -> Self
+pub fn DocumentState::redo(Self) -> Bool
+pub fn DocumentState::replace(Self, Document) -> Unit
+pub fn DocumentState::revision(Self) -> Int32
+pub fn DocumentState::selection(Self) -> Selection
+pub fn DocumentState::set_language(Self, String) -> Unit
+pub fn DocumentState::set_selection(Self, Selection) -> Unit
+pub fn DocumentState::undo(Self) -> Bool
+
+pub(all) struct EditorRegistration {
+  id : String
+  contract_version : Int32
+  kind : String
+  module_path : String
+  languages : Array[String]
+  assets : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn EditorRegistration::equal(Self, Self) -> Bool
+pub fn EditorRegistration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EditorRegistration::not_equal(Self, Self) -> Bool
+pub fn EditorRegistration::to_json(Self) -> Json
+pub fn EditorRegistration::to_repr(Self) -> @debug.Repr
+pub impl ToJson for EditorRegistration
+pub impl @json.FromJson for EditorRegistration
+
+pub(all) struct FormatError {
+  code : String
+  message : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn FormatError::equal(Self, Self) -> Bool
+pub fn FormatError::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatError::not_equal(Self, Self) -> Bool
+pub fn FormatError::to_json(Self) -> Json
+pub fn FormatError::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FormatInput {
+  target : Document
+  context : Array[Document]
+  options : Json
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn FormatInput::equal(Self, Self) -> Bool
+pub fn FormatInput::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatInput::not_equal(Self, Self) -> Bool
+pub fn FormatInput::to_json(Self) -> Json
+pub fn FormatInput::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FormatOutput {
+  text : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn FormatOutput::equal(Self, Self) -> Bool
+pub fn FormatOutput::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatOutput::not_equal(Self, Self) -> Bool
+pub fn FormatOutput::to_json(Self) -> Json
+pub fn FormatOutput::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FormatRequest {
+  contract_version : Int32
+  instance : String
+  formatter : String
+  formatter_version : String
+  generation : Int32
+  request_id : Int32
+  target : String
+  revisions : Array[InputRevision]
+  input : FormatInput
+} derive(Eq, @debug.Debug)
+pub fn FormatRequest::equal(Self, Self) -> Bool
+pub fn FormatRequest::not_equal(Self, Self) -> Bool
+pub fn FormatRequest::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FormatResult {
+  request : FormatRequest
+  output : Result[FormatOutput, FormatError]
+} derive(Eq, @debug.Debug)
+pub fn FormatResult::equal(Self, Self) -> Bool
+pub fn FormatResult::not_equal(Self, Self) -> Bool
+pub fn FormatResult::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FormatterRegistration {
+  id : String
+  contract_version : Int32
+  formatter_version : String
+  languages : Array[String]
+  worker : String
+  assets : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn FormatterRegistration::equal(Self, Self) -> Bool
+pub fn FormatterRegistration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatterRegistration::not_equal(Self, Self) -> Bool
+pub fn FormatterRegistration::to_json(Self) -> Json
+pub fn FormatterRegistration::to_repr(Self) -> @debug.Repr
+
+pub(all) struct InputRevision {
+  id : String
+  revision : Int32
+} derive(Eq, @debug.Debug)
+pub fn InputRevision::equal(Self, Self) -> Bool
+pub fn InputRevision::not_equal(Self, Self) -> Bool
+pub fn InputRevision::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Registry {
+  editors : Array[EditorRegistration]
+  formatters : Array[FormatterRegistration]
+  languages : Map[String, Binding]
+}
+
+pub(all) struct Selection {
+  anchor : Int32
+  head : Int32
+} derive(Eq, @debug.Debug)
+pub fn Selection::equal(Self, Self) -> Bool
+pub fn Selection::not_equal(Self, Self) -> Bool
+pub fn Selection::to_repr(Self) -> @debug.Repr
+
+type Snapshot
+
+// Type aliases
+
+// Traits
+pub(open) trait Formatter {
+  fn format(Self, FormatInput) -> Result[FormatOutput, FormatError]
+}

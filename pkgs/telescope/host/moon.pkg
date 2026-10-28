@@ -1,5 +1,9 @@
 import {
   "moonrockz/telescope/model",
+  "moonrockz/telescope/tutorial/model" @tutorial,
+  "moonrockz/telescope/tutorial/views" @tutorial_views,
+  "moonrockz/telescope/tutorial/check" @tutorial_check,
+  "moonrockz/telescope/markdown",
   "moonrockz/telescope/content",
   "moonrockz/telescope/site",
   "moonrockz/telescope/extensions",

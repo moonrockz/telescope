@@ -3,4 +3,6 @@ members = [
   "./pkgs/telescope",
   "./apps/telescope",
   "./tests/browser/driver",
+  "./tests/editor/fixture",
+  "./tests/tutorial/engine",
 ]

@@ -34,9 +34,14 @@ fn nav_link(
   section : @model.Section,
   route : String,
   label : String,
+  tutorial_nav~ : Array[(String, String)] = [],
 ) -> Html {
   if meta.section == section &&
-    !(section == Docs && meta.route.has_prefix("/gallery/")) {
+    !(section == Docs &&
+    (
+      meta.route.has_prefix("/gallery/") ||
+      tutorial_nav.iter().any(item => meta.route.has_prefix(item.0))
+    )) {
     @html.a(
       href=meta.config.href(route),
       class="current",
@@ -52,7 +57,12 @@ fn nav_link(
 /// The page frame: head, header, main content and footer. Every link starts with the base path, and
 /// the page works without JavaScript: the islands script only fills the empty mount elements of the
 /// search box, the version switcher, the theme control and the menu button.
-pub fn layout(meta : PageMeta, main : Html, gallery~ : Bool = false) -> Html {
+pub fn layout(
+  meta : PageMeta,
+  main : Html,
+  gallery~ : Bool = false,
+  tutorial_nav~ : Array[(String, String)] = [],
+) -> Html {
   let config = meta.config
   let title = if meta.section == Home {
     config.title
@@ -99,7 +109,7 @@ pub fn layout(meta : PageMeta, main : Html, gallery~ : Bool = false) -> Html {
             class="site-links",
             attrs=@html.Attrs::build().aria_label("Main"),
             [
-              nav_link(meta, Docs, "/docs/", "Docs"),
+              nav_link(meta, Docs, "/docs/", "Docs", tutorial_nav~),
               nav_link(meta, Articles, "/articles/", "Articles"),
             ] +
             (if gallery {
@@ -122,6 +132,17 @@ pub fn layout(meta : PageMeta, main : Html, gallery~ : Bool = false) -> Html {
               []
             } else {
               [nav_link(meta, Api, "/api/", "API")]
+            }) +
+            tutorial_nav.map(item => {
+              @html.a(
+                href=config.href(item.0),
+                attrs=if meta.route.has_prefix(item.0) {
+                  @html.Attrs::build().aria_current("page")
+                } else {
+                  @html.Attrs::build()
+                },
+                item.1,
+              )
             }) +
             [@html.a(href=config.repo_url, "GitHub")],
           ),
@@ -149,8 +170,9 @@ pub async fn render(
   meta : PageMeta,
   main : Html,
   gallery~ : Bool = false,
+  tutorial_nav~ : Array[(String, String)] = [],
 ) -> String {
-  let page = layout(meta, main, gallery~)
+  let page = layout(meta, main, gallery~, tutorial_nav~)
   @rabbita.new(() => @rabbita.Val::constant(page)).render(
     url=meta.config.absolute(meta.route),
   )

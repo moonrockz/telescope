@@ -1,0 +1,353 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn run(
+  command : String,
+  args : Array[String],
+  cwd~ : String = ".",
+  home~ : String,
+) -> Unit {
+  let code = @process.run(
+    command,
+    args,
+    cwd~,
+    extra_env=Map::from_array([("MOON_HOME", home)]),
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if code != 0 {
+    @sys.exit(1)
+  }
+}
+
+///|
+async fn copy_tree(source : String, target : String) -> Unit {
+  @fs.mkdir(target, recursive=true, allow_exist=true)
+  for name in @fs.readdir(source, sort=true) {
+    if ["_build", ".mooncakes", "moon.work", "target", "node_modules"].contains(
+        name,
+      ) {
+      continue
+    }
+    let from = source + "/" + name
+    let to = target + "/" + name
+    if @fs.kind(from, follow_symlink=false) is Directory {
+      copy_tree(from, to)
+    } else {
+      @fs.write_file(
+        to,
+        @fs.read_file(from).binary(),
+        create_mode=CreateOrTruncate,
+      )
+    }
+  }
+}
+
+///|
+async fn snapshot(
+  root : String,
+  prefix~ : String = "",
+) -> Array[(String, Bytes)] {
+  let values = []
+  for
+    name in @fs.readdir(
+      if prefix == "" {
+        root
+      } else {
+        root + "/" + prefix
+      },
+      sort=true,
+    ) {
+    let rel = if prefix == "" { name } else { prefix + "/" + name }
+    if @fs.kind(root + "/" + rel) is Directory {
+      values.append(snapshot(root, prefix=rel))
+    } else {
+      values.push((rel, @fs.read_file(root + "/" + rel).binary()))
+    }
+  }
+  values
+}
+
+///|
+fn package_version(manifest : String) -> String {
+  for line in manifest.split("\n") {
+    if line.trim_start().has_prefix("version = ") {
+      let parts = line.split("\"").to_array()
+      if parts.length() == 3 {
+        return parts[1].to_owned()
+      }
+    }
+  }
+  abort("installed Telescope package has no version")
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:].to_owned()
+  guard args.length() == 3 || args.length() == 4 else {
+    abort(
+      "usage: test-tutorial-consumer CONSUMER_DIR TOOLCHAIN_HOME INSTALLED_CLI [candidate|published]",
+    )
+  }
+  let mode = if args.length() == 4 { args[3] } else { "candidate" }
+  guard ["candidate", "published"].contains(mode) else {
+    abort("unsupported consumer qualification mode")
+  }
+  let published = mode == "published"
+  let consumer = @fs.realpath(args[0])
+  let home = @fs.realpath(args[1])
+  let cli = @fs.realpath(args[2])
+  let root = @fs.realpath(".")
+  guard !consumer.has_prefix(root + "/") && !@fs.exists(consumer + "/moon.work") else {
+    abort("consumer must be independent of checkout/workspace")
+  }
+  let installed = consumer + "/.mooncakes/moonrockz/telescope/moon.mod"
+  let version = package_version(@fs.read_file(installed).text())
+  let qualification = consumer + "/tutorial-qualification"
+  @fs.mkdir(qualification)
+  let editor = qualification + "/editor"
+  let engine = qualification + "/engine"
+  let driver = qualification + "/consumer"
+  for
+    (source, target) in [
+      ("tests/editor/fixture", editor),
+      ("tests/tutorial/engine", engine),
+      ("tests/tutorial/consumer", driver),
+    ] {
+    copy_tree(source, target)
+    let text = @fs.read_file(target + "/moon.mod").text()
+    // Fixture declarations are versioned public dependencies; only the exact candidate changes.
+    let lines = text
+      .split("\n")
+      .map(line => {
+        if line.contains("moonrockz/telescope@") {
+          "  \"moonrockz/telescope@" + version + "\","
+        } else {
+          line.to_owned()
+        }
+      })
+      .to_array()
+    @fs.write_file(
+      target + "/moon.mod",
+      lines.join("\n"),
+      create_mode=CreateOrTruncate,
+    )
+    guard !@fs.exists(target + "/moon.work") else {
+      abort("workspace override in fresh consumer")
+    }
+  }
+  run(
+    home + "/bin/moon",
+    ["test", "whitespace", "--target", "native", "--deny-warn"],
+    cwd=editor,
+    home~,
+  )
+  let editor_target = editor + "/_build"
+  run(
+    home + "/bin/moon",
+    [
+      "build", "worker", "--target", "js", "--release", "--deny-warn", "--target-dir",
+      editor_target,
+    ],
+    cwd=editor,
+    home~,
+  )
+  run(
+    home + "/bin/moon",
+    ["test", ".", "--target", "native", "--deny-warn"],
+    cwd=engine,
+    home~,
+  )
+  let engine_target = engine + "/_build"
+  run(
+    home + "/bin/moon",
+    [
+      "build", "cmd", "--target", "native", "--release", "--deny-warn", "--target-dir",
+      engine_target,
+    ],
+    cwd=engine,
+    home~,
+  )
+  run(
+    home + "/bin/moon",
+    [
+      "build", "worker", "--target", "js", "--release", "--deny-warn", "--target-dir",
+      engine_target,
+    ],
+    cwd=engine,
+    home~,
+  )
+  let executable = engine_target + "/native/release/build/cmd/cmd.exe"
+  copy_tree("tests/tutorial/course", driver + "/learning")
+  copy_tree("tests/editor/adapters", driver + "/learning/assets")
+  @fs.write_file(
+    driver + "/tutorials.toml",
+    @fs.read_file("tests/tutorial/tutorials.toml").binary(),
+    create_mode=CreateOrTruncate,
+  )
+  @fs.mkdir(driver + "/docs")
+  @fs.write_file(
+    driver + "/docs/guide.md",
+    "# Project guide\n\nReturn to [reading](../learning/reading.md).\n",
+  )
+  @fs.mkdir(driver + "/site/pages", recursive=true)
+  @fs.write_file(
+    driver + "/site/pages/index.md",
+    "# Independent consumer\n\n[Tutorial](../../learning/reading.md)\n",
+  )
+  for
+    (input, output) in [
+      (editor_target + "/js/release/build/worker/worker.js", "whitespace"),
+      (engine_target + "/js/release/build/worker/worker.js", "text"),
+    ] {
+    run(
+      "bun",
+      [
+        "build",
+        input,
+        "--target",
+        "browser",
+        "--minify",
+        "--outfile",
+        driver + "/learning/assets/" + output + "-worker.js",
+      ],
+      home~,
+    )
+  }
+  run(
+    "node",
+    [
+      root + "/tests/tutorial/engine/worker.test.mjs",
+      driver + "/learning/assets/text-worker.js",
+      executable,
+    ],
+    home~,
+  )
+  let driver_target = driver + "/_build"
+  run(
+    home + "/bin/moon",
+    [
+      "build", "cmd", "--target", "native", "--release", "--deny-warn", "--target-dir",
+      driver_target,
+    ],
+    cwd=driver,
+    home~,
+  )
+  let command = driver_target + "/native/release/build/cmd/cmd.exe"
+  // Browser qualification also runs in native-platform jobs that do not run
+  // the full browser suite. The lockfile and Chromium revision remain pinned.
+  run("npm", ["ci", "--prefix", "tests/browser"], home~)
+  run(
+    "npm",
+    [
+      "exec", "--prefix", "tests/browser", "--", "playwright", "install", "chromium",
+    ],
+    home~,
+  )
+  for base in ["/", "/sample/v/1/"] {
+    run(command, ["site.json", base, "out", executable], cwd=driver, home~)
+    let before = snapshot(driver + "/out")
+    run(command, ["site.json", base, "out", executable], cwd=driver, home~)
+    guard before == snapshot(driver + "/out") else {
+      abort("packaged tutorial repeated bytes differ")
+    }
+    run(
+      cli,
+      [
+        "check", "--config", "site.json", "--out", "out", "--base", base, "--format",
+        "json",
+      ],
+      cwd=driver,
+      home~,
+    )
+    run(
+      "node",
+      [root + "/tests/tutorial/consumer/browser.mjs", driver + "/out", base],
+      home~,
+    )
+  }
+  // The stock CLI has no compiled include policy. A separate static prose source
+  // proves its declarative structural path without weakening policy validation.
+  let reading = @fs.read_file(driver + "/learning/reading.md").text()
+  let marker = "```tutorial-include"
+  let plain = match reading.find(marker) {
+    Some(index) => reading[:index].to_owned()
+    None => reading
+  }
+  @fs.write_file(
+    driver + "/learning/reading.md",
+    plain,
+    create_mode=CreateOrTruncate,
+  )
+  for base in ["/", "/sample/v/1/"] {
+    run(
+      cli,
+      ["build", "--config", "site.json", "--out", "stock-out", "--base", base],
+      cwd=driver,
+      home~,
+    )
+    run(
+      cli,
+      [
+        "check", "--config", "site.json", "--out", "stock-out", "--base", base, "--format",
+        "json",
+      ],
+      cwd=driver,
+      home~,
+    )
+    let html = @fs.read_file(driver + "/stock-out/learn/editing/index.html").text()
+    guard html.contains(base + "assets/tutorial/workspace.js") else {
+      abort("installed CLI omitted tutorial browser assets")
+    }
+  }
+  let source = @fs.read_file(
+    driver + "/.mooncakes/moonrockz/telescope/moon.mod",
+  ).text()
+  guard package_version(source) == version &&
+    !source.contains("smithy") &&
+    !@fs.exists(home + "/credentials.json") else {
+    abort("unexpected package provenance or credential in consumer home")
+  }
+  for module_dir in [editor, engine, driver] {
+    let manifest = @fs.read_file(module_dir + "/moon.mod").text()
+    guard !manifest.contains("path =") &&
+      !manifest.contains(root) &&
+      !@fs.exists(module_dir + "/moon.work") else {
+      abort("developer/workspace override in consumer module")
+    }
+  }
+  let evidence : Json = {
+    "library": "moonrockz/telescope@" + version,
+    "package_source": if published {
+      "parent-qualified real Mooncakes registry and checksum-verified GitHub release archive"
+    } else {
+      "isolated registry dependency from parent-qualified archive; candidate qualification only"
+    },
+    "published": published,
+    "workspace_overrides": false,
+    "credentials_present": false,
+    "editor_formatter_standalone": true,
+    "native_and_browser_same_engine": true,
+    "tutorial_case_reports": true,
+    "includes_policy_coverage": true,
+    "bases": ["/", "/sample/v/1/"],
+    "repeated_bytes": true,
+    "browser_edit_current_result": true,
+    "stock_cli_structural_build": true,
+  }
+  @fs.write_file(
+    consumer + "/tutorial-consumer-evidence.json",
+    evidence.stringify(indent=2),
+    create_mode=CreateOrTruncate,
+  )
+  println(evidence.stringify(indent=2))
+}

@@ -47,3 +47,17 @@ b97203cea93ed2b71affc1580817ecfd41a6b515, under Apache-2.0.
 Changes map indigo and cool-neutral tokens to Telescope's existing variable
 names, distinguish essential control boundaries, and retain semantic statuses.
 No Smithy domain engine, branding or gallery runtime is included.
+
+The general editor and tutorial packages are original Telescope implementations
+of the approved shared contracts. Smithy behavior and lexical scanning were
+reviewed as source references at revision
+caa78a677b88fdf506eb77953453d2519f1f4786, with codec compatibility decisions
+from e3c140d11dba72b5f642c1e634bd94ec4adc2c94. No Smithy engine or lesson
+corpus is included. See pkgs/telescope/editor/browser/UPSTREAM.md and the
+OpenSpec design source inventory for selected files and ownership.
+
+The tutorial TOML boundary uses moonbit-community/toml@0.5.0, Apache-2.0,
+without copying the parser implementation. Optional CodeMirror/Lezer editor
+bundles retain pinned MIT dependency notices in
+pkgs/telescope/editor/browser/THIRD-PARTY-LICENSES.txt; native CLI archives
+and generated editor assets include that file.

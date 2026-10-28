@@ -17,11 +17,11 @@ pub fn home_page(PageMeta, String, Array[@model.ArticleSummary]) -> @html.Html
 
 pub let latest_articles_marker : String
 
-pub fn layout(PageMeta, @html.Html, gallery? : Bool) -> @html.Html
+pub fn layout(PageMeta, @html.Html, gallery? : Bool, tutorial_nav? : Array[(String, String)]) -> @html.Html
 
 pub fn raw(String, class? : String) -> @html.Html
 
-pub async fn render(PageMeta, @html.Html, gallery? : Bool) -> String
+pub async fn render(PageMeta, @html.Html, gallery? : Bool, tutorial_nav? : Array[(String, String)]) -> String
 
 pub let theme_script : String
 

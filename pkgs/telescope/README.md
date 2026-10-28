@@ -5,6 +5,10 @@ a matching native CLI. The CLI is built from `apps/telescope` in this repository
 See the repository's version-specific release documentation for installation
 and compatibility evidence. New publications require owner approval.
 
+The checkout prepares candidate 0.3.0 with optional [tutorials](../../docs/tutorials.md)
+and the standalone [editor/Formatter](../../docs/editor.md). It is not a published
+dependency until the release gate and clean published-consumer qualification pass.
+
 | Package | Responsibility | Targets |
 | --- | --- | --- |
 | `model` | Configuration, routes, diagnostics, search, API metadata and version navigation | wasm, wasm-gc, JS, native |
@@ -15,6 +19,13 @@ and compatibility evidence. New publications require owner approval.
 | `host` | Contained async IO, provider builds, staged promotion, checks, preview and assembly | native |
 | `gallery` | Supplied artifact manifest validation and presentation | portable |
 | `extensions` | Explicit page, fence and island adapter contracts | portable |
+| `editor` | General document state, open Formatter trait and registrations, independent of tutorials | portable |
+| `editor/browser` | Plain/rich editing, shipped MoonBit mode and formatter worker bridge | JS |
+| `editor/views` | Static editor fallback controls | native, JS |
+| `tutorial/model` | Strict TOML catalogs and versioned neutral execution contracts | portable |
+| `tutorial/workspace` | Portable execution state and editor composition | portable |
+| `tutorial/check` | Case comparison, source policies and reference evidence | portable |
+| `tutorial/views` | Static course and lesson rendering | native, JS |
 | `islands` | Search, theme, navigation, ToC, copy buttons and version selection | JS |
 
 The module contains no diagram engine imports. Native CommonMark is pinned to

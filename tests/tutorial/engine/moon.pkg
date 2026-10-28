@@ -1,0 +1,4 @@
+import {
+  "moonrockz/telescope/tutorial/model" @tutorial,
+  "moonbitlang/core/string",
+}

@@ -20,6 +20,16 @@ async fn run(args : Array[String]) -> Unit {
 
 ///|
 async fn main {
+  let fixtures = @process.run(
+    "moonx",
+    ["scripts/build-fixtures.mbtx"],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if fixtures != 0 {
+    @sys.exit(1)
+    return
+  }
   let code = @process.run(
     "moon",
     ["-C", "tests/browser/driver", "build", "--target", "native", "--release"],
