@@ -97,12 +97,13 @@ Acceptance: A candidate passes the existing supported-platform checks and indepe
 Verification: Required repository checks, packaged qualification on Linux x64 and macOS arm64, real registry/archive install evidence and matching checksums.
 
 - [x] 6.1 Run standalone code-editor/formatter, tutorial and existing gallery/extension/version regressions through `mise run format`, `mise run check:setup`, `mise exec -- openspec validate --all --strict`, `mise run check` and `mise run test:browser`; verify the scenario-to-test matrix has no uncovered behavior, editor packages have no tutorial dependency and unchanged consumers still pass.
-- [ ] 6.2 Package the matching library/CLI candidate and run `mise run test:consumer -- --prepared` plus the existing release qualification on supported platforms; verify license/asset inventories, deterministic output and recorded candidate provenance without treating it as publication.
+- [x] 6.2 Package the matching library/CLI candidate and run `mise run test:consumer -- --prepared` plus the existing release qualification on supported platforms; verify license/asset inventories, deterministic output and recorded candidate provenance without treating it as publication.
 - [ ] 6.3 Prepare the release notes, install/provider compatibility guidance and exact release commit/version for owner review; verify the existing release process blocks publication until its explicit owner approval and record actual Actions publication evidence only after that gate passes.
 - [ ] 6.4 Qualify a new consumer against the real published registry package and checksum-verified CLI archive without prerelease caches or local overrides; verify standalone editor/Formatter use without tutorials, tutorial build/composition, consumer case execution and browser assets, recording actual artifacts and compatibility results in final verification documentation.
 
-Local qualification passes for the 0.3.0 candidate on macOS arm64, including clean
-packaged consumers and Chromium. Group 6.2 still needs Linux x64 PR qualification.
+Local and CI qualification pass for the 0.3.0 candidate on Linux x64 and macOS
+arm64, including clean packaged consumers and 108 Chromium scenarios. Evidence:
+`docs/release/candidate-0.3.0-ci.json`, Actions run 40635105037.
 Release notes and compatibility guidance for 6.3 are prepared in
 `docs/release/0.3.0.md`; its publication-evidence clause remains owner gated.
 Task 6.4 requires actual published artifacts and is deliberately unchecked.

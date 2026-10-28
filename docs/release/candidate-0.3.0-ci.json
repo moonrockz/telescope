@@ -1,0 +1,88 @@
+{
+  "candidate": "0.3.0",
+  "published": false,
+  "workflow": "https://github.com/moonrockz/telescope/actions/runs/40635105037",
+  "source_commit": "e8081e929f56831a26d78b8a928c247dbe2fb6b2",
+  "qualification": {
+    "native_tests_per_platform": 282,
+    "release_gate_tests_per_platform": 2,
+    "js_unit_tests_per_platform": 18,
+    "chromium_tests_linux": 108
+  },
+  "platforms": {
+    "linux-x64": {
+      "cli_sha256": "083e4f6492ffd5e62a7c19b6d2527e7ec331485f7a72fa390a5b34ee9ee014b5",
+      "library_zip_sha256": "e5cafc086e36d7d49f993f30a48078c0311160e52a9ac36f0446e869e001ed00",
+      "consumer": {
+        "version": "0.3.0",
+        "platform": "linux-x64",
+        "package_source": "isolated cache seeded with moon package ZIP and explicit prerelease index entry",
+        "published": false,
+        "library": "moonrockz/telescope@0.3.0",
+        "cli_archive": "telescope-0.3.0-linux-x64.tar.gz",
+        "workspace_overrides": false,
+        "gallery_manifest_version": 1,
+        "gallery_static_source_and_artifact_bytes": true,
+        "bases": [
+          "/",
+          "/example/"
+        ]
+      },
+      "tutorial_consumer": {
+        "library": "moonrockz/telescope@0.3.0",
+        "package_source": "isolated registry dependency from parent-qualified archive; candidate qualification only",
+        "published": false,
+        "workspace_overrides": false,
+        "credentials_present": false,
+        "editor_formatter_standalone": true,
+        "native_and_browser_same_engine": true,
+        "tutorial_case_reports": true,
+        "includes_policy_coverage": true,
+        "bases": [
+          "/",
+          "/sample/v/1/"
+        ],
+        "repeated_bytes": true,
+        "browser_edit_current_result": true,
+        "stock_cli_structural_build": true
+      }
+    },
+    "macos-arm64": {
+      "cli_sha256": "a86cf4f86fe0f938ddbc33de5aa7f3b9b1b672f8c0d1dd7eed2dac33bdf7c2e2",
+      "library_zip_sha256": "d64511d188dc25e8d36be7e95995319186d8ba81d53f4f6b10fa5909ccb80fa2",
+      "consumer": {
+        "version": "0.3.0",
+        "platform": "macos-arm64",
+        "package_source": "isolated cache seeded with moon package ZIP and explicit prerelease index entry",
+        "published": false,
+        "library": "moonrockz/telescope@0.3.0",
+        "cli_archive": "telescope-0.3.0-macos-arm64.tar.gz",
+        "workspace_overrides": false,
+        "gallery_manifest_version": 1,
+        "gallery_static_source_and_artifact_bytes": true,
+        "bases": [
+          "/",
+          "/example/"
+        ]
+      },
+      "tutorial_consumer": {
+        "library": "moonrockz/telescope@0.3.0",
+        "package_source": "isolated registry dependency from parent-qualified archive; candidate qualification only",
+        "published": false,
+        "workspace_overrides": false,
+        "credentials_present": false,
+        "editor_formatter_standalone": true,
+        "native_and_browser_same_engine": true,
+        "tutorial_case_reports": true,
+        "includes_policy_coverage": true,
+        "bases": [
+          "/",
+          "/sample/v/1/"
+        ],
+        "repeated_bytes": true,
+        "browser_edit_current_result": true,
+        "stock_cli_structural_build": true
+      }
+    }
+  }
+}

@@ -11,9 +11,9 @@ engine; they make no claim about Smithy engine correctness or downstream adoptio
 
 Local verification passes strict portable/native checks, 282 native tests, two
 release-gate tests, 18 JS unit tests and compiled native/worker wire parity.
-Chromium passes 106 full-suite cases plus two focused execution-state cases.
-Fresh packaged consumers pass at both bases on macOS arm64. Linux x64 and the
-complete current Chromium suite are required in PR CI before merge.
+Chromium passes all 108 scenarios in Linux CI. Fresh packaged consumers pass at
+both bases on Linux x64 and macOS arm64. See the [candidate CI evidence](release/candidate-0.3.0-ci.json)
+and [qualification run](https://github.com/moonrockz/telescope/actions/runs/40635105037).
 
 ## Scenario coverage
 
