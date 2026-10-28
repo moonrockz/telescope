@@ -43,6 +43,7 @@
     let scale = 1, x = 0, y = 0, width = 0, height = 0, drag = null, suppressClick = false;
     let modal = false, expanded = false, closed = false, priorFocus = null, oldOverflow = '', oldRole = null, oldModal = null;
     const inerted = new Map();
+    let priorScrollX = 0, priorScrollY = 0;
     function render() {
       const boundX = Math.max(0, (width * scale - viewport.clientWidth) / 2 + 48);
       const boundY = Math.max(0, (height * scale - viewport.clientHeight + 56) / 2 + 48);
@@ -80,6 +81,7 @@
       inerted.clear();
       document.body.style.overflow = oldOverflow;
       measure(); priorFocus?.focus({ preventScroll: true });
+      window.scrollTo({ left: priorScrollX, top: priorScrollY, behavior: 'instant' });
     }
     function openModal() {
       modal = true;
@@ -100,6 +102,7 @@
         return;
       }
       expanded = true; closed = false; priorFocus = document.activeElement;
+      priorScrollX = window.scrollX; priorScrollY = window.scrollY;
       oldOverflow = document.body.style.overflow; oldRole = viewport.getAttribute('role'); oldModal = viewport.getAttribute('aria-modal');
       fullscreen.textContent = 'Exit'; fullscreen.setAttribute('aria-label', 'Exit fullscreen');
       if (viewport.requestFullscreen) {
