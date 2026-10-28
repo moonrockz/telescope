@@ -21,9 +21,9 @@ operations:
   archive:
     guidance:
       - >-
-        Archive in the last implementation PR. In archived design.html replace
-        ../../../docs/templates/assets/ with ../../../../docs/templates/assets/.
-        Resolve each local asset path and update links to the change.
+        Archive in the last implementation PR. Historical designs with external
+        assets still need archive path repair. New shared designs are self-contained.
+        Resolve remaining local asset paths and update links to the change.
       - >-
         After merge, close completed local stories with the PR and merge SHA.
         Close the epic only after all children merge and point it to the archive.
