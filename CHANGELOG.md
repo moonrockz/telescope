@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0, unreleased
+## 0.4.0, 2026-10-28
 
 - Add scoped fullscreen, bounded zoom, Fit and pointer/keyboard pan to gallery cards and detail previews.
 - Provide native fullscreen and an accessible modal fallback with focus and scroll restoration.
@@ -10,7 +10,7 @@
 - Fix explicit light viewer colors, applied site theme changes when storage writes fail, and modal scroll restoration near the page bottom.
 - Breaking API change: direct SiteConfig literals must set header_logo, favicon and gallery_raster_adapter. Use empty strings for existing behavior; JSON configurations may omit the new keys.
 
-This is a prepared release candidate. Publication and real public-install qualification require owner approval and GitHub Actions. See [candidate evidence](docs/release/0.4.0.md).
+Owner-approved Actions publication and fresh public installs passed on Linux x64 and macOS arm64. See [release evidence](docs/release/0.4.0.md).
 
 ## 0.2.1, 2026-10-27
 

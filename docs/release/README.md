@@ -1,11 +1,12 @@
 # Release procedure
 
-The next candidate is [0.4.0](0.4.0.md), prepared after
-[the gallery and branding implementation](https://github.com/moonrockz/telescope/pull/15).
-It is not published. Opening or merging its release PR and approving the exact
-publication commit remain owner gates.
+Telescope [0.4.0](0.4.0.md) is published after
+[PR 16](https://github.com/moonrockz/telescope/pull/16) merged.
+[Owner-approved Actions run 40767534086](https://github.com/moonrockz/telescope/actions/runs/40767534086) qualified and published
+exact source `8ab416c7f6e1fc1973f5a4b0caac628978f0895f`. Both supported platforms passed fresh public
+installs. The release guide records real downloads, hashes and source identity.
 
-Telescope 0.3.0 is published. [Install and compatibility evidence](0.3.0.md)
+The preceding [0.3.0 release](0.3.0.md) remains available. Its install and compatibility evidence
 records actual pins, CLI downloads, checksums and clean public consumers on Linux
 x64 and macOS arm64. The owner-approved
 [release run](https://github.com/moonrockz/telescope/actions/runs/40637807149)
