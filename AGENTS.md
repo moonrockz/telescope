@@ -24,9 +24,8 @@ Read README.md and CONTRIBUTING.md before changing this repository.
 - Claim a group's story before work. Close it only after merge with the PR and
   merge SHA. Archive in the last implementation PR. See CONTRIBUTING.md.
 - Preserve Apache attribution, source revisions and third-party licenses.
-- HTML designs use docs/templates/agent-document.html and its external assets.
-  Active changes use ../../../docs/templates/assets/; archives use
-  ../../../../docs/templates/assets/. Resolve asset paths on disk.
+- New HTML designs use the shared inline template in openspec/schemas/html-design/.
+  Historical designs retain docs/templates/assets/ and need archive path repair.
 - Run mise run format, mise run check:setup and
   mise exec -- openspec validate --all --strict before review.
 - Run `mise run check` for strict engine verification and `mise run test:browser`
@@ -40,3 +39,14 @@ Read README.md and CONTRIBUTING.md before changing this repository.
 This bootstrap belongs to Run run_b3638d9bfa3d. Its coordinator mailbox is
 run:run_b3638d9bfa3d. Telescope owns extract-project-site-toolkit; diagrams.mbt
 owns adopt-telescope-site and may adopt only an actual published version.
+
+## Shared OpenSpec configuration
+
+Use the shared `html-design` schema for new changes. Read `openspec/README.md`
+and `openspec/config.yaml`; repository-local tracking and approval rules still apply.
+The files under `openspec/schemas/html-design/` and `scripts/openspec-ext.mbtx`
+are managed by Mission Control's openspec-ext bundle. Change the shared source
+and reinstall instead of editing these snapshots. Run `mise run openspec:check`
+and `mise exec -- openspec validate --all --strict` after configuration changes.
+OpenSpec artifacts are committed project documentation; existing scratch-document
+rules continue to apply to local notes. Existing changes retain their own schema.

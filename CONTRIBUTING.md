@@ -15,7 +15,7 @@ mise run format
 mise run check:setup
 ```
 
-Tools are pinned in `.config/mise/config.toml`: Node 24.14.1, OpenSpec 1.14.1,
+Tools are pinned in `.config/mise/config.toml`: Node 24.14.1, OpenSpec 1.14.3,
 MoonBit 0.10.17+093cb8f9c, Bun 1.4.3, yamllint 1.38.0 and actionlint 1.7.12. The MoonBit HTTP archive does not
 include its core library. If the installed tool lacks core, complete that exact
 installation using the upstream installer:
@@ -71,12 +71,11 @@ A complete proposal contains `proposal.md`, `design.html`, one delta spec per
 capability, and `tasks.md`. Each group states acceptance criteria and verification.
 Run `mise exec -- openspec validate --all --strict` before review.
 
-Start HTML designs from `docs/templates/agent-document.html`. Keep styles and
-scripts in its local assets directory, retain the head, and list all sections
-in the table of contents. Active changes use `../../../docs/templates/assets/`.
-Archiving adds one directory, so use `../../../../docs/templates/assets/` and
-verify paths. Keep the copied highlight.js BSD license and UPSTREAM.md intact.
-See NOTICE for FINOS attribution and the source revision of the adapted schema.
+Start new HTML designs from the shared template in
+`openspec/schemas/html-design/templates/design.html`. It has inline CSS and
+works offline without asset path changes. Historical designs still use
+`docs/templates/assets/`; repair those paths when archiving them. Keep their
+license and attribution records. See `openspec/README.md` for bundle maintenance.
 
 ## Repository-local tracker
 

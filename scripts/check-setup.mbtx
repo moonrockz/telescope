@@ -24,6 +24,21 @@ async fn run(command : String, args : Array[String]) -> Unit {
 }
 
 ///|
+/// Read one quoted HTML attribute, without interpreting inline script text.
+fn attribute(line : StringView, key : String) -> String? {
+  for quote in ["\"", "'"] {
+    let prefix = " " + key + "=" + quote
+    if line.find(prefix) is Some(start) {
+      let rest = line[start + prefix.length():]
+      if rest.find(quote) is Some(end) {
+        return Some(rest[:end].to_owned())
+      }
+    }
+  }
+  None
+}
+
+///|
 /// Check only external asset attributes, not example text in comments.
 async fn check_assets(path : String) -> Unit {
   let text = @fs.read_file(path).text()
@@ -33,21 +48,26 @@ async fn check_assets(path : String) -> Unit {
   }
   let mut count = 0
   for line in text.split("\n") {
-    if line.has_prefix("<link ") || line.has_prefix("<script ") {
-      for token in line.split("\"") {
-        if token.has_suffix(".css") || token.has_suffix(".js") {
-          guard @fs.exists(dir + token.to_owned()) else {
-            eprintln("Missing document asset: \{path}: \{token}")
-            @sys.exit(1)
-          }
-          count += 1
-        }
+    let line = line.trim_start()
+    let reference = if line.has_prefix("<link ") {
+      attribute(line, "href")
+    } else if line.has_prefix("<script ") {
+      attribute(line, "src")
+    } else {
+      None
+    }
+    if reference is Some(token) &&
+      (token.has_suffix(".css") || token.has_suffix(".js")) {
+      guard @fs.exists(dir + token) else {
+        fail("Missing document asset: \{path}: \{token}")
       }
+      count += 1
     }
   }
-  guard count == 6 else {
-    eprintln("Expected six local document assets in \{path}, found \{count}")
-    @sys.exit(1)
+  guard count == 6 || (count == 0 && text.contains("<style>")) else {
+    fail(
+      "Expected inline styles or six local document assets in \{path}, found \{count}",
+    )
   }
 }
 
@@ -78,4 +98,38 @@ async fn main {
   println(
     "Setup checks passed. Run mise run check separately for engine checks.",
   )
+}
+
+///|
+async test "inline HTML designs need no external assets" {
+  let dir = @fs.tmpdir(prefix="telescope-inline-design")
+  defer @fs.rmdir(dir, recursive=true)
+  let path = "\{dir}/design.html"
+  @fs.write_file(
+    path, "<!doctype html>\n<style>:root { color-scheme: light dark; }</style>\n<script>const example = \"example.js\";</script>\n<main>Design</main>\n",
+  )
+  check_assets(path)
+}
+
+///|
+async test "historical HTML designs still require their local assets" {
+  let dir = @fs.tmpdir(prefix="telescope-legacy-design")
+  defer @fs.rmdir(dir, recursive=true)
+  let path = "\{dir}/design.html"
+  let lines = []
+  for i in 0..<6 {
+    let asset = "asset-\{i}.css"
+    @fs.write_file("\{dir}/\{asset}", "body {}")
+    lines.push("<link rel=\"stylesheet\" href=\"\{asset}\">")
+  }
+  @fs.write_file(path, lines.join("\n"))
+  check_assets(path)
+  @fs.remove("\{dir}/asset-2.css")
+  let rejected = try {
+    check_assets(path)
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(rejected)
 }
