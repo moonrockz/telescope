@@ -1,0 +1,9 @@
+import {
+  "qualification/tutorial-engine" @engine,
+  "moonrockz/telescope/tutorial/model" @tutorial,
+  "moonbitlang/core/json",
+}
+
+supported_targets = "js"
+
+pkgtype(kind: "executable")

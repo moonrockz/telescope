@@ -13,6 +13,11 @@ and accessible Preview/Source inspection with copying and downloads.
 Gallery reset buttons align with the textbox and use the shared indigo fill.
 See [default presentation](docs/presentation.md).
 
+This checkout prepares 0.3.0 with opt-in [TOML tutorials](docs/tutorials.md),
+consumer-owned local evaluation and the general [editor/Formatter](docs/editor.md).
+The rich editor includes MoonBit highlighting for `moonbit` and `mbt`.
+Publication remains gated on owner approval of the exact version and commit.
+
 Clean public installs pass on Linux x64 and macOS arm64 without workspace
 overrides. See [installation and compatibility](docs/release/0.2.1.md).
 

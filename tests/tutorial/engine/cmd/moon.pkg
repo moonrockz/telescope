@@ -1,0 +1,13 @@
+import {
+  "qualification/tutorial-engine" @engine,
+  "moonrockz/telescope/tutorial/model" @tutorial,
+  "moonbitlang/core/json",
+  "moonbitlang/core/env",
+  "moonbitlang/async",
+  "moonbitlang/async/stdio",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")

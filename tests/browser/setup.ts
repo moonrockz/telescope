@@ -84,12 +84,22 @@ export default async function setup() {
       for (const id of ['plain', 'next', '0.2', '0.1']) {
         const project = resolve(dir, `input-${id}`);
         await cp(new URL('./fixture/', import.meta.url), project, { recursive: true });
+        if (id !== 'plain') {
+          await cp(new URL('../tutorial/course/', import.meta.url),resolve(project,'learning'),{recursive:true});
+          await cp(new URL('../editor/adapters/',import.meta.url),resolve(project,'learning/assets'),{recursive:true});
+          await cp(new URL('../tutorial/tutorials.toml', import.meta.url),resolve(project,'site/tutorials.toml'));
+          for (const [from,to] of [['text-worker.js','text-worker.js'],['whitespace-worker.js','whitespace-worker.js']]) {
+            await cp(resolve(repo,'_build/fixtures',from),resolve(project,'learning/assets',to));
+          }
+          const reading=await readFile(resolve(project,'learning/reading.md'),'utf8');
+          await writeFile(resolve(project,'learning/reading.md'),reading.replace(/```tutorial-include[\s\S]*?```/g,''));
+        }
         if (id !== 'next' && id !== 'plain') await rm(resolve(project, 'docs/next-only.md'));
         if (id !== '0.1') await rm(resolve(project, 'docs/retired.md'));
         const base_path = base + (id === 'plain' ? '' : id === 'next' ? 'next/' : `v/${id}/`);
         const config = resolve(project, 'site/site.json');
         const json = JSON.parse(await readFile(config, 'utf8'));
-        await writeFile(config, JSON.stringify({ ...json, base_path,
+        await writeFile(config, JSON.stringify({ ...json, ...(id !== 'plain' ? {tutorials:'site/tutorials.toml'} : {}), base_path,
           site_url: `https://observatory.example${base_path}` }, null, 2));
         const out = resolve(dir, `tree-${id}`);
         await run(['build', '--config', 'site/site.json', '--out', out], project);
@@ -110,10 +120,17 @@ export default async function setup() {
       const registeredInput = resolve(dir, 'input-registered');
       await cp(resolve(dir, 'input-plain'), registeredInput, { recursive: true });
       await cp(new URL('./driver/consumer/', import.meta.url), resolve(registeredInput, 'consumer'), { recursive: true });
+      await cp(new URL('../tutorial/course/', import.meta.url), resolve(registeredInput, 'learning'), {recursive:true});
+      await cp(new URL('../editor/adapters/', import.meta.url),resolve(registeredInput,'learning/assets'),{recursive:true});
+      await cp(new URL('../editor/adapters/', import.meta.url),resolve(registeredInput,'consumer'),{recursive:true});
+      await cp(new URL('../tutorial/tutorials.toml', import.meta.url), resolve(registeredInput, 'site/tutorials.toml'));
+      await cp(resolve(repo, '_build/fixtures/text-worker.js'),resolve(registeredInput,'learning/assets/text-worker.js'));
+      await cp(resolve(repo, '_build/fixtures/whitespace-worker.js'),resolve(registeredInput,'learning/assets/whitespace-worker.js'));
+      await cp(resolve(repo, '_build/fixtures/whitespace-worker.js'),resolve(registeredInput,'consumer/editor-whitespace-worker.js'));
       const registeredConfig = resolve(registeredInput, 'site/site.json');
       const registeredJSON = JSON.parse(await readFile(registeredConfig, 'utf8'));
       await writeFile(registeredConfig, JSON.stringify({ ...registeredJSON,
-        source_roots: [...registeredJSON.source_roots, 'consumer'] }));
+        tutorials: 'site/tutorials.toml', source_roots: [...registeredJSON.source_roots, 'consumer'] }));
       await run([registeredConfig, registered, registeredInput], registeredInput, driver);
       await run(['check', '--config', registeredConfig, '--out', registered, '--format', 'json'], repo);
       servers[name] = { base,

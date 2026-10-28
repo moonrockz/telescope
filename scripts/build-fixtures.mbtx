@@ -1,0 +1,43 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+async fn run(command : String, args : Array[String]) -> Unit {
+  let code = @process.run(
+    command,
+    args,
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if code != 0 {
+    @sys.exit(1)
+  }
+}
+
+///|
+async fn main {
+  for
+    (path, module_name, name) in [
+      ("tests/editor/fixture", "qualification/editor", "whitespace"),
+      ("tests/tutorial/engine", "qualification/tutorial-engine", "text"),
+    ] {
+    run("moon", ["-C", path, "build", "worker", "--target", "js", "--release"])
+    run("bun", [
+      "build",
+      "_build/js/release/build/" + module_name + "/worker/worker.js",
+      "--target",
+      "browser",
+      "--minify",
+      "--outfile",
+      "_build/fixtures/" + name + "-worker.js",
+    ])
+  }
+  run("moon", [
+    "-C", "tests/tutorial/engine", "build", "cmd", "--target", "native", "--release",
+  ])
+}

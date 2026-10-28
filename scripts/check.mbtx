@@ -23,15 +23,81 @@ async fn run(args : Array[String]) -> Unit {
 ///|
 async fn main {
   for target in ["wasm", "wasm-gc", "js", "native"] {
-    for pure_package in ["model", "content", "gallery", "extensions"] {
+    for
+      pure_package in [
+        "model", "content", "gallery", "extensions", "editor", "tutorial/model",
+        "tutorial/check", "tutorial/workspace",
+      ] {
       run([
         "-C", "pkgs/telescope", "check", pure_package, "--target", target, "--deny-warn",
       ])
     }
   }
+  for views_package in ["editor/views", "tutorial/views"] {
+    for target in ["native", "js"] {
+      run([
+        "-C", "pkgs/telescope", "check", views_package, "--target", target, "--deny-warn",
+      ])
+    }
+  }
+  run([
+    "-C", "pkgs/telescope", "check", "editor/browser", "--target", "js", "--deny-warn",
+  ])
   run(["check", "--target", "native", "--deny-warn"])
   run(["test", "--target", "native"])
   run(["test", "scripts/release-approval.mbtx", "--deny-warn"])
+  let editor_dependencies = @process.run(
+    "npm",
+    ["ci", "--prefix", "pkgs/telescope/editor/browser"],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if editor_dependencies != 0 {
+    @sys.exit(1)
+  }
+  let fixtures = @process.run(
+    "moonx",
+    ["scripts/build-fixtures.mbtx"],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if fixtures != 0 {
+    @sys.exit(1)
+  }
+  let browser_unit = @process.run(
+    "node",
+    [
+      "--test", "tests/editor/moonbit.test.mjs", "tests/editor/config.test.mjs",
+      "tests/editor/bridge.test.mjs", "tests/tutorial/runtime.test.mjs",
+    ],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if browser_unit != 0 {
+    @sys.exit(1)
+  }
+  let worker_parity = @process.run(
+    "node",
+    [
+      "tests/tutorial/engine/worker.test.mjs", "_build/fixtures/text-worker.js",
+      "_build/native/release/build/qualification/tutorial-engine/cmd/cmd.exe",
+    ],
+    stdout=@stdio.stdout,
+    stderr=@stdio.stderr,
+  )
+  if worker_parity != 0 {
+    @sys.exit(1)
+  }
+  for
+    path in [
+      "pkgs/telescope/editor/moon.pkg", "pkgs/telescope/editor/browser/moon.pkg",
+      "pkgs/telescope/editor/views/moon.pkg",
+    ] {
+    if @fs.read_file(path).text().contains("telescope/tutorial") {
+      eprintln("General editor imports tutorial: " + path)
+      @sys.exit(1)
+    }
+  }
   // A domain engine may never enter either distribution.
   for module_path in ["pkgs/telescope/moon.mod", "apps/telescope/moon.mod"] {
     let manifest = @fs.read_file(module_path).text()

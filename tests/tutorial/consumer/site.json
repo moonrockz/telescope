@@ -1,0 +1,1 @@
+{"schema_version":1,"title":"Independent tutorial consumer","description":"Packaged qualification","base_path":"/","site_url":"https://example.test/","repo_url":"https://example.test/tutorial-consumer","source_roots":["docs","site/pages"],"packages":[],"api":[],"tutorials":"tutorials.toml"}

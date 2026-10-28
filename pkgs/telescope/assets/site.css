@@ -1228,3 +1228,16 @@ select:focus-visible,
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Tutorial reading remains available before enhancement and without scripts. */
+.tutorial-contents ol { padding-inline-start: 1.5rem; }
+.tutorial-contents [aria-current="page"] { font-weight: 700; }
+.tutorial-controls { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: .75rem; }
+.tutorial-panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+.tutorial-panes > *, [data-tutorial-workspace], .tutorial-starting { min-width: 0; max-width: 100%; }
+.tutorial-results pre, .tutorial-starting pre { max-width: 100%; overflow: auto; }
+.tutorial-results select { max-width: 100%; }
+.tutorial-results p { overflow-wrap: anywhere; }
+.tutorial-changed-line { display: inline; background: color-mix(in srgb, var(--accent) 18%, transparent); }
+.tutorial-expanded .tutorial-panes { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 720px) { .tutorial-panes { grid-template-columns: minmax(0, 1fr); } }

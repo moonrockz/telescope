@@ -1,0 +1,191 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/tutorial/check"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn compare(Expectation, @moonrockz/telescope/tutorial/model.Response) -> Array[String]
+
+pub fn extract_region(String, String, String, SourcePolicy, input_revision? : String?) -> IncludedRegion raise @moonrockz/telescope/model.Invalid
+
+pub fn parse_includes(String, String) -> Array[Include] raise @moonrockz/telescope/model.Invalid
+
+pub fn reference_problems(ReferenceEvidence, String) -> Array[String]
+
+pub fn reports_text(Array[CaseReport]) -> String
+
+pub fn source_evidence(SourcePolicy, String) -> SourceEvidence?
+
+pub fn source_evidence_problems(SourcePolicy, String, String) -> Array[String]
+
+pub fn source_policy(String, Array[String], Array[String], String) -> SourcePolicy
+
+// Errors
+
+// Types and methods
+pub(all) struct CaseReport {
+  source : String
+  course : String
+  lesson : String
+  case_id : String
+  provider : String
+  engine_version : String
+  input_revision : String
+  passed : Bool
+  mismatches : Array[String]
+  reference : ReferenceEvidence?
+} derive(Eq, @debug.Debug)
+pub fn CaseReport::equal(Self, Self) -> Bool
+pub fn CaseReport::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn CaseReport::not_equal(Self, Self) -> Bool
+pub fn CaseReport::to_json(Self) -> Json
+pub fn CaseReport::to_repr(Self) -> @debug.Repr
+pub impl ToJson for CaseReport
+pub impl @json.FromJson for CaseReport
+
+pub(all) struct Expectation {
+  diagnostic_keys : Array[String]
+  outputs : Array[OutputExpectation]
+  blocked : String?
+  verdict : String?
+  steps : StepExpectation?
+} derive(Eq, @debug.Debug)
+pub fn Expectation::equal(Self, Self) -> Bool
+pub fn Expectation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Expectation::not_equal(Self, Self) -> Bool
+pub fn Expectation::parse(String, String) -> Self raise @moonrockz/telescope/model.Invalid
+pub fn Expectation::to_json(Self) -> Json
+pub fn Expectation::to_repr(Self) -> @debug.Repr
+pub impl ToJson for Expectation
+pub impl @json.FromJson for Expectation
+
+pub(all) struct Include {
+  label : String
+  path : String
+  region : String
+  line : Int32
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn Include::equal(Self, Self) -> Bool
+pub fn Include::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Include::not_equal(Self, Self) -> Bool
+pub fn Include::to_json(Self) -> Json
+pub fn Include::to_repr(Self) -> @debug.Repr
+
+pub(all) struct IncludedBlock {
+  language : String
+  text : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn IncludedBlock::equal(Self, Self) -> Bool
+pub fn IncludedBlock::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn IncludedBlock::not_equal(Self, Self) -> Bool
+pub fn IncludedBlock::to_json(Self) -> Json
+pub fn IncludedBlock::to_repr(Self) -> @debug.Repr
+
+pub(all) struct IncludedRegion {
+  source : String
+  region : String
+  language : String
+  text : String
+  blocks : Array[IncludedBlock]
+  runner : String
+  source_revision : String
+  verified : Bool
+} derive(Eq, @debug.Debug)
+pub fn IncludedRegion::equal(Self, Self) -> Bool
+pub fn IncludedRegion::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn IncludedRegion::not_equal(Self, Self) -> Bool
+pub fn IncludedRegion::to_json(Self) -> Json
+pub fn IncludedRegion::to_repr(Self) -> @debug.Repr
+pub impl ToJson for IncludedRegion
+pub impl @json.FromJson for IncludedRegion
+
+pub(all) struct OutputExpectation {
+  id : String
+  contains : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn OutputExpectation::equal(Self, Self) -> Bool
+pub fn OutputExpectation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OutputExpectation::not_equal(Self, Self) -> Bool
+pub fn OutputExpectation::to_json(Self) -> Json
+pub fn OutputExpectation::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ReferenceDifference {
+  reason : String
+  tracking : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn ReferenceDifference::equal(Self, Self) -> Bool
+pub fn ReferenceDifference::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ReferenceDifference::not_equal(Self, Self) -> Bool
+pub fn ReferenceDifference::to_json(Self) -> Json
+pub fn ReferenceDifference::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ReferenceEvidence {
+  source : String
+  source_revision : String
+  input_revision : String
+  differences : Array[ReferenceDifference]
+  required : Bool
+} derive(Eq, @debug.Debug)
+pub fn ReferenceEvidence::equal(Self, Self) -> Bool
+pub fn ReferenceEvidence::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ReferenceEvidence::not_equal(Self, Self) -> Bool
+pub fn ReferenceEvidence::to_json(Self) -> Json
+pub fn ReferenceEvidence::to_repr(Self) -> @debug.Repr
+pub impl ToJson for ReferenceEvidence
+pub impl @json.FromJson for ReferenceEvidence
+
+pub(all) struct ReferenceRegistration {
+  id : String
+  compare : (@moonrockz/telescope/tutorial/model.Request, @moonrockz/telescope/tutorial/model.Response, ReferenceEvidence) -> Result[Array[String], String]
+}
+
+pub(all) struct SourceEvidence {
+  runner : String
+  source_revision : String
+  input_revision : String
+  success : Bool
+  required : Bool
+} derive(Eq, @debug.Debug)
+pub fn SourceEvidence::equal(Self, Self) -> Bool
+pub fn SourceEvidence::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn SourceEvidence::not_equal(Self, Self) -> Bool
+pub fn SourceEvidence::to_json(Self) -> Json
+pub fn SourceEvidence::to_repr(Self) -> @debug.Repr
+pub impl ToJson for SourceEvidence
+pub impl @json.FromJson for SourceEvidence
+
+pub(all) struct SourcePolicy {
+  source : String
+  regions : Array[String]
+  languages : Array[String]
+  runner : String
+  marker_start : String
+  marker_end : String
+  evidence : SourceEvidence?
+  evidence_by_input : Map[String, SourceEvidence]
+} derive(Eq, @debug.Debug)
+pub fn SourcePolicy::equal(Self, Self) -> Bool
+pub fn SourcePolicy::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn SourcePolicy::not_equal(Self, Self) -> Bool
+pub fn SourcePolicy::to_json(Self) -> Json
+pub fn SourcePolicy::to_repr(Self) -> @debug.Repr
+pub impl ToJson for SourcePolicy
+pub impl @json.FromJson for SourcePolicy
+
+pub(all) struct StepExpectation {
+  checked : Int32
+  complete : Bool
+  diagnostic_keys : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+pub fn StepExpectation::equal(Self, Self) -> Bool
+pub fn StepExpectation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn StepExpectation::not_equal(Self, Self) -> Bool
+pub fn StepExpectation::to_json(Self) -> Json
+pub fn StepExpectation::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

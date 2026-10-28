@@ -1,0 +1,6 @@
+import {
+  "moonrockz/telescope/editor",
+  "moonbit-community/rabbita/html",
+}
+
+supported_targets = "native+js"

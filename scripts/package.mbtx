@@ -39,7 +39,7 @@ async fn main {
       return
     }
   }
-  let dir = "_build/package/telescope-0.2.1-\{platform}"
+  let dir = "_build/package/telescope-0.3.0-\{platform}"
   if @fs.exists(dir) {
     @fs.rmdir(dir, recursive=true)
   }
@@ -52,6 +52,12 @@ async fn main {
     )
   }
   copy_licenses(".mooncakes", dir + "/third-party")
+  @fs.mkdir(dir + "/third-party/editor", recursive=true, allow_exist=true)
+  @fs.write_file(
+    dir + "/third-party/editor/THIRD-PARTY-LICENSES.txt",
+    @fs.read_file("pkgs/telescope/editor/browser/THIRD-PARTY-LICENSES.txt").binary(),
+    create_mode=CreateOrTruncate,
+  )
   let toolchain = @env.get_env_var("MOON_HOME").unwrap()
   @fs.mkdir(
     dir + "/third-party/moonbitlang/core",
@@ -70,10 +76,10 @@ async fn main {
     permission=0o755,
   )
   @fs.chmod("\{dir}/telescope", 0o755)
-  let archive = "telescope-0.2.1-\{platform}.tar.gz"
+  let archive = "telescope-0.3.0-\{platform}.tar.gz"
   run(
     "tar",
-    ["-czf", archive, "telescope-0.2.1-\{platform}"],
+    ["-czf", archive, "telescope-0.3.0-\{platform}"],
     cwd="_build/package",
   )
   let (status, digest, _) = @process.collect_output(

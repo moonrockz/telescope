@@ -1,0 +1,37 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/telescope/tutorial/workspace"
+
+import {
+  "moonrockz/telescope/editor",
+  "moonrockz/telescope/tutorial/model",
+}
+
+// Values
+pub fn documents(Array[@model.File]) -> Array[@editor.Document]
+
+// Errors
+
+// Types and methods
+pub(all) struct State {
+  mut generation : Int32
+  mut next_id : Int32
+  mut revision : String
+  mut active : @model.Request?
+  mut pending : Bool
+  mut retries : Int32
+  mut requested_position : Int32
+  mut session : String?
+  mut status : String
+  mut disposed : Bool
+}
+pub fn State::dispose(Self) -> Unit
+pub fn State::edit(Self, String) -> Unit
+pub fn State::new(String) -> Self
+pub fn State::receive(Self, @model.Response) -> Bool
+pub fn State::request(Self, @model.Provider, String, Array[@model.File], Json) -> @model.Request?
+pub fn State::reset(Self, String) -> Unit
+pub fn State::timeout(Self) -> Bool
+
+// Type aliases
+
+// Traits

@@ -2,7 +2,7 @@
 // Apache-2.0; see NOTICE for source revisions.
 
 ///|
-pub let version : String = "0.2.1"
+pub let version : String = "0.3.0"
 
 ///|
 pub fn relative(path : String) -> Bool {

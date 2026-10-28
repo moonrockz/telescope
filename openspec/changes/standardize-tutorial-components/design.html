@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>standardize-tutorial-components</title>
+<!--
+  Agent document template (docs/templates/agent-document.html). Specs, plans and reports that a person reviews
+  start from this file: copy it, keep the <head> as it is, and write the content inside the main element.
+  Styles and scripts are files in docs/templates/assets/, referenced and not embedded. In a copy, change the
+  "assets/" prefix of each href and src to the relative path from the copy to that directory, for example
+  "../../docs/templates/assets/" from .dev/beads-specs/. See AGENTS.md, "Specs and plans are HTML documents".
+  Code goes in <pre><code class="language-moonbit"> (or scheme, toml, json, bash, diff). Give sections an id and
+  list them in nav.toc.
+-->
+<link rel="stylesheet" href="../../../docs/templates/assets/agent-document.css">
+<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<script defer src="../../../docs/templates/assets/highlight/highlight.min.js"></script>
+<script defer src="../../../docs/templates/assets/highlight/languages/scheme.min.js"></script>
+<script defer src="../../../docs/templates/assets/agent-document.js"></script>
+</head>
+<body>
+<main>
+<h1>standardize-tutorial-components</h1>
+<p class="meta">OpenSpec change · 2026-10-27 · Implementation approved · Epic telescope-58o · Publication separately owner gated</p>
+
+<nav class="toc" aria-label="Contents">
+<ul>
+<li><a href="#context">Context</a></li>
+<li><a href="#goals">Goals and non-goals</a></li>
+<li><a href="#inventory">Source inventory</a></li>
+<li><a href="#decisions">Decisions</a></li>
+<li><a href="#parity">Smithy parity and ownership</a></li>
+<li><a href="#verification">Verification approach</a></li>
+<li><a href="#risks">Risks and trade-offs</a></li>
+<li><a href="#migration">Migration plan</a></li>
+</ul>
+</nav>
+
+<h2 id="context">Context</h2>
+<p>See <a href="proposal.md">the proposal</a> for motivation. Telescope 0.2.1 provides a static shell, CommonMark content, gallery planning, route-local islands and a reusable native host. Its extension contract accepts one page route per page adapter and separate island registrations. There is no tutorial catalog, lesson model, execution scheduler or case-checking contract.</p>
+<p>Smithy's tour separates model, source loading, lesson state/view, browser effects and native checks, but those packages import Smithy playground types. The reusable behavior is already visible; copying the packages intact would also copy Smithy output enums, severities, filenames and worker messages. The codec workspace extends value lessons with serialization profiles, which makes a shared fixed list of engine modes especially unsuitable.</p>
+<p>The accepted <a href="../../specs/site-extensions/spec.md">domain ownership contract</a> still applies. This change proposes generic tutorial behavior, not a move of Smithy's playground engine into Telescope. Repository inputs and consumer JavaScript remain reviewed content. This design adds no runtime package discovery.</p>
+
+<h2 id="goals">Goals and non-goals</h2>
+<p>Provide independently usable content planning, a general code editor, tutorial workspace state/views and case comparison packages. The code editor owns formatting and is usable on any consumer page without tutorial configuration or execution engines. The standard host composes it with tutorial behavior to build a course. A static course must require no execution provider. An unrelated consumer must prove both standalone editing and tutorial composition before Smithy adoption.</p>
+<p>Keep Smithy's lesson corpus, model validation, converters, JSON-RPC semantics, codec profiles, Java reference tooling, Morphir fixtures and playground encoding in Smithy. This change does not create a general learning-management system, user accounts, progress scoring, remote execution, collaboration or a whole-site client router. It does not migrate Smithy or diagrams.mbt, or publish a release without owner approval.</p>
+
+<h2 id="inventory">Source inventory</h2>
+<p>Read-only inspection covered the Smithy main checkout at <code>/Users/damian/code/github/moonrockz/smithy</code>, revision <code>caa78a677b88fdf506eb77953453d2519f1f4786</code>, and the related workspace at <code>/Users/damian/orca/workspaces/smithy/versioned-json-codecs</code>, revision <code>e3c140d11dba72b5f642c1e634bd94ec4adc2c94</code>. Main has lessons 01 through 39; the codec workspace adds 40 and 41. These are observed source baselines, not claims that their tests ran during planning.</p>
+<table>
+<thead><tr><th>Source at the pinned revision</th><th>Observed responsibility</th><th>Disposition</th></tr></thead>
+<tbody>
+<tr><td><code>smithy/site/tour/README.md</code></td><td>Lesson layout, includes, cases, reference rules and pane behavior</td><td>Behavior reference; author a neutral tutorial contract</td></tr>
+<tr><td><code>smithy/site/tour/model/tour.mbt</code></td><td>Course order, neighbors, file overlays, starting-file digest and Smithy engine enums</td><td>Adapt generic data operations; keep engine types with consumers</td></tr>
+<tr><td><code>smithy/site/tour/source/read.mbt</code>, <code>include.mbt</code> and their tests</td><td>Filesystem loading, strict metadata, tested region expansion and hand-written example guards</td><td>Adapt parsing and region logic; use consumer policies and async host IO</td></tr>
+<tr><td><code>smithy/site/tour/lesson/model.mbt</code>, <code>update.mbt</code>, <code>diff.mbt</code>, <code>view.mbt</code> and their tests</td><td>Per-file state, persistence, request scheduling, timeout/retry, output changes and panes</td><td>Adapt neutral state/effects and views; replace direct core and sample imports</td></tr>
+<tr><td><code>smithy/site/tour/ui/main.mbt</code>, <code>browser.mbt</code>, <code>main_wbtest.mbt</code>, <code>tour/editor/main.js</code></td><td>Worker lifecycle, protocol decoding, browser storage and editor effects</td><td>Adapt lifecycle; introduce versioned neutral requests/results</td></tr>
+<tr><td><code>smithy/site/playground/editor/editor.js</code>, <code>smithy.js</code> and dependency lockfile</td><td>CodeMirror integration, independent file histories, diagnostics, Smithy syntax</td><td>Adapt editor mechanics; Smithy syntax stays consumer-supplied</td></tr>
+<tr><td><code>smithy/site/highlight/highlight.mbt</code>, <code>highlight_wbtest.mbt</code>, plus the playground stream-language adapter</td><td>Static MoonBit tokenization and source-preservation tests; CodeMirror stream-language integration pattern</td><td>Reference for the shipped live MoonBit editor mode; adapt with attribution and extend beyond the static scanner's fixtures</td></tr>
+<tr><td><code>smithy/site/prerender/tour.mbt</code>, <code>site/public/styles.css</code>, <code>site/README.md</code></td><td>Course routes, search, data serialization and responsive tutorial styling</td><td>Integrate with Telescope's existing routes, search and palette</td></tr>
+<tr><td><code>smithy/site/tour/check/{lessons,reference,links,findings,morphir}_test.mbt</code>, <code>site/tests/browser/tour.chromium.spec.js</code></td><td>Core cases, pinned reference evidence, include/link checks and browser interactions</td><td>Port generic regression scenarios; retain reference and domain fixtures in Smithy</td></tr>
+<tr><td>Codec workspace <code>site/tour/source/read.mbt</code>, <code>site/playground/core/check.mbt</code>, lessons 40/41 and <code>site/tour/README.md</code></td><td>Optional profile and conflicts with plain value options; extra reference input</td><td>Compatibility evidence for opaque provider options and input revision coverage</td></tr>
+<tr><td>Telescope <code>pkgs/telescope/{model,site,host,extensions,views,islands}</code>, <code>tests/consumer</code>, <code>tests/browser</code></td><td>Public configuration structs, explicit registries, staged build, packaged consumer and Chromium checks</td><td>Extend with optional inputs; retain existing registries and host ownership</td></tr>
+<tr><td>Locally cached <code>moonbit-community/toml@0.5.0</code>, <code>pkg.generated.mbti</code> and <code>README.mbt.md</code></td><td>Published portable TOML value/parser contract, including tables, arrays and parse errors</td><td>Pin the parser and qualify its manifest subset against Telescope's mise compiler; no parser implementation copied</td></tr>
+</tbody>
+</table>
+<p>Smithy sources are Apache-2.0. Before adapting code, record the exact selected revision, changed files and upstream notices in Telescope's NOTICE. Preserve any ancestor attribution carried by the selected files, including Smithy's recorded moonspec ancestry where applicable. CodeMirror and Lezer assets require their own pinned dependency license records. Do not copy lesson text, reference datasets or Morphir sources into the library.</p>
+
+<h2 id="decisions">Decisions</h2>
+
+<h3 id="cmp-1">CMP-1. A feature assembled from reusable packages</h3>
+<table>
+<thead><tr><th>Proposed public package</th><th>Ownership and target</th><th>Used by</th></tr></thead>
+<tbody>
+<tr><td><code>editor</code></td><td>Portable document state, editor contracts, open Formatter trait, request/result types and provider registrations; no tutorial imports</td><td>Standalone editors, playgrounds and tutorial workspaces</td></tr>
+<tr><td><code>editor/views</code></td><td>Shared editor controls and static text fallback, native and JS; no course or lesson dependencies</td><td>Any page embedding an editor</td></tr>
+<tr><td><code>editor/browser</code></td><td>JS plain/rich editor adapters, shipped MoonBit highlighting and formatter worker lifecycle</td><td>Explicitly mounted editor instances on any page</td></tr>
+<tr><td><code>tutorial/model</code></td><td>Portable manifest data, normalized files, routes, case overlays, protocol types and identities</td><td>Host, checker and workspace</td></tr>
+<tr><td><code>tutorial/workspace</code></td><td>Portable lesson state and execution effects, composed with editor document state; no DOM, storage or engine imports</td><td>Interactive lessons and deterministic tests</td></tr>
+<tr><td><code>tutorial/views</code></td><td>Rabbita static course/lesson views and interactive controls, native and JS</td><td>Site rendering and browser mounting</td></tr>
+<tr><td><code>tutorial/check</code></td><td>Portable expected/actual result comparison and report types</td><td>Consumer-compiled runners</td></tr>
+<tr><td><code>tutorial/islands</code></td><td>JS lesson lifecycle, execution transport and composition with the general editor/browser component</td><td>Interactive lesson routes only</td></tr>
+<tr><td>Existing <code>host</code></td><td>Native async input loading, containment, source-region reads, asset staging and check orchestration</td><td>Stock CLI and consumer drivers</td></tr>
+</tbody>
+</table>
+<p>Use a small composition helper to produce a tutorial site plan, rather than require consumers to register each lesson as a custom page. The existing site renderer merges this plan before collision checks, search creation and shell rendering. The shared host remains the sole owner of filesystem promotion. Components have stable public contracts but remain in the single <code>moonrockz/telescope</code> distribution.</p>
+<p>The dependency direction is <code>tutorial/*</code> to <code>editor</code>, <code>editor/views</code> and <code>editor/browser</code>. General editor packages never import tutorial packages. The editor API accepts document identities, text, declared languages, optional context documents, provider bindings and change listeners. It requires no course, lesson, persistence key or evaluator. A standalone page mounts it directly or through an existing route-local island registration. Tutorial code translates its manifest data into the same editor configuration.</p>
+<p>Alternative: one copied tour executable would be quicker for Smithy but would retain its imports and prevent reuse. A separate published package for every control would add release coordination without a demonstrated need.</p>
+
+<h3 id="src-1">SRC-1. An explicit catalog, independent of folder numbering</h3>
+<p>Add an optional <code>tutorials</code> path in site JSON referencing <code>site/tutorials.toml</code>. The tutorial manifest itself uses TOML. Parse it separately from the existing public SiteConfig record, and pass an optional tutorial plan into rendering. Do not add required fields to existing public configuration, Registry or view records. Add defaulted host arguments for compiled tutorial providers. Existing call sites and site JSON configuration remain valid.</p>
+<p>The TOML manifest has <code>schema_version = 1</code>, an input root, registered browser providers and an ordered list of courses. Each course has an ID, title, configured route prefix and ordered lessons. Each lesson has a stable slug, title, section, Markdown path and optional reference links. Interactive entries declare files, provider ID, operation, options and cases. Optional formatter registrations declare supported languages, provider version and worker assets. The <code>formatting.languages</code> table supplies language defaults, and a file's explicit <code>formatter</code> binding overrides its language default. Both bindings contain a provider ID and options table. These tables adapt the general editor's registration contract for tutorial authoring; a standalone editor receives equivalent bindings directly without this manifest. Absence of either leaves formatting unavailable. All structural keys are strict; only provider-owned options tables are open. Static entries reject execution-only fields. Virtual filenames permit normalized subdirectories for comparison inputs, but never absolute paths, traversal, duplicate names or backslashes.</p>
+<pre><code class="language-toml"># site/tutorials.toml
+schema_version = 1
+root = "site/learning"
+
+[formatting.languages.text]
+provider = "sample.whitespace"
+options = {}
+
+[[formatters]]
+id = "sample.whitespace"
+contract_version = 1
+formatter_version = "1.0.0"
+languages = ["text"]
+worker = "assets/whitespace-worker.js"
+assets = ["assets/whitespace-worker.js"]
+
+[[providers]]
+id = "sample.text"
+contract_version = 1
+engine_version = "1.0.0"
+operations = ["evaluate"]
+worker = "assets/text-worker.js"
+assets = ["assets/text-worker.js"]
+
+[[courses]]
+id = "getting-started"
+title = "Getting started"
+route = "/learn/"
+
+[[courses.lessons]]
+slug = "first-check"
+title = "First check"
+section = "Basics"
+prose = "first/lesson.md"
+files = [{ name = "input.txt", source = "first/input.txt", language = "text" }]
+execution = { provider = "sample.text", operation = "evaluate", options = {} }
+cases = [{ id = "start", expect = "first/cases/start.json" }]
+</code></pre>
+<p>TOML is the authored manifest format. Its comments and tables make provider configuration and nested courses easier to maintain. Use the pinned <code>moonbit-community/toml@0.5.0</code> parser behind a portable decoding boundary and qualify it with the repository's pinned compiler in the first slice. Read files only through the existing async host. Preserve parser line/column information in syntax diagnostics and report semantic field paths for schema errors. Reject duplicate keys and invalid field types; do not silently accept a JSON tutorial manifest or auto-convert source files.</p>
+<p>Decode TOML into format-independent typed tutorial data. Normalize options to JSON-compatible strings, booleans, finite numbers, arrays and string-keyed tables; absent optional fields represent omission. Reject date/time and non-finite numeric values with a field diagnostic rather than silently stringify them. Canonicalize table keys for revision calculation and serialization while preserving course/lesson/file array order. Manifest comments, whitespace and table-key order must not alter saved-edit revisions or generated site bytes. Runtime envelopes, generated data, machine-readable reports and the case expectation fixtures retain their JSON representations.</p>
+<p>This is the proposed wire shape to implement and document, not accepted configuration in 0.2.1. Provider asset paths are relative to the declared input root and copied under a reserved per-provider output directory. A course at <code>/learn/</code> places its lesson at <code>/learn/first-check/</code>. A second course chooses a different prefix. Stable routes use slugs, while position and previous/next come from array order. Register the prose source-to-route mapping before link rewriting, so authored repository links work. Case expectations and overlay files never enter public content discovery or search.</p>
+<p>Alternatives: an authored JSON manifest lacks comments and makes nested course configuration harder to scan; supporting both encodings adds a compatibility obligation before the tutorial format has shipped. Preserve one TOML authoring contract and a format-independent model. Mandatory <code>NN-slug</code> directories and the smithy.io-only reference check would expose Smithy's conventions as common constraints. Smithy can translate its layout through a consumer adapter in a later adoption change.</p>
+
+<h3 id="api-1">API-1. Separate tutorial contracts, with explicit browser and native roles</h3>
+<p>Keep extension Registry version 1 unchanged. Introduce a tutorial execution registry/protocol and a separate general editor registry/formatting protocol, each beginning at contract version 1. Execution registrations declare engine identity, operations, worker assets and optional workbench handoff. General editor registrations declare editing/language adapters and formatters independently of execution providers. The tutorial composition validates and passes through these editor registrations without owning their types. Standalone editors use the same registry with no tutorial registration. All imports, worker chunks and WASM companions must be listed as contained assets. Unknown providers, duplicate IDs, unsupported formatter languages and unsupported operations fail the build. No config string selects a native package to load.</p>
+<p>The stock CLI reads declarative registrations, validates their structure and copies prebuilt assets. It never compiles or executes the consumer engine during rendering. A consumer driver imports the public host and passes compiled evaluators and include/reference policies through defaulted tutorial-specific arguments. A compiled evaluator must match the declarative provider identity, engine version and capabilities. The case-check entry point requires an evaluator for every executable lesson selected; missing evaluators fail explicitly. A plain built-site link check retains its existing meaning and cannot stand in for case execution.</p>
+<table>
+<thead><tr><th>Contract item</th><th>Proposed fields or behavior</th></tr></thead>
+<tbody>
+<tr><td>Request envelope</td><td>Contract version, provider ID and engine version, runtime generation, request ID, input revision, operation, virtual files and consumer options</td></tr>
+<tr><td>Operations</td><td><code>evaluate</code> for checks, conversion or comparison; optional <code>start</code>, <code>step</code> and <code>run-all</code> for stateful execution. Provider capabilities declare supported sets.</td></tr>
+<tr><td>Result envelope</td><td>Echoed identity and revision, status, diagnostics, ordered labeled text outputs, optional blocked reason, optional verdict and optional ordered step rows/progress</td></tr>
+<tr><td>Diagnostic</td><td>Stable comparison key, display code, severity label, message, optional virtual file and one-based span. Telescope treats the key as opaque and compares duplicate keys as a multiset.</td></tr>
+<tr><td>Output</td><td>Stable ID, label, language and exact text. Group labels and comparison diagnostics are data; they do not require a shared Smithy Diff enum.</td></tr>
+<tr><td>Steps</td><td>Provider session ID, rows with stable IDs and labels, checked count, completion, findings and optional summary. Sessions are invalid after an input revision change or worker restart.</td></tr>
+<tr><td>Editor</td><td>General component API for mounting, loading/selecting documents, reporting edits, marking diagnostics, showing output, remeasuring and disposing. Instance and document identities isolate histories. No tutorial types are required.</td></tr>
+<tr><td>Formatter</td><td>Open public trait in the general editor package over a target document, optional immutable context documents, declared language and options; returns formatted text or an error. The editor owns transactions, freshness and failure handling. See FMT-1.</td></tr>
+<tr><td>Workbench handoff</td><td>Optional consumer module accepts the current normalized files/options and returns a complete safe destination URL or an explanatory unsupported/oversized result</td></tr>
+</tbody>
+</table>
+<p>Consumer adapters map model validation, output conversion, value checks, message checks, comparison and transcripts to these results. Severity-to-blocking rules belong there. The codec workspace's <code>profile</code> and its conflicts with <code>unknown_members</code> or <code>member_names</code> are validated by Smithy's adapter, not Telescope. Preserve provider metadata in check reports and the build record without treating it as proof that execution succeeded.</p>
+<p>Alternative: extend Smithy's closed Engine and Answer enums in Telescope. Every new domain operation would then require a shared release. An unstructured HTML callback alone would avoid types but lose reusable diagnostics, scheduling and expectations.</p>
+
+<h3 id="run-1">RUN-1. Share the scheduler and make stale results unobservable</h3>
+<p>Adapt Smithy's update/effect loop into a pure workspace package. Keep one worker per mounted workspace and at most one active request. Debounce edits for 250 ms by default and coalesce pending revisions. Identify both worker generation and request revision, so late replies, queued timers and reset races cannot replace current results. Clear or mark previous results as pending after edits. Persist files separately from execution state.</p>
+<p>Use a 10-second default request deadline and at most one automatic retry for an unchanged revision. Restart the worker before retrying. A second timeout ends automatic work until a new edit or explicit retry. Decode failures and incompatible protocol versions show a failure immediately without repeated automatic restarts. Navigating away disposes workers, editors and timers. Execution stays on the reader's device; no network execution backend is provided.</p>
+<p>For stepping, remember the reader's requested position independently from the runtime session. An edit or restart starts a new session and replays up to that position or the new end. Reset restores starting files and new editor histories while preserving pane layout. Runtime assertions for cases always use a fresh independent session.</p>
+<p>Saved edits use a namespaced key containing site identity, effective deployment base/version, course ID and lesson slug. Accept them only when file identities and the starting-input revision match. Compute the revision deterministically from the tutorial schema, ordered starting file names/text, operation, options and provider identity/version. This fingerprint is only for freshness, never an artifact-integrity promise or a revival of gallery digests. Denied or corrupt storage falls back to current in-memory files.</p>
+<p>Alternative: let every engine own request timers, persistence and stale-reply handling. That would reproduce the most failure-prone tour logic in each consumer.</p>
+
+<h3 id="ui-1">UI-1. Render reading first, enhance the workspace on its own route</h3>
+<p>Render the course contents, lesson prose, references, source links, starting-file text/downloads and previous/next links in the static shell. Index prose and expanded includes through the existing content facts. Add tutorial navigation through optional view inputs without changing the meaning of existing page sections. Static lessons use the documentation reading width and include controls only. Interactive lessons reserve a workspace mount alongside readable prose. Hide inactive execution controls until enhancement succeeds.</p>
+<p>The general <code>editor/browser</code> package provides a default plain-text adapter and a separately bundled CodeMirror adapter for rich editing. Pin selected dependencies and their license records during implementation. Extract generic editor mechanics from Smithy's CodeMirror bridge; do not ship its Smithy language module or <code>globalThis.smithyEditors</code> name. Consumers add their own language extensions. Rich editor and formatter assets load only on pages explicitly embedding those components, including standalone documentation/playground pages and interactive lessons. Small read-only code-group controls may load on static lessons without loading any editor or worker.</p>
+<p>Use labeled selectors with correct keyboard behavior, literal text rendering, polite status messages, accessible pane expansion and responsive stacked panes. Preserve editors while panes are hidden and remeasure on reveal. Theme tokens follow Telescope's accepted palette. Output changes are calculated per output ID; no prior successful output means no change highlight. A provider's unknown presentation kind falls back to labeled text rather than fabricated domain UI.</p>
+<p>Alternative: mount a full client application on every page or require scripts to read examples. Both conflict with Telescope's static reading and route-local asset requirements.</p>
+
+<h3 id="hil-1">HIL-1. Ship MoonBit highlighting in the general rich editor</h3>
+<p>Include a standard MoonBit language adapter with the rich <code>editor/browser</code> distribution. Both declared language IDs <code>moonbit</code> and <code>mbt</code> select it without custom consumer registration. Standalone editors and tutorials use the same adapter. Keep the existing language-extension mechanism for additional languages and explicit replacement adapters. No filename inference or formatter registration is required to select the mode.</p>
+<p>Implement a CodeMirror stream-language adapter using its existing language/highlight dependencies. Smithy's static MoonBit scanner and token tests supply a pinned source reference, while its Smithy stream adapter supplies the browser integration pattern. Extend the MoonBit mode for the pinned toolchain's keywords, numeric/string/character literals, escaped strings, line and documentation comments, annotations and <code>#|</code> multiline string lines. Use representative Telescope source fixtures for declarations, traits, pattern matching and package-qualified references. This is lexical highlighting, with no compiler or semantic engine dependency.</p>
+<p>Reconfigure language compartments per document and use incremental highlighting during edits, including incomplete source. Reuse the editor theme tokens for light and dark styling. Changing highlighting or language must not replace text, reset selections/histories or emit an edit event. The plain-text adapter and unknown modes keep readable source. MoonBit mode assets load with the configured rich editor where needed; unrelated pages and static lessons do not acquire its dependencies.</p>
+<p>Verify token classes with focused fixtures for both aliases, escaped and multiline strings, documentation comments, annotations and incomplete-then-completed source. Chromium coverage must inspect actual syntax styling and live updates on a standalone editor with no tutorial configuration or engine, then on the same component inside a tutorial. Exercise document/language switching, exact text preservation, selection, Undo, formatting coexistence and both themes. Additions to this editor mode do not claim compiler diagnostics or MoonBit formatting support.</p>
+<p>Alternatives: require consumers to supply MoonBit support, or reuse static HTML token markup inside an editable document. The first omits a required standard editor capability; the second does not provide the editor's incremental language integration.</p>
+
+<h3 id="fmt-1">FMT-1. The general code editor owns its open formatter trait</h3>
+<p>Expose an externally implementable <code>Formatter</code> trait from <code>moonrockz/telescope/editor</code>. Its portable contract has no CodeMirror, DOM, tutorial or execution-engine dependency. It applies wherever the code editor is used. The proposed trait shape is:</p>
+<pre><code class="language-moonbit">pub(open) trait Formatter {
+  fn format(Self, FormatInput) -&gt; Result[FormatOutput, FormatError]
+}
+</code></pre>
+<p><code>FormatInput</code> contains a target editor document with stable identity, virtual filename, text and declared language, optional immutable context documents, and consumer options. All document/request/result/error types belong to <code>editor</code>. A standalone single-document editor supplies no additional context. A tutorial caller supplies other relevant files through the same general API. <code>FormatOutput</code> contains the target document's complete formatted text. <code>FormatError</code> carries a displayable code and message. The formatter computes text only and cannot mutate editor state or other documents through this contract.</p>
+<p>The general editor registry declares formatter ID, contract version, formatter version, supported languages and prebuilt browser worker assets. Language defaults and per-document overrides select a provider explicitly. There is no extension-based discovery. Both plain and rich adapters expose the same optional keyboard-accessible Format action. A small original whitespace formatter in the independent consumer proves the same implementation on a standalone editor page and in a tutorial. The standalone fixture imports no tutorial packages and supplies no manifest, course, lesson or evaluator.</p>
+<p>A consumer compiles its trait implementation into a formatter worker using the shared <code>editor/browser</code> bridge. The host validates and copies its declared assets without invoking formatting during build. Worker transport echoes editor instance, formatter identity/version, generation, request ID, target identity and revisions for all captured input documents. The trait stays synchronous and portable; the bridge invokes it off the UI thread and returns asynchronously. Its worker can be terminated after the 10-second default deadline independently of any caller's other processing. Keep at most one active formatting request per editor instance and make retries explicit.</p>
+<p>The editor applies changed text only when instance identity, formatter, target identity and all captured input revisions still match. Switching tabs alone does not invalidate a request; a valid reply updates its originating document without changing selection or focus in another document. Input edits, reset/replacement, formatter replacement and disposal invalidate older results. Apply changed text as one undoable transaction, retain that document's history and map its selection into the new text. Emit the normal document-change event. An unchanged result adds neither history nor an event. Errors, malformed replies and timeouts preserve text, selection and history and announce a failure without moving focus.</p>
+<p>Persistence, execution and course state belong to the caller. The editor never starts lesson checks or derives lesson storage keys. Tutorial composition listens to its normal changes to save edits, invalidate results, recheck and replay step sessions; standalone callers choose their own behavior. Tutorial Reset calls the editor's document reset API to invalidate pending formatting. Formatting is an explicit document action, never a build side effect or an automatic rewrite of fixtures, expectations or outputs. Content remains on the reader's device.</p>
+<p>Alternatives: place Formatter in a tutorial package, use a CodeMirror-only callback, or require every execution engine to implement formatting. Each couples the code editor's general formatting behavior to another feature. The shared editor contract supports reuse without any tutorial dependency.</p>
+
+<h3 id="chk-1">CHK-1. Separate case execution, reference evidence and rendering</h3>
+<p>The portable comparator accepts normalized results and expectations. Native host orchestration applies named overlays, creates a fresh evaluation/session, compares complete diagnostic keys with multiplicity, checks nonempty output needles, blocked reasons, verdicts and step positions, and emits text/JSON reports. Sort courses by manifest order, cases by ID and diagnostics by key for reproducible reporting. Report source, course, lesson, case, provider/version and input revision. Never regenerate expectations to fit a result.</p>
+<p>Source includes use an explicit include fence with labeled <code>path#region</code> entries. Support neutral <code>tutorial:start</code>/<code>tutorial:end</code> markers; an explicit consumer policy can map Smithy's existing <code>tour:start</code>/<code>tour:end</code> markers. Track fences while extracting so marker-like code is not interpreted as a boundary. Preserve each included code block's language and source reference. Reject unclosed or repeated markers, nested malformed regions, missing files and regions with no approved tested block.</p>
+<p>A consumer policy supplies the allowed test sources, fence forms, runner identity and optional evidence report. Structural inclusion proves only that the region is covered by that declared policy. A verification claim requires a successful runner report for the same source bytes and relevant provider inputs. Builds never execute shell fences. Optional consumer guards detect hand-written domain CLI/API examples outside approved regions. Telescope does not hard-code Smithy commands, MoonBit aliases or a particular README path.</p>
+<p>Reference comparisons are an optional compiled hook over case results and supplied evidence. The hook owns domain comparison and tracked differences. Reports retain its pinned reference source, input revision and explicit difference reasons/tracking references. Required stale evidence fails checking. Smithy's Java reference generator, vendored traits, Morphir inventory and stale allow-list tests stay in Smithy. No Java runtime is required by Telescope.</p>
+<p>Expose case checking as a reusable host API and a small consumer-driver command, documented separately from <code>telescope check</code>, which continues to inspect built output. The stock CLI can structurally build a tutorial with browser assets, but cannot claim executable cases passed without an evaluator/report. This makes build-only use practical and its limits visible.</p>
+<p>Alternative: run arbitrary commands from lesson metadata during build. That mixes rendering with execution and obscures which runner supports the teaching claim. Always requiring Java would make unrelated tutorials depend on Smithy's reference setup.</p>
+
+<h3 id="rel-1">REL-1. Prove reuse before adapting a consumer</h3>
+<p>The first implementation group delivers a minimal static lesson and one editable plain-text lesson through the packaged library and CLI in a new temporary consumer, with its own small evaluator/worker. No Smithy import, absolute developer path or sibling workspace is allowed. A candidate-only explicit registry/cache is permitted for qualification, as in the existing consumer test. It is not a usable downstream dependency or publication evidence.</p>
+<p>Later groups extend that same neutral fixture with rich editing, a standalone non-tutorial editor using the consumer's Formatter implementation, tutorial composition using that same formatter, comparison, steps and tested includes. Smithy's source inventory and parity matrix guide the acceptance cases, without copying its engine into Telescope. Publication is an owner gate for one real matching library/CLI version. A separate Smithy change can then translate its existing content format and wrap its actual engine. Do not record that migration as completed here.</p>
+<p>Alternative: migrate Smithy first through local path dependencies. That would hide packaging and ownership defects and violate the released dependency contract.</p>
+
+<h2 id="parity">Smithy parity and ownership</h2>
+<table>
+<thead><tr><th>Observed tour behavior</th><th>Shared responsibility</th><th>Consumer responsibility</th><th>Task group</th></tr></thead>
+<tbody>
+<tr><td>Sectioned contents, neighbors, lesson links and search</td><td>Catalog, routing, shell and search</td><td>Order, text and references</td><td>1 and 2</td></tr>
+<tr><td>Static lessons and CLI/API include tabs</td><td>Region parser, readable code groups, provenance and policy contract</td><td>Runner, approved source inventory and domain guards</td><td>2 and 5</td></tr>
+<tr><td>Multiple model, JSON and selector files with independent Undo</td><td>File identity, editing state and language adapter contract</td><td>Language modes and file roles</td><td>3</td></tr>
+<tr><td>Findings, conversion output and changed lines</td><td>Diagnostics, panels and line highlighting</td><td>Severity semantics, transforms and labels</td><td>3</td></tr>
+<tr><td>Storage, Reset, pane expansion and phone layout</td><td>Persistence namespace, reset and accessible layout</td><td>Site identity</td><td>3</td></tr>
+<tr><td>Timeout retry and stale worker protection</td><td>Scheduler, revision checks and lifecycle disposal</td><td>Bounded worker implementation</td><td>3</td></tr>
+<tr><td>Old/New comparison</td><td>File groups and result presentation</td><td>Comparison operation and blocking semantics</td><td>4</td></tr>
+<tr><td>Transcript Step and Run all</td><td>Session lifecycle, requested position and progress controls</td><td>Entries, protocol evaluation and summaries</td><td>4</td></tr>
+<tr><td>Value/message lessons; codec profiles in the related workspace</td><td>Generic options, diagnostics and text outputs</td><td>Shape/service/profile parsing and option conflicts</td><td>4</td></tr>
+<tr><td>Start/overlay cases, Level 1, Java Level 2 and Morphir claims</td><td>Case comparison and reference hook/report</td><td>Core evaluator, Java/reference inputs and tracked differences</td><td>5</td></tr>
+<tr><td>Open in playground and share size limits</td><td>Optional action and useful unsupported reason</td><td>Supported lesson modes, state encoding and destination</td><td>4</td></tr>
+</tbody>
+</table>
+<p>For the unrelated fixture, model a small text checker whose operations return normal diagnostics/text, an old/new line comparison and an ordered list of steps. Include a provider option with two mutually exclusive forms to prove that domain validation stays outside the shared schema. These examples test contracts without pretending to qualify Smithy's actual engines.</p>
+<p>General code editor formatting and shipped live MoonBit highlighting are added requirements from this review, rather than observed Smithy tour parity claims. Group 3 proves both on a standalone page with no tutorial imports/configuration or execution engine. It then verifies the same editor's tutorial composition, including ordinary change events, language switching, formatting and Undo.</p>
+
+<h2 id="verification">Verification approach</h2>
+<p>Map each scenario in <a href="specs/code-editor/spec.md">code-editor</a>, <a href="specs/site-tutorials/spec.md">site-tutorials</a>, <a href="specs/site-tutorial-workspaces/spec.md">site-tutorial-workspaces</a>, <a href="specs/site-tutorial-checks/spec.md">site-tutorial-checks</a> and <a href="specs/site-extensions/spec.md">the extension delta</a> to a focused automated check. Portable tests cover catalog rules, overlays, comparison, general editor/formatter bindings and scheduling. Language-adapter fixtures cover MoonBit tokenization and exact source preservation. Native host tests cover containment, symlinks, asset collisions, staged failure, diagnostics and deterministic builds. An independent standalone consumer imports only the editor APIs and implements Formatter. Browser tests cover multiple editor instances, both adapters, live MoonBit highlighting, language switches, formatting/Undo, failed/stale replies, tutorial integration, execution workers, keyboard behavior, no-script reading and 360-pixel layouts in both themes.</p>
+<p>Keep engine tests separate from fixture qualification. Run <code>mise run check</code> for strict engine checks and <code>mise run test:browser</code> for Chromium behavior after relevant implementation groups. Build and package before <code>mise run test:consumer -- --prepared</code>. The fresh consumer must use the packaged public host, expose its own evaluator and render under both a root and nested/versioned base. Existing gallery and version-one extension fixtures remain regression coverage. Group-specific tests and authoring/contract documentation land with each group.</p>
+<p>Before review run <code>mise run format</code>, <code>mise run check:setup</code> and <code>mise exec -- openspec validate --all --strict</code>. Planning validates these artifacts and local HTML references; it does not prove new runtime behavior or run tests against unchanged Smithy workspaces.</p>
+
+<h2 id="risks">Risks and trade-offs</h2>
+<table>
+<thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Generic contracts become a copy of Smithy's modes</td><td>Use operation capabilities and normalized diagnostics/text/steps; prove each with the unrelated fixture</td></tr>
+<tr><td>Native and browser adapters disagree</td><td>Use identical case files and normalized result fixtures; compare provider version and protocol identity, then qualify actual worker behavior in Chromium</td></tr>
+<tr><td>Editor dependencies grow unrelated-page bundles</td><td>Separate plain/rich editor and formatter assets and assert request absence on pages with no explicitly configured editor</td></tr>
+<tr><td>The general editor acquires tutorial dependencies</td><td>Keep document and formatter types in editor, require one-way imports and compile/run a standalone fixture with no tutorial imports or configuration</td></tr>
+<tr><td>TOML parser behavior or value conversion changes manifest meaning</td><td>Pin and qualify the parser, reject unsupported value kinds and test duplicate keys, table order and semantic-equivalent comments/whitespace</td></tr>
+<tr><td>Saved edits attach to changed content or another tree</td><td>Namespace by site/base/course/lesson and validate the full starting-input revision</td></tr>
+<tr><td>A slow formatter overwrites newer edits or blocks the editor</td><td>Run it in a separate terminable worker, check its captured revision and apply one undoable transaction only for a current result</td></tr>
+<tr><td>Tested includes imply an execution claim they cannot prove</td><td>Separate source-policy coverage from a matching successful test report and label unavailable verification explicitly</td></tr>
+<tr><td>Public record additions break MoonBit consumers</td><td>Use separate tutorial inputs and defaulted arguments; compile unchanged version-one consumer fixtures before extending them</td></tr>
+<tr><td>The unmerged codec workspace changes</td><td>Pin the inspected revision and record its deltas; recheck the selected source baseline before adaptation without editing that workspace</td></tr>
+<tr><td>Extracted code loses attribution or pulls domain fixtures into the package</td><td>Update NOTICE per adapted file, retain dependency licenses and inspect the packaged file inventory</td></tr>
+</tbody>
+</table>
+
+<h2 id="migration">Migration plan</h2>
+<ol>
+<li>After maintainer approval, create a Telescope-local epic and one story for each numbered group in <a href="tasks.md">tasks.md</a>. Claim each before implementation and record dependencies.</li>
+<li>Implement the independent consumer path first, then catalog, editing, optional execution modes and checks. Keep each slice's tests and documentation in that slice. Adapt only generic source from the pinned inventory with attribution.</li>
+<li>Qualify the candidate library and matching CLI on supported native platforms and Chromium. Record versions, checksums, supported targets and the separation between rendering and case execution.</li>
+<li>Prepare a release PR. Publication remains blocked until the owner approves the exact commit/version through the existing release procedure. Do not choose or advertise a speculative dependency version during planning.</li>
+<li>After real publication, qualify a clean consumer against the actual registry and CLI archive without candidate caches or local overrides. Archive this change in the final verification/documentation PR, merge its deltas and repair asset paths and inbound links.</li>
+<li>Close stories only after their PRs merge with the PR and merge SHA; close the epic after all stories merge. A later Smithy-owned proposal handles content translation, adapter integration and any edit-storage migration.</li>
+</ol>
+<p>Rollback is additive. Existing consumers can keep 0.2.1 or remove the opt-in tutorial manifest reference. A failed staged build never replaces the previous site. Once adopted, a consumer rolls back the matching library/CLI and its own adapter together; no server-side tutorial state requires migration.</p>
+</main>
+</body>
+</html>

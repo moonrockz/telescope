@@ -2,6 +2,7 @@
 package "qualification/browser-driver/cmd"
 
 // Values
+pub fn editor_page(String) -> String
 
 // Errors
 

@@ -1,0 +1,123 @@
+# Tutorial authoring uses TOML; runtime and expectations remain JSON.
+schema_version = 1
+root = "learning"
+
+[formatting.languages.text]
+provider = "sample.whitespace"
+options = {}
+
+[[formatters]]
+id = "sample.whitespace"
+contract_version = 1
+formatter_version = "1.0.0"
+languages = ["text"]
+worker = "assets/whitespace-worker.js"
+assets = ["assets/whitespace-worker.js"]
+
+[[providers]]
+id = "sample.text"
+contract_version = 1
+engine_version = "1.0.0"
+operations = ["evaluate", "start", "step", "run-all"]
+worker = "assets/text-worker.js"
+assets = ["assets/text-worker.js", "assets/workbench.js"]
+workbench = "assets/workbench.js"
+
+# General editor registrations are independent of execution providers.
+[[editors]]
+id = "sample.custom"
+contract_version = 1
+kind = "editor"
+module = "assets/custom-editor.js"
+languages = ["text"]
+assets = ["assets/custom-editor.js"]
+
+[[editors]]
+id = "sample.language"
+contract_version = 1
+kind = "language"
+module = "assets/custom-language.js"
+languages = ["text-demo"]
+assets = ["assets/custom-language.js"]
+
+[[courses]]
+id = "basics"
+title = "Text lessons"
+route = "/learn/"
+
+[[courses.lessons]]
+slug = "reading"
+title = "Read first"
+section = "Basics"
+prose = "reading.md"
+references = [{ label = "MoonBit", url = "https://www.moonbitlang.com/" }]
+
+[[courses.lessons]]
+slug = "editing"
+title = "Edit text"
+section = "Basics"
+prose = "editing.md"
+editor = "plain"
+files = [{ name = "input.txt", source = "input.txt", language = "text" }, { name = "notes.txt", source = "notes.txt", language = "text" }]
+execution = { provider = "sample.text", operation = "evaluate", options = {} }
+cases = [{ id = "start", expect = "cases/start.json" }, { id = "invalid", expect = "cases/invalid.json", files = [{ name = "input.txt", source = "invalid.txt", language = "text" }] }]
+
+[[courses.lessons]]
+slug = "moonbit"
+title = "Edit MoonBit"
+section = "Rich editing"
+prose = "moonbit.md"
+editor = "rich"
+files = [{ name = "main.mbt", source = "main.mbt", language = "moonbit" }, { name = "second.mbt", source = "second.mbt", language = "mbt" }]
+execution = { provider = "sample.text", operation = "evaluate", options = {} }
+cases = [{ id = "start", expect = "cases/moonbit.json" }]
+
+[[courses.lessons]]
+slug = "comparison"
+title = "Compare files"
+section = "Advanced"
+prose = "comparison.md"
+editor = "plain"
+files = [{ name = "old/input.txt", source = "old.txt", language = "text", group = "Old" }, { name = "new/input.txt", source = "new.txt", language = "text", group = "New" }]
+execution = { provider = "sample.text", operation = "evaluate", options = {} }
+cases = [{ id = "start", expect = "cases/comparison.json" }]
+
+[[courses.lessons]]
+slug = "steps"
+title = "Step through lines"
+section = "Advanced"
+prose = "steps.md"
+editor = "plain"
+files = [{ name = "input.txt", source = "steps.txt", language = "text" }]
+execution = { provider = "sample.text", operation = "start", options = {} }
+cases = [{ id = "start", expect = "cases/steps.json" }]
+
+[[courses.lessons]]
+slug = "custom-editor"
+title = "Consumer editor"
+section = "Extensions"
+prose = "custom-editor.md"
+editor = "sample.custom"
+files = [{ name = "input.txt", source = "input.txt", language = "text" }]
+execution = { provider = "sample.text", operation = "evaluate", options = {} }
+cases = [{ id = "start", expect = "cases/custom.json" }]
+
+[[courses.lessons]]
+slug = "custom-language"
+title = "Consumer language"
+section = "Extensions"
+prose = "custom-language.md"
+editor = "rich"
+files = [{ name = "input.demo", source = "custom.demo", language = "text-demo" }]
+execution = { provider = "sample.text", operation = "evaluate", options = {} }
+cases = [{ id = "start", expect = "cases/custom-language.json" }]
+
+[[courses]]
+id = "second-course"
+title = "Another course"
+route = "/more/"
+[[courses.lessons]]
+slug = "reading"
+title = "Another reading"
+section = "Reading"
+prose = "another.md"

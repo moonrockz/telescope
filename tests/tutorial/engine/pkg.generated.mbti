@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "qualification/tutorial-engine"
+
+import {
+  "moonrockz/telescope/tutorial/model",
+}
+
+// Values
+pub fn evaluate(@model.Request) -> Result[@model.Response, @model.EvaluationError]
+
+pub fn registration() -> @model.EvaluatorRegistration
+
+// Errors
+
+// Types and methods
+pub(all) struct TextEvaluator {
+}
+pub fn TextEvaluator::evaluate(Self, @model.Request) -> Result[@model.Response, @model.EvaluationError]
+pub impl @model.Evaluator for TextEvaluator
+
+// Type aliases
+
+// Traits

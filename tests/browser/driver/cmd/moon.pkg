@@ -1,5 +1,7 @@
 import {
   "moonrockz/telescope/host",
+  "moonrockz/telescope/tutorial/check" @tutorial_check,
+  "qualification/tutorial-engine" @sample,
   "moonrockz/telescope/extensions",
   "moonbitlang/async",
   "moonbitlang/core/env",

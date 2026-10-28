@@ -1,0 +1,7 @@
+import {
+  "moonrockz/telescope/editor",
+}
+
+import {
+  "qualification/editor/whitespace",
+} for "test"

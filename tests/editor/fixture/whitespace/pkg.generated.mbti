@@ -1,0 +1,20 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "qualification/editor/whitespace"
+
+import {
+  "moonrockz/telescope/editor",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) struct WhitespaceFormatter {
+}
+pub fn WhitespaceFormatter::format(Self, @editor.FormatInput) -> Result[@editor.FormatOutput, @editor.FormatError]
+pub impl @editor.Formatter for WhitespaceFormatter
+
+// Type aliases
+
+// Traits

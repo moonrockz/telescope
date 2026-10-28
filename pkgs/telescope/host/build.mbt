@@ -169,6 +169,8 @@ pub async fn build(
   base? : String,
   providers~ : @extensions.Registry = @extensions.empty_registry(),
   main_build~ : Bool = false,
+  tutorial_policies~ : Array[@tutorial_check.SourcePolicy] = [],
+  tutorial_guards~ : Array[TutorialGuard] = [],
 ) -> Array[@model.Problem] {
   let root = @fs.realpath(root)
   let out = destination(out)
@@ -182,6 +184,10 @@ pub async fn build(
   }
   let config = configuration(config_path, base?)
   let value = @json.parse(@fs.read_file(config_path).text())
+  let tutorial = tutorial_input(root, value, out~)
+  let tutorials = tutorial_site(
+    root, config, tutorial, tutorial_policies, tutorial_guards,
+  )
   let roots = config.source_roots
   let sources = []
   let seen : Map[String, Bool] = Map([])
@@ -201,6 +207,9 @@ pub async fn build(
       ])
     }
     for file in files(source_root) {
+      if tutorial is Some(input) && within(input.root, source_root + "/" + file) {
+        continue
+      }
       let path = rel + "/" + file
       if !config.includes(path) || seen.contains(path) {
         continue
@@ -215,18 +224,25 @@ pub async fn build(
     }
   }
   let api = api_input(root, config, value, out)
-  let gallery = gallery_outputs(root, config, value, out~)
-  let external_routes = gallery.filter_map(output => {
-    match output {
-      Text(path, _) =>
-        if path.has_suffix("index.html") {
-          Some("/" + path[:path.length() - "index.html".length()].to_owned())
-        } else {
-          None
-        }
-      _ => None
-    }
-  })
+  let gallery = gallery_outputs(
+    root,
+    config,
+    value,
+    out~,
+    tutorial_nav=tutorials.navigation,
+  )
+  let external_routes = component_assets.map(asset => "/" + asset.0) +
+    gallery.filter_map(output => {
+      match output {
+        Text(path, _) =>
+          if path.has_suffix("index.html") {
+            Some("/" + path[:path.length() - "index.html".length()].to_owned())
+          } else {
+            None
+          }
+        _ => None
+      }
+    })
   let built = @site.build(
     config,
     sources,
@@ -234,10 +250,28 @@ pub async fn build(
     api~,
     external_routes~,
     providers~,
+    tutorials~,
   )
   let outputs = built.outputs.copy()
   outputs.append(gallery)
   outputs.append(static_outputs(root, config, value, out))
+  let component_pages = built.outputs.filter_map(output => {
+    match output {
+      Text(path, text) if path.has_suffix(".html") => Some(text)
+      _ => None
+    }
+  })
+  let has_components = component_pages
+    .iter()
+    .any(html => {
+      html.contains("data-tutorial-workspace") ||
+      html.contains("data-telescope-editor")
+    })
+  if has_components {
+    for (path, text) in component_assets {
+      outputs.push(Text(path, text))
+    }
+  }
   for (path, text) in shell_assets {
     outputs.push(Text(path, text))
   }
@@ -251,6 +285,24 @@ pub async fn build(
   }
   let provenance : Json = {
     "toolkit_version": version,
+    "tutorials": match tutorial {
+      Some(input) =>
+        {
+          "manifest": input.source,
+          "schema_version": input.manifest.schema_version,
+          "courses": input.manifest.courses.map(c => c.id),
+          "providers": input.manifest.providers.map(p => {
+            let metadata : Json = {
+              "id": p.id,
+              "contract_version": p.contract_version,
+              "engine_version": p.engine_version,
+            }
+            metadata
+          }),
+          "case_execution": "not performed during build",
+        }
+      None => Json::null()
+    },
     "extensions": extensions,
     "api_modules": config.api,
     "repo_ref": config.repo_ref,
