@@ -1,5 +1,29 @@
 # Release verification
 
+## Published 0.3.0, 2026-10-28
+
+The owner approved publication from PR 11's squash merge
+`6afd8622e81a1778467fc55a8242d2071d3c39d0`.
+[Actions run 40637807149](https://github.com/moonrockz/telescope/actions/runs/40637807149)
+passed both platform qualifiers and the live exact-commit/version owner/admin
+gate, then published `moonrockz/telescope@0.3.0` and matching CLI v0.3.0.
+
+Qualification passed 282 native tests, two release-gate tests, 18 JS unit tests,
+compiled native/worker protocol parity, publisher regressions, public-index
+bootstrap, all-target portable checks, packaging and prepared consumers. Linux
+passed all 108 Chromium scenarios. Real published consumers then passed on Linux
+x64 in the publication job and independently on macOS arm64. They resolved the
+actual registry package and checksum-verified release archive from empty homes,
+without candidate caches or workspace overrides.
+
+[0.3.0.md](0.3.0.md) records exact downloads and SHA-256 values, the four public
+consumer reports and machine-readable publication evidence. Standalone Formatter
+use requires no tutorial import; tutorial qualification includes seven independent
+cases, native/worker JSON and revision parity, Chromium edits, deterministic
+builds and both `/` and `/sample/v/1/` bases. Existing gallery and version-one
+consumer regressions pass. No downstream migration is claimed.
+
+
 ## Published 0.2.1, 2026-10-27
 
 Owner-approved PR 8 merged as `1f84c6c8de780ea9322db6eef14c10395a4670f9`,

@@ -1,0 +1,15 @@
+{
+  "version": "0.3.0",
+  "platform": "linux-x64",
+  "package_source": "real Mooncakes registry and GitHub release",
+  "published": true,
+  "library": "moonrockz/telescope@0.3.0",
+  "cli_archive": "telescope-0.3.0-linux-x64.tar.gz",
+  "workspace_overrides": false,
+  "gallery_manifest_version": 1,
+  "gallery_static_source_and_artifact_bytes": true,
+  "bases": [
+    "/",
+    "/example/"
+  ]
+}

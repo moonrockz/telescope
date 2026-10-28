@@ -13,17 +13,17 @@
   Code goes in <pre><code class="language-moonbit"> (or scheme, toml, json, bash, diff). Give sections an id and
   list them in nav.toc.
 -->
-<link rel="stylesheet" href="../../../docs/templates/assets/agent-document.css">
-<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github.min.css" media="(prefers-color-scheme: light)">
-<link rel="stylesheet" href="../../../docs/templates/assets/highlight/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
-<script defer src="../../../docs/templates/assets/highlight/highlight.min.js"></script>
-<script defer src="../../../docs/templates/assets/highlight/languages/scheme.min.js"></script>
-<script defer src="../../../docs/templates/assets/agent-document.js"></script>
+<link rel="stylesheet" href="../../../../docs/templates/assets/agent-document.css">
+<link rel="stylesheet" href="../../../../docs/templates/assets/highlight/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="../../../../docs/templates/assets/highlight/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<script defer src="../../../../docs/templates/assets/highlight/highlight.min.js"></script>
+<script defer src="../../../../docs/templates/assets/highlight/languages/scheme.min.js"></script>
+<script defer src="../../../../docs/templates/assets/agent-document.js"></script>
 </head>
 <body>
 <main>
 <h1>standardize-tutorial-components</h1>
-<p class="meta">OpenSpec change · 2026-10-27 · Implementation approved · Epic telescope-58o · Publication separately owner gated</p>
+<p class="meta">OpenSpec change · 2026-10-27 · Implementation verified · Epic telescope-58o · 0.3.0 published with owner approval</p>
 
 <nav class="toc" aria-label="Contents">
 <ul>
@@ -41,7 +41,7 @@
 <h2 id="context">Context</h2>
 <p>See <a href="proposal.md">the proposal</a> for motivation. Telescope 0.2.1 provides a static shell, CommonMark content, gallery planning, route-local islands and a reusable native host. Its extension contract accepts one page route per page adapter and separate island registrations. There is no tutorial catalog, lesson model, execution scheduler or case-checking contract.</p>
 <p>Smithy's tour separates model, source loading, lesson state/view, browser effects and native checks, but those packages import Smithy playground types. The reusable behavior is already visible; copying the packages intact would also copy Smithy output enums, severities, filenames and worker messages. The codec workspace extends value lessons with serialization profiles, which makes a shared fixed list of engine modes especially unsuitable.</p>
-<p>The accepted <a href="../../specs/site-extensions/spec.md">domain ownership contract</a> still applies. This change proposes generic tutorial behavior, not a move of Smithy's playground engine into Telescope. Repository inputs and consumer JavaScript remain reviewed content. This design adds no runtime package discovery.</p>
+<p>The accepted <a href="../../../specs/site-extensions/spec.md">domain ownership contract</a> still applies. This change proposes generic tutorial behavior, not a move of Smithy's playground engine into Telescope. Repository inputs and consumer JavaScript remain reviewed content. This design adds no runtime package discovery.</p>
 
 <h2 id="goals">Goals and non-goals</h2>
 <p>Provide independently usable content planning, a general code editor, tutorial workspace state/views and case comparison packages. The code editor owns formatting and is usable on any consumer page without tutorial configuration or execution engines. The standard host composes it with tutorial behavior to build a course. A static course must require no execution provider. An unrelated consumer must prove both standalone editing and tutorial composition before Smithy adoption.</p>
