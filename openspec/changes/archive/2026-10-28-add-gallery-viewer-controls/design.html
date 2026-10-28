@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add gallery viewer controls: design</title>
+<meta name="color-scheme" content="light dark">
+<style>
+:root { color-scheme: light dark; --bg: #fafafa; --fg: #18212f; --muted: #526071;
+  --line: #cbd5e1; --panel: #eef2f6; --link: #075caa; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111827; --fg: #e5e7eb; --muted: #b0bdce;
+    --line: #475569; --panel: #1e293b; --link: #8cc8ff; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 1rem/1.6 system-ui, sans-serif; }
+main { max-width: 70rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+h1, h2, h3 { line-height: 1.25; overflow-wrap: anywhere; }
+h2 { margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+a { color: var(--link); }
+a:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.meta { color: var(--muted); }
+.toc, pre, details { background: var(--panel); border: 1px solid var(--line);
+  border-radius: .4rem; padding: 1rem; }
+code { font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+pre { overflow-x: auto; } pre code { overflow-wrap: normal; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--line); padding: .6rem; text-align: left;
+  overflow-wrap: anywhere; }
+svg { max-width: 100%; height: auto; }
+@media print { main { max-width: none; padding: 0; } pre, tr { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main>
+<h1>Add gallery viewer controls</h1><p class="meta">Approved upstream implementation scope, 2026-10-28</p>
+<nav class="toc" aria-label="Contents"><a href="#context">Context</a> · <a href="#goals">Goals</a> · <a href="#decisions">Decisions</a> · <a href="#risks">Risks</a> · <a href="#migration">Migration</a></nav>
+<h2 id="context">Context</h2><p>See <a href="proposal.md">proposal</a>. Telescope 0.3.0 owns gallery markup and browser islands. Supplied SVG and source artifacts are copied unchanged. Cards currently wrap previews in their detail link.</p>
+<h2 id="goals">Goals and non-goals</h2><p>Keep the existing pure planning and native host boundary. Consumer raster code stays in supplied local assets. No diagram engine, browser canvas substitute or publication is part of this implementation.</p>
+<h2 id="decisions">Decisions</h2>
+<h3 id="view-1">VIEW-1. Owner: scoped shared viewport contract</h3><p>Use the diagram-viewer root and part classes and CSS variables agreed with diagrams.mbt. Copy reviewed framework-free viewport assets into Telescope. Move preview markup outside card navigation; retain a title link and stable routes. The runtime adds controls only after script runs. Transform content beneath a fixed toolbar, with native fullscreen and in-place modal fallback.</p>
+<h3 id="raster-1">RASTER-1. Call: explicit consumer adapter</h3><p>A local configured adapter script registers window.DiagramsRaster.export. Its asynchronous input contains canonical SVG, format, validated options, AbortSignal and progress callback; its result has bytes, mediaType, width and height. Telescope fetches canonical SVG only when export starts, reports errors and supplies download feedback. It never captures transformed DOM.</p>
+<h3 id="brand-1">BRAND-1. Call: optional shell asset paths</h3><p>Two optional configuration strings identify output paths for logo and favicon. Existing static mapping copies the files. Validation rejects absolute, traversal and ambiguous URL paths. Shell URLs use config.href so assembly retains each version context.</p>
+<h2 id="risks">Risks and trade-offs</h2><p>Fullscreen can lose inherited tokens. Keep the viewer within its existing root and test custom properties. Dragging can steal link clicks. Keep controls outside links and require a drag threshold. Adapter failure must not affect source actions. Use per-export exception handling and byte checks.</p>
+<h2 id="migration">Migration plan</h2><p>Package the implementation and test an independent consumer. Land this implementation only after checks and review. Prepare evidence for a separate owner-approved matching library and CLI release before downstream adoption. Rollback restores previous generic assets and optional configuration.</p>
+</main></body></html>

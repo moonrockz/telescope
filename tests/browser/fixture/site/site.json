@@ -20,5 +20,14 @@
     "site/articles"
   ],
   "api_output": "api-metadata",
-  "api_generate": false
+  "api_generate": false,
+  "header_logo": "assets/brand/logo.svg",
+  "favicon": "assets/brand/logo.svg",
+  "gallery_raster_adapter": "assets/raster-fixture.js",
+  "static": [
+    {
+      "from": "site/assets",
+      "to": "assets"
+    }
+  ]
 }

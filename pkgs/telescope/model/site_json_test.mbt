@@ -41,6 +41,9 @@ test "parse reads the site configuration" {
     api: [],
     nav: None,
     chapters: [],
+    header_logo: "",
+    favicon: "",
+    gallery_raster_adapter: "",
   })
 }
 

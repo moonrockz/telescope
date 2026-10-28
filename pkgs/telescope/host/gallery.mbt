@@ -72,6 +72,11 @@ async fn gallery_outputs(
     for file in entry.companions {
       required_resources[file.path] = true
     }
+    for file in [entry.preview, entry.preview_dark] {
+      if file is Some(file) && file.media_type == "image/svg+xml" {
+        readable[file.path] = true
+      }
+    }
     for file in entry.sources {
       let media = file.media_type
         .split(";")

@@ -317,3 +317,21 @@ test "every declared source is inspectable or has a labeled download" {
   }
   assert_true(detail.contains("Inline source unavailable"))
 }
+
+///|
+test "canonical preview text stays inert for link checking and version rewriting" {
+  let manifest = @gallery.parse_manifest(manifest_json(implemented("review"))).unwrap()
+  let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\"><text>url(#mask) /example/next/ &amp; label</text></svg>\r\n"
+  let result = @gallery.plan(
+    manifest,
+    "/example/",
+    source_text=Map([("previews/review.svg", svg)]),
+  ).unwrap()
+  for page in result.pages {
+    assert_true(page.body_html.contains("diagram-viewer__canonical"))
+    assert_true(page.body_html.contains("url&#40;#mask&#41;"))
+    assert_true(page.body_html.contains("&#47;example&#47;next&#47;"))
+    assert_true(page.body_html.contains("&#13;\n</template>"))
+    assert_false(page.body_html.contains("<svg"))
+  }
+}

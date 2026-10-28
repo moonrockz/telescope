@@ -17,6 +17,9 @@ let lander : @model.SiteConfig = {
   api: [],
   nav: None,
   chapters: [],
+  header_logo: "",
+  favicon: "",
+  gallery_raster_adapter: "",
 }
 
 ///|
