@@ -250,6 +250,9 @@ pub(all) struct SiteConfig {
   api : Array[String]
   nav : Array[NavGroup]?
   chapters : Array[ChapterOrder]
+  header_logo : String
+  favicon : String
+  gallery_raster_adapter : String
 } derive(Eq, @debug.Debug)
 pub fn SiteConfig::absolute(Self, String) -> String
 pub fn SiteConfig::chapter_order(Self, String, String) -> Int32?

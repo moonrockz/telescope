@@ -75,35 +75,88 @@ pub fn layout(
       .data_set("base", config.base_path)
       .data_set("site-root", @model.site_root(config.base_path)),
     [
-      @html.head([
-        @html.meta(charset="utf-8"),
-        @html.meta(
-          name="viewport",
-          content="width=device-width, initial-scale=1",
-        ),
-        @html.title(title),
-        @html.meta(name="description", content=meta.description),
-        @html.script(
-          attrs=@html.Attrs::build().inner_html(theme_script),
-          @html.nothing,
-        ),
-        @html.link(rel="stylesheet", href=config.href("/assets/site.css")),
-        @html.link(
-          rel="alternate",
-          type_="application/atom+xml",
-          href=config.href("/articles/atom.xml"),
-          title="\{config.title} articles",
-        ),
-        @html.script(
-          src=config.href("/assets/islands.js"),
-          type_="module",
-          @html.nothing,
-        ),
-      ]),
+      @html.head(
+        [
+          @html.meta(charset="utf-8"),
+          @html.meta(
+            name="viewport",
+            content="width=device-width, initial-scale=1",
+          ),
+          @html.title(title),
+          @html.meta(name="description", content=meta.description),
+          @html.script(
+            attrs=@html.Attrs::build().inner_html(theme_script),
+            @html.nothing,
+          ),
+          @html.link(rel="stylesheet", href=config.href("/assets/site.css")),
+        ] +
+        (if config.favicon == "" {
+          []
+        } else {
+          [@html.link(rel="icon", href=config.href("/" + config.favicon))]
+        }) +
+        (if meta.route.has_prefix("/gallery/") {
+          [
+            @html.link(rel="stylesheet", href=config.href("/assets/viewer.css")),
+            @html.script(
+              src=config.href("/assets/viewer.js"),
+              attrs=@html.Attrs::build().defer_(true),
+              @html.nothing,
+            ),
+          ] +
+          (if config.gallery_raster_adapter == "" {
+            []
+          } else {
+            [
+              @html.script(
+                src=config.href("/" + config.gallery_raster_adapter),
+                attrs=@html.Attrs::build().defer_(true),
+                @html.nothing,
+              ),
+              @html.script(
+                src=config.href("/assets/gallery-export.js"),
+                attrs=@html.Attrs::build().defer_(true),
+                @html.nothing,
+              ),
+            ]
+          })
+        } else {
+          []
+        }) +
+        [
+          @html.link(
+            rel="alternate",
+            type_="application/atom+xml",
+            href=config.href("/articles/atom.xml"),
+            title="\{config.title} articles",
+          ),
+          @html.script(
+            src=config.href("/assets/islands.js"),
+            type_="module",
+            @html.nothing,
+          ),
+        ],
+      ),
       @html.body([
         @html.a(href="#content", class="skip-link", "Skip to content"),
         @html.header(class="site-header", [
-          @html.a(href=config.href("/"), class="brand", config.title),
+          @html.a(
+            href=config.href("/"),
+            class="brand",
+            (if config.header_logo == "" {
+              []
+            } else {
+              [
+                @html.img(
+                  src=config.href("/" + config.header_logo),
+                  alt="",
+                  width=32,
+                  height=32,
+                ),
+              ]
+            }) +
+            [@html.text(config.title)],
+          ),
           @html.nav(
             id="site-links",
             class="site-links",

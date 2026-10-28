@@ -27,16 +27,16 @@ test('responsive cards and details select supplied themes and contain their prev
       await expect(page.getByRole('searchbox', { name: 'Filter examples' })).toBeVisible();
       await expect(page.locator(visibleCards)).toHaveCount(4);
       const signal = page.getByRole('link', { name: 'Signal path', exact: true });
-      await expect(signal.locator(`.gallery-${theme} img`)).toBeVisible();
-      await expect(signal.locator(`.gallery-${theme === 'light' ? 'dark' : 'light'} img`)).toBeHidden();
-      await expect(page.getByRole('link', { name: 'Settings structure', exact: true }).locator('.gallery-light-only img')).toBeVisible();
+      await expect(page.locator('.gallery-card').filter({ has: signal }).locator(`.gallery-${theme} img`)).toBeVisible();
+      await expect(page.locator('.gallery-card').filter({ has: signal }).locator(`.gallery-${theme === 'light' ? 'dark' : 'light'} img`)).toBeHidden();
+      await expect(page.locator('.gallery-card').filter({ has: page.getByRole('link', { name: 'Settings structure', exact: true }) }).locator('.gallery-light-only img')).toBeVisible();
       const images = page.locator('.gallery-card-preview:visible img');
       for (const image of await images.all()) {
         await expect(image).toHaveCSS('object-fit', 'contain');
         expect(await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBeTruthy();
       }
       const planned = page.getByRole('link', { name: 'Future format', exact: true });
-      await expect(planned).toContainText('Planned');
+      await expect(page.locator('.gallery-card').filter({ has: planned })).toContainText('Planned');
       await expect(planned.locator('img')).toHaveCount(0);
       await noPageOverflow(page);
       await signal.click();
@@ -245,4 +245,136 @@ test('assembled trees preserve literal source URLs for copying and downloads', a
     expect(await response.body()).toEqual(await readFile(new URL('examples/sources/signal.txt', fixture)));
     await expect(page.locator('#site-links a[aria-current="page"]')).toHaveAttribute('href', base + 'gallery/');
   }
+});
+
+test('independent gallery viewports support zoom limits pan fit skins and denied fullscreen', async ({ page, site }) => {
+  await page.addInitScript(() => {
+    Element.prototype.requestFullscreen = () => Promise.reject(new DOMException('Denied', 'NotAllowedError'));
+  });
+  await page.goto(site.plain + site.base + 'gallery/');
+  const roots = page.locator('.gallery-card-preview[data-diagram-viewer]:not(.gallery-dark)');
+  const first = roots.first();
+  const second = roots.nth(1);
+  const viewport = first.locator('.diagram-viewer__viewport');
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1');
+  await first.evaluate(root => { (root as HTMLElement).style.setProperty('--diagram-viewer-accent', '#ab1234'); });
+  await first.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1.25');
+  await expect(second.locator('.diagram-viewer__viewport')).toHaveAttribute('data-viewer-scale', '1');
+  await viewport.focus();
+  const before = await first.locator('.diagram-viewer__content').getAttribute('style');
+  await viewport.press('ArrowLeft');
+  expect(await first.locator('.diagram-viewer__content').getAttribute('style')).not.toBe(before);
+  const box = await viewport.boundingBox();
+  if (!box) throw new Error('Viewport missing');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down(); await page.mouse.move(box.x + box.width / 2 + 35, box.y + box.height / 2 + 20, { steps: 4 }); await page.mouse.up();
+  await expect(page).toHaveURL(site.plain + site.base + 'gallery/');
+  await first.getByRole('button', { name: 'Fullscreen', exact: true }).click();
+  await expect(viewport).toHaveAttribute('role', 'dialog');
+  await expect(viewport).toHaveAttribute('aria-modal', 'true');
+  expect(await viewport.evaluate(node => getComputedStyle(node).getPropertyValue('--dv-accent').trim())).toBe('#ab1234');
+  await first.getByRole('button', { name: 'Exit fullscreen', exact: true }).press('Escape');
+  await expect(first.getByRole('button', { name: 'Fullscreen', exact: true })).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe('');
+  await first.getByRole('button', { name: 'Fit diagram', exact: true }).click();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1');
+  const plus = first.getByRole('button', { name: 'Zoom in', exact: true });
+  for (let i = 0; i < 16 && await plus.isEnabled(); i++) await plus.click();
+  await expect(plus).toBeDisabled();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '8');
+  const minus = first.getByRole('button', { name: 'Zoom out', exact: true });
+  for (let i = 0; i < 24 && await minus.isEnabled(); i++) await minus.click();
+  await expect(minus).toBeDisabled();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '0.25');
+  await first.getByRole('button', { name: 'Fit diagram', exact: true }).click();
+  await page.emulateMedia({ media: 'print' });
+  await expect(first.locator('.diagram-viewer__content')).toHaveCSS('transform', 'none');
+  await expect(first.locator('.diagram-viewer__toolbar')).toBeHidden();
+});
+
+test('configured brand assets and canonical raster adapter work in active version trees', async ({ page, site }) => {
+  for (const tree of ['', 'next/']) {
+    const base = site.base + tree;
+    await page.goto(site.versions + base + 'gallery/signal/');
+    await expect(page.locator('.brand img')).toHaveAttribute('src', base + 'assets/brand/logo.svg');
+    await expect(page.locator('head link[rel="icon"]')).toHaveAttribute('href', base + 'assets/brand/logo.svg');
+    const root = page.locator('.gallery-light[data-diagram-viewer]');
+    await root.getByRole('button', { name: 'Zoom in', exact: true }).click();
+    await root.getByText('Export image', { exact: true }).click();
+    await page.context().setOffline(true);
+    const downloadPromise = page.waitForEvent('download');
+    await root.getByRole('button', { name: 'Download PNG', exact: true }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('signal.png');
+    const pngPath = await download.path();
+    if (!pngPath) throw new Error('PNG download path unavailable');
+    const png = await readFile(pngPath);
+    expect([...png.subarray(0, 8)]).toEqual([137,80,78,71,13,10,26,10]);
+    expect(await page.evaluate(async data => {
+      const image = await createImageBitmap(new Blob([new Uint8Array(data)]));
+      return [image.width, image.height];
+    }, [...png])).toEqual([2, 2]);
+    await expect(root.locator('.diagram-viewer__status')).toHaveText('Downloaded PNG, 2 × 2 pixels.');
+    const request = await page.evaluate(() => (window as Window & {rasterRequest?: {svg: string; format: string}}).rasterRequest);
+    expect(request?.format).toBe('png');
+    expect(request?.svg).toBe(await readFile(new URL('examples/previews/signal.svg', fixture), 'utf8'));
+    await expect(root.locator('.diagram-viewer__viewport')).toHaveAttribute('data-viewer-scale', '1.25');
+    await root.getByLabel('Format', { exact: true }).selectOption('jpeg');
+    await root.getByLabel('JPEG quality', { exact: true }).fill('78');
+    const jpegPromise = page.waitForEvent('download');
+    await root.getByRole('button', { name: 'Download JPEG', exact: true }).click();
+    const jpegDownload = await jpegPromise;
+    expect(jpegDownload.suggestedFilename()).toBe('signal.jpg');
+    const jpegPath = await jpegDownload.path();
+    if (!jpegPath) throw new Error('JPEG download path unavailable');
+    const jpeg = await readFile(jpegPath);
+    expect([...jpeg.subarray(0, 2)]).toEqual([255,216]);
+    expect(await page.evaluate(async data => {
+      const image = await createImageBitmap(new Blob([new Uint8Array(data)]));
+      return [image.width, image.height];
+    }, [...jpeg])).toEqual([2, 2]);
+    await page.evaluate(() => { (window as Window & {rasterFailure?: boolean}).rasterFailure = true; });
+    await root.getByRole('button', { name: 'Download JPEG', exact: true }).click();
+    await expect(root.locator('.diagram-viewer__status')).toContainText('Fixture conversion refused');
+    await expect(root.getByRole('button', { name: 'Download JPEG', exact: true })).toBeEnabled();
+    await expect(page.getByRole('link', { name: 'Download SVG', exact: true })).toBeVisible();
+    await page.evaluate(() => {
+      Object.assign(window, {rasterFailure: false, rasterHold: true});
+    });
+    await root.getByRole('button', { name: 'Download JPEG', exact: true }).click();
+    await expect(root.getByRole('button', { name: 'Download JPEG', exact: true })).toBeDisabled();
+    await root.getByRole('button', { name: 'Cancel export', exact: true }).click();
+    await expect(root.locator('.diagram-viewer__status')).toHaveText('Export cancelled.');
+    await expect(root.getByRole('button', { name: 'Download JPEG', exact: true })).toBeEnabled();
+    await page.evaluate(() => { Object.assign(window, {rasterHold: true}); });
+    await root.getByLabel('Format', { exact: true }).selectOption('png');
+    const racedDownload = page.waitForEvent('download');
+    await root.getByRole('button', { name: 'Download PNG', exact: true }).click();
+    await expect(root.getByRole('button', { name: 'Download PNG', exact: true })).toBeDisabled();
+    await root.getByLabel('Format', { exact: true }).selectOption('jpeg');
+    await root.getByLabel('Width in pixels, blank for source size', { exact: true }).fill('123');
+    await page.evaluate(() => { (window as Window & {rasterRelease?: () => void}).rasterRelease?.(); });
+    expect((await racedDownload).suggestedFilename()).toBe('signal.png');
+    await expect(root.locator('.diagram-viewer__status')).toHaveText('Downloaded PNG, 2 × 2 pixels.');
+    const racedRequest = await page.evaluate(() => (window as Window & {rasterRequest?: {format: string; options: object}}).rasterRequest);
+    expect(racedRequest).toMatchObject({format: 'png'});
+    expect(racedRequest?.options).not.toHaveProperty('width');
+    await page.context().setOffline(false);
+  }
+});
+
+test('detail native fullscreen retains viewport controls and returns focus', async ({ page, site }) => {
+  await page.goto(site.plain + site.base + 'gallery/signal/');
+  const root = page.locator('.gallery-light[data-diagram-viewer]');
+  const viewport = root.locator('.diagram-viewer__viewport');
+  await root.getByRole('button', { name: 'Fullscreen', exact: true }).click();
+  await expect.poll(() => viewport.evaluate(node => document.fullscreenElement === node)).toBeTruthy();
+  await root.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1.25');
+  await root.getByRole('button', { name: 'Exit fullscreen', exact: true }).click();
+  await expect(root.getByRole('button', { name: 'Fullscreen', exact: true })).toBeFocused();
+  expect(await page.evaluate(() => document.fullscreenElement)).toBeNull();
+  await root.getByRole('button', { name: 'Fit diagram', exact: true }).click();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1');
 });

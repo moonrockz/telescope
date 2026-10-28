@@ -19,6 +19,10 @@ pub(all) struct SiteConfig {
   nav : Array[NavGroup]?
   /// The sidebar order of listed packages' sub-package pages; empty when `site.json` has no `chapters`.
   chapters : Array[ChapterOrder]
+  /// Optional normalized output asset paths. Empty strings retain the existing shell.
+  header_logo : String
+  favicon : String
+  gallery_raster_adapter : String
 } derive(Eq, Debug)
 
 ///|
@@ -140,6 +144,30 @@ pub fn SiteConfig::parse(
         problem(file, "unsupported `schema_version`: supported version is 1"),
       )
   }
+  let header_logo = option_text("header_logo", "")
+  let favicon = option_text("favicon", "")
+  let gallery_raster_adapter = option_text("gallery_raster_adapter", "")
+  for
+    (key, path) in [
+      ("header_logo", header_logo),
+      ("favicon", favicon),
+      ("gallery_raster_adapter", gallery_raster_adapter),
+    ] {
+    if path != "" &&
+      (
+        !relative_path(path) ||
+        path.contains("?") ||
+        path.contains("#") ||
+        path.contains("%")
+      ) {
+      problems.push(
+        problem(
+          file,
+          "`\{key}` must be a normalized relative output asset path",
+        ),
+      )
+    }
+  }
   let repo_ref = option_text("repo_ref", "main")
   let docs_dir = option_text("docs_dir", "docs")
   let pages_dir = option_text("pages_dir", "site/pages")
@@ -217,6 +245,9 @@ pub fn SiteConfig::parse(
     api,
     nav,
     chapters,
+    header_logo,
+    favicon,
+    gallery_raster_adapter,
   }
 }
 

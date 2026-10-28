@@ -176,3 +176,35 @@ test "nav items can name HTML pages" {
     Some([{ group: "Pages", items: ["GUIDE.html", "*.html"], }]),
   )
 }
+
+///|
+test "brand and raster adapter output paths are explicit normalized local assets" {
+  let base = "{\"title\":\"Brand\",\"description\":\"Test\",\"base_path\":\"/demo/\",\"site_url\":\"https://example.test/demo/\",\"repo_url\":\"https://example.test/repo\""
+  let config = @model.SiteConfig::parse(
+    "site.json",
+    base +
+    ",\"header_logo\":\"assets/icon.png\",\"favicon\":\"assets/favicon.ico\",\"gallery_raster_adapter\":\"assets/raster.js\"}",
+  )
+  assert_eq(config.header_logo, "assets/icon.png")
+  assert_eq(config.favicon, "assets/favicon.ico")
+  assert_eq(config.gallery_raster_adapter, "assets/raster.js")
+  for
+    path in [
+      "../bad.png", "/bad.png", "https://example.test/a.png", "assets/a.png?x", "assets/a.png#x",
+      "assets/%2e%2e/a.png",
+    ] {
+    for key in ["header_logo", "favicon", "gallery_raster_adapter"] {
+      try
+        @model.SiteConfig::parse(
+          "site.json",
+          base + ",\"" + key + "\":\"" + path + "\"}",
+        )
+      catch {
+        @model.Invalid(problems) =>
+          assert_true(problems.any(p => p.message.contains(key)))
+      } noraise {
+        _ => fail("invalid asset path accepted")
+      }
+    }
+  }
+}

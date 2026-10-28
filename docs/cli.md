@@ -95,3 +95,26 @@ attributes and CSS, preserves binary assets, adds static banners and writes
 `versions.json`. Older-version banners link to the same page in latest or its
 section fallback. Consumers own tag selection, downloads, archive checksums,
 eligibility and deployment policy.
+
+Optional `header_logo`, `favicon` and `gallery_raster_adapter` settings are
+normalized relative **output** asset paths. Empty or absent settings retain the
+text brand and original SVG downloads. Use static mappings to copy the files:
+
+```json
+{
+  "header_logo": "assets/brand/header.png",
+  "favicon": "assets/brand/favicon.ico",
+  "gallery_raster_adapter": "assets/diagram-raster.js",
+  "static": [{"from": "site/assets", "to": "assets"}]
+}
+```
+
+Header and favicon URLs follow the active base path and version tree. Paths
+cannot be absolute, include traversal, query strings, fragments or percent
+escapes. The logo has an empty alternative label because the adjacent project
+title provides the link's name. Raster adapters load only on gallery pages.
+See [presentation hooks and the adapter contract](presentation.md#gallery-viewport-and-export-hooks).
+
+Direct `SiteConfig` struct literals must supply the new `header_logo`, `favicon`
+and `gallery_raster_adapter` fields, using `""` for prior behavior. JSON callers
+can omit these keys and keep their existing configuration unchanged.

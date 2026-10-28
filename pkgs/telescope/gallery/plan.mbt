@@ -23,7 +23,12 @@ fn artifact_url(base_path : String, file : FileRef) -> String {
 
 ///|
 /// Theme selection belongs to CSS, including when scripting is unavailable.
-fn previews(entry : Entry, base_path : String, card~ : Bool = false) -> String {
+fn previews(
+  entry : Entry,
+  base_path : String,
+  card~ : Bool = false,
+  canonical~ : Map[String, String] = Map([]),
+) -> String {
   guard entry.preview is Some(light) else {
     return "<p class=\"gallery-placeholder\">Planned example. No preview supplied.</p>"
   }
@@ -34,10 +39,23 @@ fn previews(entry : Entry, base_path : String, card~ : Bool = false) -> String {
     "gallery-light-only"
   }
   let alt = escape(entry.title + " preview")
-  let light_html = "<figure class=\"\{frame} \{light_class}\"><img src=\"\{escape(artifact_url(base_path, light))}\" alt=\"\{alt}\" loading=\"lazy\"></figure>"
+  let canonical_html = fn(file : FileRef) -> String {
+    match canonical.get(file.path) {
+      Some(svg) => {
+        let literal = escape(svg)
+          .replace_all(old="\r", new="&#13;")
+          .replace_all(old="(", new="&#40;")
+          .replace_all(old=")", new="&#41;")
+          .replace_all(old="/", new="&#47;")
+        "<template class=\"diagram-viewer__canonical\">\{literal}</template>"
+      }
+      None => ""
+    }
+  }
+  let light_html = "<figure class=\"diagram-viewer \{frame} \{light_class}\" data-diagram-viewer data-raster-name=\"\{escape(entry.id)}\"><div class=\"diagram-viewer__viewport\"><div class=\"diagram-viewer__content\"><img src=\"\{escape(artifact_url(base_path, light))}\" alt=\"\{alt}\" loading=\"lazy\"></div></div>\{canonical_html(light)}</figure>"
   let dark_html = match entry.preview_dark {
     Some(file) =>
-      "<figure class=\"\{frame} gallery-dark\"><img src=\"\{escape(artifact_url(base_path, file))}\" alt=\"\{alt} (dark)\" loading=\"lazy\"></figure>"
+      "<figure class=\"diagram-viewer \{frame} gallery-dark\" data-diagram-viewer data-raster-name=\"\{escape(entry.id)}-dark\"><div class=\"diagram-viewer__viewport\"><div class=\"diagram-viewer__content\"><img src=\"\{escape(artifact_url(base_path, file))}\" alt=\"\{alt} (dark)\" loading=\"lazy\"></div></div>\{canonical_html(file)}</figure>"
     None => ""
   }
   light_html + dark_html
@@ -98,7 +116,7 @@ fn detail_body(
     None => ""
   }
   heading +
-  "<div class=\"gallery-workbench\"><div class=\"gallery-tabs\"></div><section class=\"gallery-panel\" id=\"gallery-preview\"><h2>Preview</h2>\{previews(entry, base_path)}</section><section class=\"gallery-panel gallery-source\" id=\"gallery-source\"><h2>Source</h2>\{sources}</section></div><p class=\"gallery-actions\">\{downloads} \{player}</p></article>"
+  "<div class=\"gallery-workbench\"><div class=\"gallery-tabs\"></div><section class=\"gallery-panel\" id=\"gallery-preview\"><h2>Preview</h2>\{previews(entry, base_path, canonical=source_text)}</section><section class=\"gallery-panel gallery-source\" id=\"gallery-source\"><h2>Source</h2>\{sources}</section></div><p class=\"gallery-actions\">\{downloads} \{player}</p></article>"
 }
 
 ///|
@@ -146,7 +164,7 @@ pub fn plan(
           let terms = escape(
             entry.title + " " + entry.family + " " + description,
           )
-          "<li class=\"gallery-card\" data-gallery-search=\"\{terms}\"><a class=\"gallery-card-link\" aria-label=\"\{escape(entry.title)}\" href=\"\{base_path}gallery/\{entry.id}/\">\{previews(entry, base_path, card=true)}<div class=\"gallery-card-body\"><span class=\"gallery-card-title\">\{escape(entry.title)}</span><p class=\"gallery-card-meta\">\{escape(entry.family)} <strong class=\"gallery-badge\">\{status_label(entry.status)}</strong></p><p>\{escape(description)}</p></div></a></li>"
+          "<li class=\"gallery-card\" data-gallery-search=\"\{terms}\">\{previews(entry, base_path, card=true, canonical=source_text)}<div class=\"gallery-card-body\"><a class=\"gallery-card-link gallery-card-title\" aria-label=\"\{escape(entry.title)}\" href=\"\{base_path}gallery/\{entry.id}/\">\{escape(entry.title)}</a><p class=\"gallery-card-meta\">\{escape(entry.family)} <strong class=\"gallery-badge\">\{status_label(entry.status)}</strong></p><p>\{escape(description)}</p></div></li>"
         })
         .join("")
       "<section class=\"gallery-group\" id=\"\{family_ids[family]}\"><h2>\{escape(family)}</h2><ul class=\"gallery-grid\">\{cards}</ul></section>"
