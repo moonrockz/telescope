@@ -1,5 +1,10 @@
 # Release procedure
 
+The next candidate is [0.4.0](0.4.0.md), prepared after
+[the gallery and branding implementation](https://github.com/moonrockz/telescope/pull/15).
+It is not published. Opening or merging its release PR and approving the exact
+publication commit remain owner gates.
+
 Telescope 0.3.0 is published. [Install and compatibility evidence](0.3.0.md)
 records actual pins, CLI downloads, checksums and clean public consumers on Linux
 x64 and macOS arm64. The owner-approved

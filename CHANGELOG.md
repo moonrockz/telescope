@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0, unreleased
+
+- Add scoped fullscreen, bounded zoom, Fit and pointer/keyboard pan to gallery cards and detail previews.
+- Provide native fullscreen and an accessible modal fallback with focus and scroll restoration.
+- Document per-instance viewer themes, stable part classes and CSS custom properties.
+- Add an optional local PNG/JPEG consumer adapter with sizing, background, quality, cancellation and accessible feedback. Canonical SVG stays independent of viewport state and can export offline.
+- Add optional tree-relative header logo and favicon configuration.
+- Fix explicit light viewer colors, applied site theme changes when storage writes fail, and modal scroll restoration near the page bottom.
+- Breaking API change: direct SiteConfig literals must set header_logo, favicon and gallery_raster_adapter. Use empty strings for existing behavior; JSON configurations may omit the new keys.
+
+This is a prepared release candidate. Publication and real public-install qualification require owner approval and GitHub Actions. See [candidate evidence](docs/release/0.4.0.md).
+
 ## 0.2.1, 2026-10-27
 
 - Align gallery Reset filters controls with the filter textbox and use the shared indigo fill and contrasting text in both themes.

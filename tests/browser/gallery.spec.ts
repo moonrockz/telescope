@@ -419,3 +419,20 @@ test('applied site theme overrides stale denied storage for viewer colors and ex
   await page.emulateMedia({ colorScheme: 'light' });
   await expect(page.locator('.gallery-light[data-diagram-viewer]')).toHaveAttribute('data-viewer-resolved-theme', 'light');
 });
+
+test('modal fullscreen restores scroll coordinates near the page bottom', async ({ page, site }) => {
+  await page.setViewportSize({width: 360, height: 900});
+  await page.addInitScript(() => { Element.prototype.requestFullscreen = () => Promise.reject(new DOMException('Denied', 'NotAllowedError')); });
+  await page.goto(site.plain + site.base + 'gallery/');
+  const target = page.locator('[data-diagram-viewer]:not(.gallery-dark)').last();
+  const fullscreen = target.getByRole('button', {name: 'Fullscreen', exact: true});
+  await target.scrollIntoViewIfNeeded();
+  await fullscreen.evaluate(node => node.addEventListener('click', () => {
+    document.documentElement.dataset.beforeModalScroll = String(scrollY);
+  }, {capture: true, once: true}));
+  await fullscreen.click();
+  await expect(target.locator('.diagram-viewer__viewport')).toHaveAttribute('aria-modal', 'true');
+  await target.getByRole('button', {name: 'Exit fullscreen', exact: true}).press('Escape');
+  expect(await page.evaluate(() => scrollY)).toBe(await page.evaluate(() => Number(document.documentElement.dataset.beforeModalScroll)));
+  await expect(fullscreen).toBeFocused();
+});
