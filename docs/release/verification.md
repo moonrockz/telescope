@@ -1,5 +1,22 @@
 # Release verification
 
+## Published 0.4.0, 2026-10-28
+
+Owner-approved [PR 16](https://github.com/moonrockz/telescope/pull/16) merged as
+`8ab416c7f6e1fc1973f5a4b0caac628978f0895f`, retaining its qualified head tree.
+[Actions run 40767534086](https://github.com/moonrockz/telescope/actions/runs/40767534086) repeated Linux/macOS qualification and
+passed the live exact-commit/version owner/admin gate, credential-dependent dry
+run, publication and real Linux public consumer. Independent macOS public
+qualification passed too, without a candidate cache or workspace override.
+
+The release passed 284 native tests, strict four-target pure checks, publisher
+and public-index regressions, packaging and prepared consumers. Linux passed all
+120 browser cases. Actual public library and CLI downloads match the same-run
+qualified artifacts byte for byte; tag v0.4.0 points to the approved source.
+[The release guide](0.4.0.md) records public pins, downloads, SHA-256 hashes,
+migration notes and the four host/CLI/tutorial/editor public consumer reports.
+[Machine-readable metadata](publication-0.4.0.json) retains the source and receipts.
+
 ## Published 0.3.0, 2026-10-28
 
 The owner approved publication from PR 11's squash merge

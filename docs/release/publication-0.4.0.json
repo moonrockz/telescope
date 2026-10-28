@@ -1,0 +1,42 @@
+{
+  "version": "0.4.0",
+  "library": "moonrockz/telescope@0.4.0",
+  "published": true,
+  "approved_source_commit": "8ab416c7f6e1fc1973f5a4b0caac628978f0895f",
+  "release_pr": "https://github.com/moonrockz/telescope/pull/16",
+  "actions_run": "https://github.com/moonrockz/telescope/actions/runs/40767534086",
+  "actions_actor": "DamianReeves",
+  "release_url": "https://github.com/moonrockz/telescope/releases/tag/v0.4.0",
+  "published_at": "2026-10-28T21:00:37Z",
+  "validated_tree": "7cbdde655661a7840903007828444cbeae32f399",
+  "candidate_ci": "https://github.com/moonrockz/telescope/actions/runs/40766428722",
+  "library_archive": {
+    "version": "0.4.0",
+    "library": "moonrockz/telescope@0.4.0",
+    "url": "https://download.mooncakes.io/user/moonrockz/telescope/0.4.0.zip",
+    "sha256": "cfa50ef42ed30b1dbbcda36386a661dbfe3648c79b6491c3095fd1f09a237b40",
+    "matches_qualified_linux_library": true
+  },
+  "platforms": {
+    "linux-x64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.4.0/telescope-0.4.0-linux-x64.tar.gz",
+      "cli_sha256": "6dda974d670141382122519745057d4120bec0a5b5ff3895646fb07b5393b14c",
+      "matches_qualified_artifact": true,
+      "consumer_report": "consumer-0.4.0-linux-x64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.4.0-linux-x64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Actions published consumer step"
+    },
+    "macos-arm64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.4.0/telescope-0.4.0-macos-arm64.tar.gz",
+      "cli_sha256": "b2042899a1ea9f51dde1b3c168211ad3c59be8ad6fddbd19f8b311fb0a80d591",
+      "matches_qualified_artifact": true,
+      "consumer_report": "consumer-0.4.0-macos-arm64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.4.0-macos-arm64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Local mise run test:consumer -- --published 0.4.0"
+    }
+  }
+}
