@@ -16,6 +16,13 @@ The Windows native-host CI job checks this library boundary and blocks release
 publication on a failure. It does not create a Windows CLI archive; CLI archive
 qualification remains Linux x64 and macOS arm64.
 
+Run `mise run check:host` for the focused host checks. The shared Windows workflow
+runs the same `scripts/check-host.mbtx` with its pinned toolchain. The
+[Windows regression run](https://github.com/moonrockz/telescope/actions/runs/40924057624)
+passes canonical-path, containment, build, assembly and loopback preview tests.
+The prepared-package consumer also builds and checks both root and project bases
+outside this workspace, using an explicit prerelease cache before publication.
+
 ```moonbit
 let warnings = @host.build(
   root,
