@@ -34,6 +34,7 @@ test "implemented and planned pages preserve status base paths escaping and decl
     assert_eq(output.pages[0].route, "/gallery/")
     let detail = output.pages[1].body_html
     assert_true(detail.contains("Review &lt;flow&gt;"))
+    assert_true(detail.contains("id=\"gallery-source-0\""))
     assert_true(
       detail.contains("src=\"\{base}gallery/artifacts/previews/review.svg\""),
     )
@@ -279,15 +280,17 @@ test "optional source text is escaped and cannot alter routes or artifact copies
     enriched.pages.map(page => page.route),
     original.pages.map(page => page.route),
   )
-  let detail = enriched.pages[1].body_html
-  assert_true(
-    detail.contains(
-      "&lt;script&gt;alert&#40;&#39;source &amp; only&#39;&#41;&lt;&#47;script&gt;&#13;\n&quot;quoted&quot;\n",
-    ),
-  )
-  assert_false(detail.contains(source))
-  assert_false(detail.contains("must never be displayed"))
-  assert_false(detail.contains(" hidden"))
+  for page in enriched.pages {
+    let detail = page.body_html
+    assert_true(
+      detail.contains(
+        "&lt;script&gt;alert&#40;&#39;source &amp; only&#39;&#41;&lt;&#47;script&gt;&#13;\n&quot;quoted&quot;\n",
+      ),
+    )
+    assert_false(detail.contains(source))
+    assert_false(detail.contains("must never be displayed"))
+    assert_false(detail.contains(" hidden"))
+  }
   assert_true(original.pages[1].body_html.contains("Inline source unavailable"))
   assert_true(
     original.pages[1].body_html.contains("Download source: sources/review.mmd"),
@@ -309,13 +312,15 @@ test "every declared source is inspectable or has a labeled download" {
       ("second.json", "{\"name\":\"second\"}"),
     ]),
   ).unwrap()
-  let detail = plan.pages[1].body_html
-  assert_true(detail.contains("First source"))
-  assert_true(detail.contains("{&quot;name&quot;:&quot;second&quot;}"))
-  for path in ["sources/review.mmd", "second.json", "binary.bin"] {
-    assert_true(detail.contains("Download source: " + path))
+  for page in plan.pages {
+    let detail = page.body_html
+    assert_true(detail.contains("First source"))
+    assert_true(detail.contains("{&quot;name&quot;:&quot;second&quot;}"))
+    for path in ["sources/review.mmd", "second.json", "binary.bin"] {
+      assert_true(detail.contains("Download source: " + path))
+    }
+    assert_true(detail.contains("Inline source unavailable"))
   }
-  assert_true(detail.contains("Inline source unavailable"))
 }
 
 ///|
@@ -334,4 +339,34 @@ test "canonical preview text stays inert for link checking and version rewriting
     assert_true(page.body_html.contains("&#13;\n</template>"))
     assert_false(page.body_html.contains("<svg"))
   }
+}
+
+///|
+test "index workbenches have independent entry scoped identities and static source" {
+  let manifest = @gallery.parse_manifest(
+    manifest_json(
+      implemented("first") +
+      "," +
+      implemented("second") +
+      "," +
+      planned("future", "planned"),
+    ),
+  ).unwrap()
+  let index = @gallery.plan(
+      manifest,
+      "/next/",
+      source_text=Map([("sources/review.mmd", "graph TD\nA-->B\n")]),
+    ).unwrap().pages[0].body_html
+  for id in ["first", "second"] {
+    assert_true(index.contains("id=\"gallery-card-\{id}-preview\""))
+    assert_true(index.contains("id=\"gallery-card-\{id}-source\""))
+    assert_true(
+      index.contains("aria-labelledby=\"gallery-card-\{id}-source-0\""),
+    )
+    assert_true(index.contains("id=\"gallery-card-\{id}-source-0\""))
+  }
+  assert_true(index.contains("graph TD\nA--&gt;B\n"))
+  assert_false(index.contains("gallery-card-future-source"))
+  assert_false(index.contains(" hidden"))
+  assert_false(index.contains("role=\"tab\""))
 }

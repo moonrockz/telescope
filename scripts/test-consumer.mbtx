@@ -33,7 +33,7 @@ async fn run(
 async fn main {
   let args = @env.args()
   let published = args.contains("--published")
-  let mut version = "0.4.0"
+  let mut version = "0.5.0"
   if published {
     let mut i = 0
     while i < args.length() && args[i] != "--published" {
@@ -73,7 +73,7 @@ async fn main {
     for name in ["index", "cache"] {
       run("cp", ["-R", toolchain + "/registry/" + name, registry + "/" + name])
     }
-    let archive = "_build/publish/moonrockz-telescope-0.4.0.zip"
+    let archive = "_build/publish/moonrockz-telescope-0.5.0.zip"
     let (code, sha, _) = @process.collect_output("shasum", [
       "-a", "256", archive,
     ])
@@ -88,7 +88,7 @@ async fn main {
       allow_exist=true,
     )
     @fs.write_file(
-      registry + "/cache/moonrockz/telescope/0.4.0.zip",
+      registry + "/cache/moonrockz/telescope/0.5.0.zip",
       @fs.read_file(archive).binary(),
       create_mode=CreateOrTruncate,
     )
@@ -206,6 +206,9 @@ async fn main {
       #|  let detail = @fs.read_file("gallery-host-out/gallery/signal/index.html").text()
       #|  assert_true(index.contains("Signal path"))
       #|  assert_true(index.contains("gallery-card"))
+      #|  assert_true(index.contains("gallery-card-signal-preview"))
+      #|  assert_true(index.contains("gallery-card-signal-source"))
+      #|  assert_true(index.contains("signal -&gt; observatory"))
       #|  assert_true(detail.contains("signal -&gt; observatory"))
       #|  assert_true(@fs.read_file("gallery-host-out/gallery/artifacts/signal.txt").binary() == @fs.read_file("examples/signal.txt").binary())
       #|  assert_true(@fs.read_file("gallery-host-out/assets/site.css").text().contains("--accent: #4f46e5"))
@@ -295,7 +298,13 @@ async fn main {
     let gallery_html = @fs.read_file(
       consumer + "/gallery-out/gallery/signal/index.html",
     ).text()
-    guard gallery_html.contains("signal -&gt; observatory") &&
+    let gallery_index = @fs.read_file(
+      consumer + "/gallery-out/gallery/index.html",
+    ).text()
+    guard gallery_index.contains("gallery-card-signal-source") &&
+      gallery_index.contains("signal -&gt; observatory") &&
+      gallery_index.contains(base + "gallery/artifacts/signal.txt") &&
+      gallery_html.contains("signal -&gt; observatory") &&
       gallery_html.contains(base + "gallery/artifacts/signal.txt") &&
       @fs.read_file(consumer + "/gallery-out/gallery/artifacts/signal.txt").binary() ==
       @fs.read_file(consumer + "/examples/signal.txt").binary() else {

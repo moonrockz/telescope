@@ -1,5 +1,9 @@
 # Release procedure
 
+The [0.5.0 candidate](0.5.0.md) prepares gallery index source inspection.
+It requires exact SHA/version owner approval and both-platform qualification
+before publication; 0.4.0 remains the current published release.
+
 Telescope [0.4.0](0.4.0.md) is published after
 [PR 16](https://github.com/moonrockz/telescope/pull/16) merged.
 [Owner-approved Actions run 40767534086](https://github.com/moonrockz/telescope/actions/runs/40767534086) qualified and published

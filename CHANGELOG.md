@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0, candidate
+
+- Add independent accessible Preview/Source tabs to implemented gallery index cards.
+- Reuse exact declared source panels with multiple filenames, copy/download actions, safe escaping and no-script reading.
+- Preserve mounted preview zoom/pan across tab changes, filtering and hidden viewport resize.
+- Expose shared gallery styling hooks and a configurable card source scroll height.
+
+Library and CLI candidates are prepared together. Publication requires owner
+approval of the exact release SHA and version; see [candidate notes](docs/release/0.5.0.md).
+
 ## 0.4.0, 2026-10-28
 
 - Add scoped fullscreen, bounded zoom, Fit and pointer/keyboard pan to gallery cards and detail previews.
