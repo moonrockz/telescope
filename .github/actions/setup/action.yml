@@ -6,6 +6,8 @@ runs:
     - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db
       with:
         version: 2026.10.19
+        # The restored macOS yamllint executable could not run; install fresh tools.
+        cache: ${{ runner.os != 'macOS' }}
     - name: Complete exact MoonBit installation
       if: runner.os != 'Windows'
       shell: bash
