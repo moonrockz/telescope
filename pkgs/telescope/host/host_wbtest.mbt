@@ -1,6 +1,6 @@
 ///|
 async test "configured gallery is reachable from shared headers at both bases" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery-navigation"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-gallery-navigation"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -37,7 +37,7 @@ async test "configured gallery is reachable from shared headers at both bases" {
 
 ///|
 async test "assembly restores latest canonical links only for available release pages" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-canonical"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-canonical"))
   defer @fs.rmdir(root, recursive=true)
   for tree in ["next", "old", "release"] {
     write(
@@ -131,7 +131,7 @@ test "path and URL boundaries reject escapes while nested links resolve" {
 
 ///|
 async test "encoded image filenames build and check at root and nested bases" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-encoded-image"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-encoded-image"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -167,7 +167,7 @@ async test "encoded image filenames build and check at root and nested bases" {
 
 ///|
 async test "responsive images rebase every srcset candidate through version aliases" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-srcset"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-srcset"))
   defer @fs.rmdir(root, recursive=true)
   for
     (tree, base) in [("next", "/example/next/"), ("release", "/example/v/0.1/")] {
@@ -205,7 +205,7 @@ async test "responsive images rebase every srcset candidate through version alia
 
 ///|
 async test "checks aggregate missing assets and fragments and JSON origins" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-check"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-check"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/index.html",
@@ -219,7 +219,7 @@ async test "checks aggregate missing assets and fragments and JSON origins" {
 
 ///|
 async test "promotion replaces old tree and removes stale files" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-promote"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-promote"))
   defer @fs.rmdir(root, recursive=true)
   let out = root + "/site"
   write(out + "/stale.txt", "old")
@@ -232,7 +232,7 @@ async test "promotion replaces old tree and removes stale files" {
 
 ///|
 async test "symlinks outside declared input root fail" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-boundary"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-boundary"))
   defer @fs.rmdir(root, recursive=true)
   @fs.mkdir(root + "/inputs")
   write(root + "/secret", "private")
@@ -259,7 +259,7 @@ test "percent paths decode UTF-8 and reject malformed sequences" {
 
 ///|
 async test "gallery aggregates missing files and rejects undeclared CSS companion" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-gallery"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -292,7 +292,7 @@ async test "gallery aggregates missing files and rejects undeclared CSS companio
 
 ///|
 async test "planned gallery needs no artifact directory" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-planned"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-planned"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -320,7 +320,7 @@ async test "planned gallery needs no artifact directory" {
 
 ///|
 async test "offline supplied trees retain HTML and isolate links at root base" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-versions"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-versions"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/trees/next/index.html",
@@ -350,9 +350,9 @@ async test "offline supplied trees retain HTML and isolate links at root base" {
 
 ///|
 async test "host metadata creation rejects a symlinked ancestor before writing" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-host-path"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-host-path"))
   defer @fs.rmdir(root, recursive=true)
-  let outside = @fs.realpath(@fs.tmpdir(prefix="telescope-outside"))
+  let outside = canonical_path(@fs.tmpdir(prefix="telescope-outside"))
   defer @fs.rmdir(outside, recursive=true)
   @fs.symlink(target=outside, root + "/escape")
   let rejected = try {
@@ -367,7 +367,7 @@ async test "host metadata creation rejects a symlinked ancestor before writing" 
 
 ///|
 async test "version assembly preserves offline gallery source and player bytes" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-version-artifact"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-version-artifact"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/tree/index.html",
@@ -396,7 +396,7 @@ async test "version assembly preserves offline gallery source and player bytes" 
 
 ///|
 async test "explicit static directories preserve stable links and bytes at both bases" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-static"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-static"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -424,7 +424,7 @@ async test "explicit static directories preserve stable links and bytes at both 
 
 ///|
 async test "static mappings reject traversal symlinks and generated output collisions" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-static-boundary"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-static-boundary"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",

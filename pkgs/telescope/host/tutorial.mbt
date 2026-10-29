@@ -33,7 +33,7 @@ pub async fn tutorial_input(
     ])
   }
   let manifest = @tutorial.Manifest::parse(path, @fs.read_file(real).text())
-  let input_root = @fs.realpath(root + "/" + manifest.root)
+  let input_root = canonical_path(root + "/" + manifest.root)
   guard relative(manifest.root) &&
     within(root, input_root) &&
     @fs.kind(input_root) is Directory &&

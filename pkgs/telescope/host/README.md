@@ -9,6 +9,13 @@ Import `moonrockz/telescope/host` from the published library for filesystem,
 rendering and process orchestration. It supports the native target. Pure
 configuration and content packages remain available on every supported target.
 
+Native filesystem boundaries normalize Windows drive and UNC paths, including
+extended canonical prefixes, before containment checks and path joins. POSIX
+filenames and authored relative-path restrictions retain their existing rules.
+The Windows native-host CI job checks this library boundary and blocks release
+publication on a failure. It does not create a Windows CLI archive; CLI archive
+qualification remains Linux x64 and macOS arm64.
+
 ```moonbit
 let warnings = @host.build(
   root,

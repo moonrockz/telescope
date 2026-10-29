@@ -85,7 +85,7 @@ async fn main {
   ])
   run("openspec", ["schema", "validate", "html-design"])
   run("actionlint", [
-    ".github/workflows/ci.yml", ".github/workflows/release.yml",
+    ".github/workflows/ci.yml", ".github/workflows/release.yml", ".github/workflows/windows-host.yml",
   ])
   check_assets("docs/templates/agent-document.html")
   for name in @fs.readdir("openspec/changes", sort=true) {

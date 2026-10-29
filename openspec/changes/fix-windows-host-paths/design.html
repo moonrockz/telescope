@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fix-windows-host-paths</title>
+<meta name="color-scheme" content="light dark">
+<style>
+:root { color-scheme: light dark; --bg: #fafafa; --fg: #18212f; --muted: #526071;
+  --line: #cbd5e1; --panel: #eef2f6; --link: #075caa; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111827; --fg: #e5e7eb; --muted: #b0bdce;
+    --line: #475569; --panel: #1e293b; --link: #8cc8ff; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 1rem/1.6 system-ui, sans-serif; }
+main { max-width: 70rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+h1, h2, h3 { line-height: 1.25; overflow-wrap: anywhere; }
+h2 { margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+a { color: var(--link); }
+a:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.meta { color: var(--muted); }
+.toc, pre, details { background: var(--panel); border: 1px solid var(--line);
+  border-radius: .4rem; padding: 1rem; }
+code { font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+pre { overflow-x: auto; } pre code { overflow-wrap: normal; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--line); padding: .6rem; text-align: left;
+  overflow-wrap: anywhere; }
+svg { max-width: 100%; height: auto; }
+@media print { main { max-width: none; padding: 0; } pre, tr { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main><h1>fix-windows-host-paths</h1>
+<p class="meta">Owner approved upstream Windows fix, 2026-10-29. Publication remains gated.</p>
+<nav class="toc" aria-label="Contents"><ul><li><a href="#context">Context</a></li><li><a href="#goals">Goals and non-goals</a></li><li><a href="#decisions">Decisions</a></li><li><a href="#risks">Risks and trade-offs</a></li><li><a href="#migration">Migration plan</a></li></ul></nav>
+<h2 id="context">Context</h2><p>See <a href="proposal.md">the proposal</a>. Moon-Lander PR 138 consumes the released host on Windows. Native canonical paths contain backslashes and extended drive or UNC prefixes. Slash-only containment rejects valid children; temporary staging can mistake a whole Windows path for a filename.</p>
+<h2 id="goals">Goals and non-goals</h2><p>Fix native filesystem boundaries without changing public signatures, source-relative syntax or site URLs. Windows CLI binary distribution is outside this fix; existing Linux/macOS archives remain qualified separately.</p>
+<h2 id="decisions">Decisions</h2><h3 id="pth-1">PTH-1. Call: normalize canonical filesystem paths once</h3><p>Route host canonicalization through one native boundary helper. On Windows, convert drive and UNC paths, including extended prefixes, to the slash representation used for containment and joins. Preserve POSIX paths literally. Normalize raw native output paths before deriving parent and basename. Keep relative authored paths strict. Do not weaken containment or replace the shared host in consumers.</p>
+<h3 id="ci-1">CI-1. Call: qualify the Windows library host on an actual runner</h3><p>Add one reusable Windows host job to PR and release workflows. It runs strict native compilation and host fixtures. Publication depends on that result and both existing artifact qualifiers. A cross-built executable cannot prove Windows filesystem behavior. Prepared-package consumers on existing platforms retain the independent-install gate.</p>
+<h3 id="rel-1">REL-1. Owner: publish only after exact release approval</h3><p>Prepare a patch release after the fix qualifies. Publication stays in GitHub Actions and needs owner approval of the concrete source/version. Moon-Lander pins only that actual published package, then reruns its Windows and site checks.</p>
+<h2 id="risks">Risks and trade-offs</h2><p>Path normalization can weaken boundaries: test sibling prefixes, other drives, UNC shares and resolved escapes. POSIX backslashes can be real filename characters: normalize only Windows paths. Windows host coverage adds a distinct OS check; no existing matrix or permission is removed. Canonical input must not be confused with a URL or authored relative path.</p>
+<h2 id="migration">Migration plan</h2><p>Implement and qualify the shared fix, merge it, prepare the versioned release and request exact publication approval. After actual publication, update Moon-Lander's pin and validate its existing consumer. Roll back by retaining the prior pin and keeping adoption blocked; never replace a published archive.</p>
+</main></body></html>

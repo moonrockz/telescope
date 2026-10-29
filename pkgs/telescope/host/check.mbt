@@ -137,7 +137,7 @@ async fn check_tree(
   skip~ : Array[String] = [],
   assembled~ : Bool = false,
 ) -> Array[@model.Problem] {
-  let root = @fs.realpath(out)
+  let root = canonical_path(out)
   let problems = []
   let all = files(root).filter(file => {
     !skip.iter().any(prefix => file.has_prefix(prefix))

@@ -7,6 +7,7 @@ runs:
       with:
         version: 2026.10.19
     - name: Complete exact MoonBit installation
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         export MOON_HOME="$(mise where http:moonbit)"
@@ -16,3 +17,18 @@ runs:
         mise where http:moonbit | sed 's|$|/bin|' >> "$GITHUB_PATH"
         "$(mise where http:moonbit)/bin/moonc" -v
         "$(mise where http:moonbit)/bin/moon" update
+    - name: Complete exact MoonBit installation on Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        $moonbitDir = (mise where http:moonbit).Trim()
+        $env:MOON_HOME = $moonbitDir
+        $env:MOONBIT_INSTALL_VERSION = '0.10.17+093cb8f9c'
+        Invoke-RestMethod https://cli.moonbitlang.com/install/powershell.ps1 | Invoke-Expression
+        "$moonbitDir\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+        "MOON_HOME=$moonbitDir" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        & "$moonbitDir\bin\moonc.exe" -v
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & "$moonbitDir\bin\moon.exe" update
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

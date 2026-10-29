@@ -39,13 +39,22 @@ pub async fn serve(out : String, base : String, port : Int32) -> Unit {
       @model.problem("--port", "must be between 1 and 65535"),
     ])
   }
-  let root = @fs.realpath(out)
+  let root = canonical_path(out)
   @signal.set_global_cancellation_signals([SIGINT, SIGTERM])
   let server = @http.Server(
     @socket.Addr::parse("127.0.0.1:\{port}"),
     reuse_addr=true,
   )
   println("http://127.0.0.1:\{port}\{base}")
+  serve_tree(root, base, server)
+}
+
+///|
+async fn serve_tree(
+  root : String,
+  base : String,
+  server : @http.Server,
+) -> Unit {
   server.run_forever(allow_failure=true, (request, _body, conn) => {
     if request.meth != Get && request.meth != Head {
       error_response(conn, request.meth, 405, "Method Not Allowed")

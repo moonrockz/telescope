@@ -5,6 +5,31 @@
 pub let version : String = "0.5.0"
 
 ///|
+fn native_path_text(path : String, windows : Bool) -> String {
+  if !windows {
+    return path
+  }
+  let path = path.replace_all(old="\\", new="/")
+  if path.length() >= 8 && path[:8].to_upper() == "//?/UNC/" {
+    "//" + path[8:].to_owned()
+  } else if path.has_prefix("//?/") &&
+    path.length() >= 7 &&
+    path.code_unit_at(5) == ':' &&
+    path.code_unit_at(6) == '/' {
+    path[4:].to_owned()
+  } else {
+    path
+  }
+}
+
+///|
+/// Canonicalize filesystem inputs at the host boundary, before joins or containment.
+async fn canonical_path(path : String) -> String {
+  let windows = @async.platform is Windows
+  native_path_text(@fs.realpath(native_path_text(path, windows)), windows)
+}
+
+///|
 pub fn relative(path : String) -> Bool {
   path != "" &&
   !path.has_prefix("/") &&
@@ -16,13 +41,21 @@ pub fn relative(path : String) -> Bool {
 
 ///|
 fn within(root : String, path : String) -> Bool {
-  path == root || path.has_prefix(root + "/")
+  path == root ||
+  path.has_prefix(if root.has_suffix("/") { root } else { root + "/" })
 }
 
 ///|
 pub fn parent(path : String) -> String {
+  native_parent(path, @async.platform is Windows)
+}
+
+///|
+fn native_parent(path : String, windows : Bool) -> String {
+  let path = native_path_text(path, windows)
   match path.rev_find("/") {
     Some(0) => "/"
+    Some(2) if windows && path.code_unit_at(1) == ':' => path[:3].to_owned()
     Some(i) => path[:i].to_owned()
     None => "."
   }
@@ -34,7 +67,7 @@ async fn checked_file(root : String, rel : String) -> String {
     raise @model.Invalid([@model.problem(rel, "invalid relative input path")])
   }
   let path = "\{root}/\{rel}"
-  let real = @fs.realpath(path)
+  let real = canonical_path(path)
   guard within(root, real) && @fs.kind(real) is Regular else {
     raise @model.Invalid([
       @model.problem(
@@ -67,7 +100,7 @@ async fn files(
       Directory => out.append(files(root, prefix=rel, excluded~))
       Regular => out.push(rel)
       SymLink => {
-        let real = @fs.realpath("\{root}/\{rel}")
+        let real = canonical_path("\{root}/\{rel}")
         guard within(root, real) && @fs.kind(real) is Regular else {
           raise @model.Invalid([
             @model.problem(
@@ -143,7 +176,7 @@ async fn bounded_path(root : String, rel : String) -> String {
     path = path + "/" + part.to_owned()
     let kind = Some(@fs.kind(path, follow_symlink=false)) catch { _ => None }
     if kind is Some(_) {
-      path = @fs.realpath(path)
+      path = canonical_path(path)
       guard within(root, path) else {
         raise @model.Invalid([
           @model.problem(rel, "host metadata path escapes project root"),

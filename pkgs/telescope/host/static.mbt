@@ -29,7 +29,7 @@ async fn static_outputs(
         ),
       ])
     }
-    let source = @fs.realpath(root + "/" + from)
+    let source = canonical_path(root + "/" + from)
     guard within(root, source) &&
       @fs.kind(source) is Directory &&
       !within(source, out) &&

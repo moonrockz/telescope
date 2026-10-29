@@ -31,19 +31,24 @@ pub async fn configuration(path : String, base? : String) -> @model.SiteConfig {
 
 ///|
 async fn destination(out : String) -> String {
+  let out = native_path_text(out, @async.platform is Windows)
   let name = out.split("/").last().unwrap_or("").to_owned()
   guard relative(name) else {
     raise @model.Invalid([@model.problem(out, "invalid output directory")])
   }
   @fs.mkdir(parent(out), recursive=true, allow_exist=true)
-  let parent_dir = @fs.realpath(parent(out))
+  let parent_dir = canonical_path(parent(out))
   let path = "\{parent_dir}/\{name}"
   if @fs.exists(path) && @fs.kind(path, follow_symlink=false) != Directory {
     raise @model.Invalid([
       @model.problem(out, "output must be a directory, not a symlink or file"),
     ])
   }
-  path
+  if @fs.exists(path) {
+    canonical_path(path)
+  } else {
+    path
+  }
 }
 
 ///|
@@ -74,7 +79,7 @@ async fn promote_uncancelled(stage : String, out : String) -> Unit {
 
 ///|
 async fn stage_for(out : String) -> String {
-  let unique = @fs.tmpdir(prefix="telescope")
+  let unique = canonical_path(@fs.tmpdir(prefix="telescope"))
   defer @fs.rmdir(unique)
   let name = unique.split("/").last().unwrap().to_owned()
   let stage = parent(out) + "/." + name
@@ -101,7 +106,7 @@ async fn api_input(
     guard relative(dir) else {
       raise @model.Invalid([@model.problem(dir, "invalid API module directory")])
     }
-    let source = @fs.realpath("\{root}/\{dir}")
+    let source = canonical_path("\{root}/\{dir}")
     guard within(root, source) && !within(source, out) && !within(out, source) else {
       raise @model.Invalid([
         @model.problem(dir, "API module escapes project root"),
@@ -129,7 +134,7 @@ async fn api_input(
         ])
       }
     }
-    let doc = @fs.realpath("\{root}/\{api_root}/\{dir}/doc")
+    let doc = canonical_path("\{root}/\{api_root}/\{dir}/doc")
     guard within(root, doc) else {
       raise @model.Invalid([
         @model.problem(doc, "API metadata escapes project root"),
@@ -172,9 +177,9 @@ pub async fn build(
   tutorial_policies~ : Array[@tutorial_check.SourcePolicy] = [],
   tutorial_guards~ : Array[TutorialGuard] = [],
 ) -> Array[@model.Problem] {
-  let root = @fs.realpath(root)
+  let root = canonical_path(root)
   let out = destination(out)
-  let config_real = @fs.realpath(config_path)
+  let config_real = canonical_path(config_path)
   guard within(root, config_real) && !within(out, config_real) else {
     raise @model.Invalid([
       @model.problem(
@@ -198,7 +203,7 @@ pub async fn build(
     if !@fs.exists("\{root}/\{rel}") {
       continue
     }
-    let source_root = @fs.realpath("\{root}/\{rel}")
+    let source_root = canonical_path("\{root}/\{rel}")
     guard within(root, source_root) &&
       !within(source_root, out) &&
       !within(out, source_root) else {

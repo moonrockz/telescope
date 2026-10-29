@@ -65,7 +65,7 @@ pub async fn assemble(manifest_path : String, out : String) -> Unit {
   guard base.has_prefix("/") && base.has_suffix("/") && !base.contains("..") else {
     raise @model.Invalid([@model.problem(manifest_path, "invalid base_path")])
   }
-  let root = @fs.realpath(parent(manifest_path))
+  let root = canonical_path(parent(manifest_path))
   let out = destination(out)
   let latest = string_field(manifest, "latest", "")
   let planned : Map[String, (String, String)] = Map([])
@@ -85,7 +85,7 @@ pub async fn assemble(manifest_path : String, out : String) -> Unit {
     guard relative(rel) else {
       raise @model.Invalid([@model.problem(rel, "invalid supplied tree path")])
     }
-    let from = @fs.realpath(root + "/" + rel)
+    let from = canonical_path(root + "/" + rel)
     guard within(root, from) && !within(from, out) && !within(out, from) else {
       raise @model.Invalid([
         @model.problem(rel, "tree escapes input root or overlaps output"),

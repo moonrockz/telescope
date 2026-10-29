@@ -39,7 +39,7 @@ fn tutorial_manifest() -> String {
 
 ///|
 async fn tutorial_fixture() -> String {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-tutorial-test"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-tutorial-test"))
   write(
     root + "/site.json",
     "{\"title\":\"Example\",\"description\":\"Tutorial fixture\",\"base_path\":\"/\",\"site_url\":\"https://example.test/\",\"repo_url\":\"https://example.test/repo\",\"tutorials\":\"tutorials.toml\"}",
