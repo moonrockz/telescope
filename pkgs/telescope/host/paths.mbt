@@ -2,7 +2,7 @@
 // Apache-2.0; see NOTICE for source revisions.
 
 ///|
-pub let version : String = "0.5.0"
+pub let version : String = "0.5.1"
 
 ///|
 fn native_path_text(path : String, windows : Bool) -> String {

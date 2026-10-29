@@ -33,7 +33,7 @@ async fn run(
 async fn main {
   let args = @env.args()
   let published = args.contains("--published")
-  let mut version = "0.5.0"
+  let mut version = "0.5.1"
   if published {
     let mut i = 0
     while i < args.length() && args[i] != "--published" {
@@ -73,7 +73,7 @@ async fn main {
     for name in ["index", "cache"] {
       run("cp", ["-R", toolchain + "/registry/" + name, registry + "/" + name])
     }
-    let archive = "_build/publish/moonrockz-telescope-0.5.0.zip"
+    let archive = "_build/publish/moonrockz-telescope-0.5.1.zip"
     let (code, sha, _) = @process.collect_output("shasum", [
       "-a", "256", archive,
     ])
@@ -88,7 +88,7 @@ async fn main {
       allow_exist=true,
     )
     @fs.write_file(
-      registry + "/cache/moonrockz/telescope/0.5.0.zip",
+      registry + "/cache/moonrockz/telescope/0.5.1.zip",
       @fs.read_file(archive).binary(),
       create_mode=CreateOrTruncate,
     )

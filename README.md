@@ -12,6 +12,10 @@ It adds independent Preview/Source tabs to gallery index cards, exact original
 syntax, filename selection and retained viewer state. See
 [installation and verified public consumers](docs/release/0.5.0.md).
 
+The [0.5.1 candidate](docs/release/0.5.1.md) repairs Windows native-library host
+paths. It awaits exact owner approval and publication; 0.5.0 remains the latest
+published version.
+
 It also provides opt-in [TOML tutorials](docs/tutorials.md), consumer-owned local evaluation
 and the general [editor/Formatter](docs/editor.md). The rich editor ships MoonBit
 highlighting for `moonbit` and `mbt`. Existing themes, gallery previews and
