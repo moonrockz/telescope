@@ -10,6 +10,8 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  windows-host:
+    uses: ./.github/workflows/windows-host.yml
   qualify:
     name: qualify (${{ matrix.platform }})
     strategy:

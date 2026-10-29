@@ -56,6 +56,10 @@ run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/b
 description = "Check toolkit, pure packages on all targets and native host tests"
 run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/check.mbtx'
 
+[tasks."check:host"]
+description = "Check and test the native host on the current OS"
+run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/check-host.mbtx'
+
 [tasks."test:consumer"]
 description = "Qualify packaged candidate in a clean consumer without workspace overrides"
 run = 'MOON_HOME="$(mise where http:moonbit)" PATH="$(mise where http:moonbit)/bin:$PATH" moonx scripts/test-consumer.mbtx'

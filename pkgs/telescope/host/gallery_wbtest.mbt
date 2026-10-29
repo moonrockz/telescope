@@ -1,6 +1,6 @@
 ///|
 async test "gallery reads verified text sources and preserves every downloaded byte" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery-sources"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-gallery-sources"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -58,7 +58,7 @@ async test "gallery reads verified text sources and preserves every downloaded b
 
 ///|
 async test "gallery source symlinks outside artifact root remain rejected" {
-  let root = @fs.realpath(
+  let root = canonical_path(
     @fs.tmpdir(prefix="telescope-gallery-source-boundary"),
   )
   defer @fs.rmdir(root, recursive=true)
@@ -97,7 +97,7 @@ async test "gallery source symlinks outside artifact root remain rejected" {
 
 ///|
 async test "unconfigured gallery produces no gallery output" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-no-gallery"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-no-gallery"))
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -110,7 +110,9 @@ async test "unconfigured gallery produces no gallery output" {
 
 ///|
 async test "gallery source declaration never exempts a loaded companion from UTF8 validation" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery-active-source"))
+  let root = canonical_path(
+    @fs.tmpdir(prefix="telescope-gallery-active-source"),
+  )
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/site.json",
@@ -155,7 +157,9 @@ async test "gallery source declaration never exempts a loaded companion from UTF
 
 ///|
 async test "gallery checker distinguishes opaque source downloads from active resources" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery-check-download"))
+  let root = canonical_path(
+    @fs.tmpdir(prefix="telescope-gallery-check-download"),
+  )
   defer @fs.rmdir(root, recursive=true)
   write(
     root + "/index.html",
@@ -195,7 +199,7 @@ async test "gallery checker distinguishes opaque source downloads from active re
 
 ///|
 async test "gallery checker activates folder index downloads through extensionless navigation" {
-  let root = @fs.realpath(@fs.tmpdir(prefix="telescope-gallery-check-alias"))
+  let root = canonical_path(@fs.tmpdir(prefix="telescope-gallery-check-alias"))
   defer @fs.rmdir(root, recursive=true)
   write(root + "/index.html", "<title>Home</title>")
   write(

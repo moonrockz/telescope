@@ -22,6 +22,8 @@ concurrency:
   group: release-${{ inputs.version }}
   cancel-in-progress: false
 jobs:
+  windows-host:
+    uses: ./.github/workflows/windows-host.yml
   credential-preflight:
     runs-on: ubuntu-24.04
     permissions: {}
@@ -79,7 +81,7 @@ jobs:
           retention-days: 30
   publish:
     if: ${{ inputs.publish }}
-    needs: [qualify, credential-preflight]
+    needs: [qualify, windows-host, credential-preflight]
     runs-on: ubuntu-24.04
     environment: release
     permissions:

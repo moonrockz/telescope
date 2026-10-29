@@ -73,8 +73,8 @@ pub async fn check_tutorials(
       @model.problem(config_path, "case runner limits must be positive"),
     ])
   }
-  let root = @fs.realpath(root)
-  let config_real = @fs.realpath(config_path)
+  let root = canonical_path(root)
+  let config_real = canonical_path(config_path)
   guard within(root, config_real) else {
     raise @model.Invalid([
       @model.problem(config_path, "configuration escapes project root"),
@@ -339,8 +339,8 @@ pub async fn check_tutorial_sources(
   config_path : String,
   policies~ : Array[@tutorial_check.SourcePolicy] = [],
 ) -> Array[TutorialSourceReport] {
-  let root = @fs.realpath(root)
-  let config_real = @fs.realpath(config_path)
+  let root = canonical_path(root)
+  let config_real = canonical_path(config_path)
   guard within(root, config_real) else {
     raise @model.Invalid([
       @model.problem(config_path, "configuration escapes project root"),

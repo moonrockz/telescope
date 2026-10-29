@@ -40,7 +40,7 @@ async fn gallery_outputs(
   let artifact_root = if plan.copies.is_empty() {
     root
   } else {
-    @fs.realpath("\{root}/\{artifact_rel}")
+    canonical_path("\{root}/\{artifact_rel}")
   }
   guard within(root, artifact_root) else {
     raise @model.Invalid([

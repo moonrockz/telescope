@@ -1,0 +1,16 @@
+name: Windows native host
+"on":
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  host:
+    name: Windows host paths and boundaries
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: ./.github/actions/setup
+      - name: Check and test native paths, build, check and supplied-tree assembly
+        shell: pwsh
+        run: moonx scripts/check-host.mbtx
