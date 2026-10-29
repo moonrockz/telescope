@@ -1,0 +1,15 @@
+{
+  "version": "0.5.0",
+  "platform": "macos-arm64",
+  "package_source": "real Mooncakes registry and GitHub release",
+  "published": true,
+  "library": "moonrockz/telescope@0.5.0",
+  "cli_archive": "telescope-0.5.0-macos-arm64.tar.gz",
+  "workspace_overrides": false,
+  "gallery_manifest_version": 1,
+  "gallery_static_source_and_artifact_bytes": true,
+  "bases": [
+    "/",
+    "/example/"
+  ]
+}

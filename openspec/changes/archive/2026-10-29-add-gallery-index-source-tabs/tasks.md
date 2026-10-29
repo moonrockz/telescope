@@ -23,8 +23,8 @@ Bead: telescope-elg.3
 Depends on group 2.
 
 - [x] 3.1 Prepare matching 0.5.0 module/CLI/package versions, changelog and candidate documentation; verify format, check:setup, check, strict OpenSpec validation and actual browser tests.
-- [ ] 3.2 Qualify packaged library and CLI in fresh consumers and publisher environment, record exact prepared SHA/version and evidence for owner review; both native platforms must pass CI before publication.
-- [ ] 3.3 After exact SHA/version owner approval and merged release PR, publish only through GitHub Actions and record real library/CLI coordinates, checksums and public consumer results on both supported platforms.
+- [x] 3.2 Qualify packaged library and CLI in fresh consumers and publisher environment, record exact prepared SHA/version and evidence for owner review; both native platforms must pass CI before publication.
+- [x] 3.3 After exact SHA/version owner approval and merged release PR, publish only through GitHub Actions and record real library/CLI coordinates, checksums and public consumer results on both supported platforms.
 
 ## Workflow follow-up
 

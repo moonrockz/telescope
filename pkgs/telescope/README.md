@@ -1,19 +1,19 @@
 # Telescope library
 
-The 0.5.0 candidate adds independent index-card source inspection with retained
-filename selection. See [candidate notes](../../docs/release/0.5.0.md) for
-qualification and the publication gate.
+Telescope 0.5.0 adds independent index-card Preview/Source tabs with exact
+original syntax and retained filename selection and viewer state. See
+[verified public installs](../../docs/release/0.5.0.md).
 
-`moonrockz/telescope@0.4.0` is published with a matching native CLI. It provides
+`moonrockz/telescope@0.5.0` is published with a matching native CLI. It provides
 gallery viewports, local raster adapter hooks and optional brand assets.
 Direct `SiteConfig` literals must supply the three new asset fields described in
-[the migration notes](../../docs/release/0.4.0.md).
+[the 0.4.0 migration notes](../../docs/release/0.4.0.md).
 
 The CLI is built from `apps/telescope` in this repository. New publications
 require owner approval and GitHub Actions. The release includes optional
 [tutorials](../../docs/tutorials.md) and the standalone
 [editor/Formatter](../../docs/editor.md), with shipped MoonBit highlighting.
-[Actual public installs](../../docs/release/0.4.0.md) pass on Linux x64 and macOS arm64.
+[Actual public installs](../../docs/release/0.5.0.md) pass on Linux x64 and macOS arm64.
 
 | Package | Responsibility | Targets |
 | --- | --- | --- |

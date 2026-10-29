@@ -1,11 +1,11 @@
 # Installation and qualification
 
-Telescope 0.4.0 is published. Use the exact library pin, native CLI downloads,
-checksums and supported toolchain in [the version-specific instructions](0.4.0.md).
+Telescope 0.5.0 is published. Use the exact library pin, native CLI downloads,
+checksums and supported toolchain in [the version-specific instructions](0.5.0.md).
 Repeat actual released-install qualification with:
 
 ```sh
-mise run test:consumer -- --published 0.4.0
+mise run test:consumer -- --published 0.5.0
 ```
 
 Linux x64 and macOS arm64 passed. Retained reports are linked from the
@@ -17,8 +17,8 @@ mise run package
 mise run test:consumer -- --prepared
 ```
 
-The package task uses the checked-out source version, currently 0.4.0.
-The package task creates `_build/publish/moonrockz-telescope-0.4.0.zip` and the
+The package task uses the checked-out source version, currently 0.5.0.
+The package task creates `_build/publish/moonrockz-telescope-0.5.0.zip` and the
 current platform's archive under `_build/package/`. Supported qualification
 platforms are Linux x64 and macOS arm64. The native archive contains `telescope`,
 LICENSE, NOTICE, README and resolved third-party license records. CSS and generic islands are embedded in the binary.
@@ -31,7 +31,7 @@ archive checksum and pinned dependency metadata. This is an isolated cached
 candidate, not a registry publication and not a simulated claim of registry
 availability.
 
-The candidate consumer pins `moonrockz/telescope@0.4.0`; published mode uses the
+The candidate consumer pins `moonrockz/telescope@0.5.0`; published mode uses the
 explicitly requested public version. Neither has a moon.work or local path
 dependency. The harness verifies the CLI archive SHA-256 and version, compiles the public
 host with custom providers and checks gallery/version-one compatibility at `/`
@@ -48,9 +48,9 @@ To install a locally packaged candidate archive manually:
 
 ```sh
 cd _build/package
-shasum -a 256 -c telescope-0.4.0-macos-arm64.tar.gz.sha256
-tar -xzf telescope-0.4.0-macos-arm64.tar.gz
-./telescope-0.4.0-macos-arm64/telescope --version
+shasum -a 256 -c telescope-0.5.0-macos-arm64.tar.gz.sha256
+tar -xzf telescope-0.5.0-macos-arm64.tar.gz
+./telescope-0.5.0-macos-arm64/telescope --version
 ```
 
 Use `linux-x64` instead on a qualified Linux x64 host. Archive extraction is the

@@ -1,5 +1,21 @@
 # Release verification
 
+## Published 0.5.0, 2026-10-29
+
+Owner-approved repaired source `4116b2d51da5ff8999ca8437e4aa0a973e7babdf` from
+[PR 19](https://github.com/moonrockz/telescope/pull/19) passed
+[Actions run 40895904607](https://github.com/moonrockz/telescope/actions/runs/40895904607), including both platform qualifiers,
+the live exact-commit/version gate, publication and real Linux public installs.
+Independent macOS public installs passed with no candidate cache or workspace
+override. Both CLI archives and the public Mooncakes ZIP match the same-run
+qualified artifacts. The tag points to the approved commit.
+
+The release passed 285 native tests, strict portable checks on all four targets,
+124 Chromium cases, publisher/public-index regressions and packaged consumers.
+[The release guide](0.5.0.md) records behavior, downloads and four public consumer
+reports. [Publication metadata](publication-0.5.0.json) records provenance and
+verified SHA-256 values, including the failed first attempt's recovery.
+
 ## Published 0.4.0, 2026-10-28
 
 Owner-approved [PR 16](https://github.com/moonrockz/telescope/pull/16) merged as
