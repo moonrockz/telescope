@@ -6,14 +6,11 @@ site planning, with reusable native IO in `moonrockz/telescope/host`. The matchi
 native `telescope` CLI builds, checks, previews and assembles consumer-supplied
 version trees. Consumers own their domain engines and reviewed content.
 
-The **0.5.0 candidate** adds independent Preview/Source tabs to gallery index
-cards with exact declared syntax and retained viewer state. It is not published;
-see [candidate qualification and release gate](docs/release/0.5.0.md).
-
-Version **0.4.0 is released** as `moonrockz/telescope@0.4.0` on Mooncakes and
-matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.4.0).
-It adds gallery fullscreen/zoom/pan, public styling hooks, local raster adapter
-support and optional brand assets. See [migration and verified public installs](docs/release/0.4.0.md).
+Version **0.5.0 is released** as `moonrockz/telescope@0.5.0` on Mooncakes and
+matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.5.0).
+It adds independent Preview/Source tabs to gallery index cards, exact original
+syntax, filename selection and retained viewer state. See
+[installation and verified public consumers](docs/release/0.5.0.md).
 
 It also provides opt-in [TOML tutorials](docs/tutorials.md), consumer-owned local evaluation
 and the general [editor/Formatter](docs/editor.md). The rich editor ships MoonBit
@@ -21,7 +18,7 @@ highlighting for `moonbit` and `mbt`. Existing themes, gallery previews and
 accessible source inspection remain available; see [default presentation](docs/presentation.md).
 
 Clean public installs pass on Linux x64 and macOS arm64 without workspace
-overrides. See [installation and compatibility](docs/release/0.4.0.md).
+overrides. See [installation and compatibility](docs/release/0.5.0.md).
 
 ```sh
 mise trust

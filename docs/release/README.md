@@ -1,8 +1,12 @@
 # Release procedure
 
-The [0.5.0 candidate](0.5.0.md) prepares gallery index source inspection.
-It requires exact SHA/version owner approval and both-platform qualification
-before publication; 0.4.0 remains the current published release.
+Telescope [0.5.0](0.5.0.md) is published from owner-approved repaired source
+`4116b2d51da5ff8999ca8437e4aa0a973e7babdf` through [PR 19](https://github.com/moonrockz/telescope/pull/19).
+[Actions run 40895904607](https://github.com/moonrockz/telescope/actions/runs/40895904607) passed both platform qualifiers, the exact
+owner/admin gate and actual Linux public consumer. Independent macOS public
+qualification passed. [Publication metadata](publication-0.5.0.json) records
+public downloads, hashes and reports. The failed first attempt and pin repair
+are retained in the version guide.
 
 Telescope [0.4.0](0.4.0.md) is published after
 [PR 16](https://github.com/moonrockz/telescope/pull/16) merged.
