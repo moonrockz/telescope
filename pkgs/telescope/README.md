@@ -1,5 +1,8 @@
 # Telescope library
 
+The [0.5.1 candidate](../../docs/release/0.5.1.md) fixes Windows native-host paths.
+It is not published; the actual released version remains 0.5.0 until approval.
+
 Telescope 0.5.0 adds independent index-card Preview/Source tabs with exact
 original syntax and retained filename selection and viewer state. See
 [verified public installs](../../docs/release/0.5.0.md).
