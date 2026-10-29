@@ -35,10 +35,23 @@ test('responsive cards and details select supplied themes and contain their prev
         await expect(image).toHaveCSS('object-fit', 'contain');
         expect(await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBeTruthy();
       }
+      expect(await page.locator('.gallery-card-preview:visible .diagram-viewer__toolbar').evaluateAll(toolbars => toolbars.every(toolbar => {
+        const bounds = toolbar.getBoundingClientRect();
+        return [...toolbar.querySelectorAll('button')].every(button => {
+          const rect = button.getBoundingClientRect();
+          return rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1 && rect.bottom <= bounds.bottom + 1;
+        });
+      }))).toBeTruthy();
       const planned = page.getByRole('link', { name: 'Future format', exact: true });
       await expect(page.locator('.gallery-card').filter({ has: planned })).toContainText('Planned');
       await expect(planned.locator('img')).toHaveCount(0);
+      const card = page.locator('.gallery-card').filter({ has: signal });
+      await card.getByRole('tab', { name: 'Source', exact: true }).click();
+      expect(await card.locator('.gallery-source-file code').first().textContent()).toBe(sourceText);
       await noPageOverflow(page);
+      if (width === 360 || width === 1440) await page.screenshot({ path: fileURLToPath(new URL(`../../_build/browser/gallery-source-${test.info().project.name}-${theme}-${width}.png`, import.meta.url)), fullPage: true });
+      expect(await card.locator('pre').first().evaluate(node => node.scrollWidth > node.clientWidth)).toBeTruthy();
+      await card.getByRole('tab', { name: 'Preview', exact: true }).click();
       await signal.click();
       await expect(page.locator(`#gallery-preview .gallery-${theme} img`)).toBeVisible();
       await expect(page.locator('#site-links a[aria-current="page"]')).toHaveText('Gallery');
@@ -107,7 +120,10 @@ test('inspection tabs support roving arrows Home End and literal multiple source
   await expect(page.locator('.gallery-source-file code')).toHaveCount(2);
   expect(await page.locator('.gallery-source-file code').first().textContent()).toBe(sourceText);
   expect(await page.evaluate(() => (window as Window & { sourceExecuted?: boolean }).sourceExecuted)).toBeUndefined();
+  const files = page.getByRole('combobox', { name: 'Source file', exact: true });
+  await files.selectOption({ label: 'sources/binary.bin' });
   await expect(page.getByRole('region', { name: 'sources/binary.bin', exact: true })).toContainText('Inline source unavailable');
+  await files.selectOption({ label: 'sources/invalid.txt' });
   await expect(page.getByRole('region', { name: 'sources/invalid.txt', exact: true })).toContainText('Inline source unavailable');
   await source.press('ArrowRight');
   await expect(preview).toBeFocused();
@@ -170,6 +186,12 @@ test('static family links previews and every source survive without JS in versio
       await family.click();
       await expect(page).toHaveURL(site.versions + base + 'gallery/#family-signal');
       await expect(page.locator('#family-signal')).toBeVisible();
+      const card = page.locator('.gallery-card').filter({ has: page.getByRole('link', { name: 'Signal path', exact: true }) });
+      expect(await card.locator('.gallery-source-file code').first().textContent()).toBe(sourceText);
+      await expect(card.getByRole('link', { name: 'Download source: sources/settings.json', exact: true })).toHaveAttribute('href', base + 'gallery/artifacts/sources/settings.json');
+      await expect(card.getByRole('tab')).toHaveCount(0);
+      await expect(card.getByRole('button', { name: /Copy source/ })).toHaveCount(0);
+      await noPageOverflow(page);
       await page.getByRole('link', { name: 'Signal path', exact: true }).click();
       await expect(page.getByRole('heading', { name: 'Signal path', exact: true })).toBeVisible();
       await expect(page.getByRole('img', { name: 'Signal path preview', exact: true })).toBeVisible();
@@ -435,4 +457,123 @@ test('modal fullscreen restores scroll coordinates near the page bottom', async 
   await target.getByRole('button', {name: 'Exit fullscreen', exact: true}).press('Escape');
   expect(await page.evaluate(() => scrollY)).toBe(await page.evaluate(() => Number(document.documentElement.dataset.beforeModalScroll)));
   await expect(fullscreen).toBeFocused();
+});
+
+
+test('index tabs retain independent mounted viewer state and keyboard relationships', async ({ page, site }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.addInitScript(() => { Element.prototype.requestFullscreen = () => Promise.reject(new DOMException('Denied', 'NotAllowedError')); });
+  await page.goto(site.plain + site.base + 'gallery/');
+  const card = page.locator('.gallery-card').filter({ has: page.getByRole('link', { name: 'Signal path', exact: true }) });
+  const other = page.locator('.gallery-card').filter({ has: page.getByRole('link', { name: 'Acknowledged reply', exact: true }) });
+  const preview = card.getByRole('tab', { name: 'Preview', exact: true });
+  const source = card.getByRole('tab', { name: 'Source', exact: true });
+  await expect(card.getByRole('tablist')).toHaveAttribute('aria-label', 'Signal path inspection');
+  const viewer = card.locator('.gallery-light');
+  const viewport = viewer.locator('.diagram-viewer__viewport');
+  const content = viewer.locator('.diagram-viewer__content');
+  const original = await content.elementHandle();
+  await viewer.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  await viewport.focus();
+  await viewport.press('ArrowRight');
+  const transform = await content.getAttribute('style');
+  for (let i = 0; i < 3; i++) {
+    await preview.focus();
+    await preview.press('ArrowRight');
+    await expect(source).toBeFocused();
+    await expect(source).toHaveAttribute('aria-selected', 'true');
+    await expect(preview).toHaveAttribute('tabindex', '-1');
+    await expect(card.getByRole('tabpanel', { name: 'Source', exact: true })).toHaveAttribute('id', (await source.getAttribute('aria-controls'))!);
+    await expect(card.getByRole('tabpanel', { name: 'Source', exact: true })).toHaveAttribute('aria-labelledby', (await source.getAttribute('id'))!);
+    await expect(other.getByRole('tab', { name: 'Preview', exact: true })).toHaveAttribute('aria-selected', 'true');
+    for (const width of [360, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.evaluate(() => new Promise<void>(done => requestAnimationFrame(() => requestAnimationFrame(() => done()))));
+      expect(await content.getAttribute('style')).toBe(transform);
+    }
+    await expect(card.locator('.gallery-source-file')).toHaveCount(4);
+    expect(await card.locator('.gallery-source-file code').first().textContent()).toBe(sourceText);
+    await source.press('Home');
+    await expect(preview).toBeFocused();
+    await preview.press('End');
+    await expect(source).toBeFocused();
+    await source.press('ArrowLeft');
+    await expect(preview).toBeFocused();
+    await expect(viewport).toHaveAttribute('data-viewer-scale', '1.25');
+    expect(await content.getAttribute('style')).toBe(transform);
+    expect(await content.evaluate((node, saved) => node === saved, original)).toBeTruthy();
+  }
+  const input = page.getByRole('searchbox', { name: 'Filter examples' });
+  await source.click();
+  const files = card.getByRole('combobox', { name: 'Source file', exact: true });
+  await files.selectOption({ label: 'sources/settings.json' });
+  await preview.click();
+  await source.click();
+  await expect(files).toHaveValue('1');
+  await expect(card.getByRole('region', { name: 'sources/settings.json', exact: true })).toBeVisible();
+  await input.fill('Settings');
+  await expect(card).toBeHidden();
+  await input.fill('');
+  await expect(source).toHaveAttribute('aria-selected', 'true');
+  await expect(files).toHaveValue('1');
+  await expect(card.getByRole('region', { name: 'sources/settings.json', exact: true })).toBeVisible();
+  await expect(other.getByRole('combobox', { name: 'Source file', exact: true })).toHaveCount(0);
+  await preview.click();
+  await viewer.getByRole('button', { name: 'Fullscreen', exact: true }).click();
+  await expect(viewport).toHaveAttribute('aria-modal', 'true');
+  await viewer.getByRole('button', { name: 'Exit fullscreen', exact: true }).press('Escape');
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1.25');
+  await viewer.getByRole('button', { name: 'Fit diagram', exact: true }).click();
+  await expect(viewport).toHaveAttribute('data-viewer-scale', '1');
+  await viewer.getByText('Export image', { exact: true }).click();
+  const download = page.waitForEvent('download');
+  await viewer.getByRole('button', { name: 'Download PNG', exact: true }).click();
+  expect((await download).suggestedFilename()).toBe('signal.png');
+  const ids = await page.locator('[id]').evaluateAll(nodes => nodes.map(node => node.id));
+  expect(new Set(ids).size).toBe(ids.length);
+  await card.getByRole('link', { name: 'Signal path', exact: true }).click();
+  await expect(page).toHaveURL(site.plain + site.base + 'gallery/signal/');
+});
+
+test('index source copying stays exact offline across version trees and handles denial', async ({ page, site }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: {
+      writeText: async (text: string) => { (window as Window & { copied?: string }).copied = text; },
+    } });
+  });
+  for (const tree of ['', 'next/', 'latest/', 'v/0.2/', 'v/0.1/']) {
+    const base = site.base + tree;
+    await page.goto(site.versions + base + 'gallery/');
+    const card = page.locator('.gallery-card').filter({ has: page.getByRole('link', { name: 'Signal path', exact: true }) });
+    await card.getByRole('tab', { name: 'Source', exact: true }).click();
+    const file = card.getByRole('region', { name: 'sources/signal.txt', exact: true });
+    expect(await file.locator('code').textContent()).toBe(sourceText);
+    expect(await page.evaluate(() => (window as Window & { sourceExecuted?: boolean }).sourceExecuted)).toBeUndefined();
+    const files = card.getByRole('combobox', { name: 'Source file', exact: true });
+    await files.selectOption({ label: 'sources/binary.bin' });
+    await expect(card.getByRole('region', { name: 'sources/binary.bin', exact: true })).toContainText('Inline source unavailable');
+    await files.selectOption({ label: 'sources/invalid.txt' });
+    await expect(card.getByRole('region', { name: 'sources/invalid.txt', exact: true })).toContainText('Inline source unavailable');
+    await files.selectOption({ label: 'sources/settings.json' });
+    const settings = card.getByRole('region', { name: 'sources/settings.json', exact: true });
+    expect(await settings.locator('code').textContent()).toBe(await readFile(new URL('examples/sources/settings.json', fixture), 'utf8'));
+    const settingsLink = settings.getByRole('link', { name: 'Download source: sources/settings.json', exact: true });
+    await expect(settingsLink).toHaveAttribute('href', base + 'gallery/artifacts/sources/settings.json');
+    await files.selectOption({ label: 'sources/signal.txt' });
+    const link = file.getByRole('link', { name: 'Download source: sources/signal.txt', exact: true });
+    await expect(link).toHaveAttribute('href', base + 'gallery/artifacts/sources/signal.txt');
+    const response = await page.request.get((await link.getAttribute('href'))!.replace(base, site.versions + base));
+    expect(await response.text()).toBe(sourceText);
+    await page.context().setOffline(true);
+    const copy = file.getByRole('button', { name: 'Copy source: sources/signal.txt', exact: true });
+    await copy.click();
+    expect(await page.evaluate(() => (window as Window & { copied?: string }).copied)).toBe(sourceText);
+    await expect(file.getByRole('status')).toHaveText('Source copied.');
+    await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('Denied'); } } }); });
+    await copy.click();
+    await expect(file.getByRole('status')).toContainText('Copy unavailable');
+    expect(await page.evaluate(() => getSelection()?.getRangeAt(0).toString())).toBe(sourceText);
+    await expect(link).toBeVisible();
+    await page.context().setOffline(false);
+  }
 });

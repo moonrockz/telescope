@@ -62,6 +62,9 @@
     const fullscreen = button('Fullscreen', 'Fullscreen', () => { void toggleFullscreen(); });
     viewport.append(toolbar);
     function measure() {
+      // Hidden tabs, filtered cards and inactive theme variants have no layout.
+      // Retain the last fitted dimensions and pan until the viewport is visible.
+      if (!viewport.clientWidth || !viewport.clientHeight) return;
       const box = image.viewBox?.baseVal;
       const naturalWidth = box?.width || image.naturalWidth || Number(image.getAttribute('width')) || 640;
       const naturalHeight = box?.height || image.naturalHeight || Number(image.getAttribute('height')) || 480;

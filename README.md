@@ -6,6 +6,10 @@ site planning, with reusable native IO in `moonrockz/telescope/host`. The matchi
 native `telescope` CLI builds, checks, previews and assembles consumer-supplied
 version trees. Consumers own their domain engines and reviewed content.
 
+The **0.5.0 candidate** adds independent Preview/Source tabs to gallery index
+cards with exact declared syntax and retained viewer state. It is not published;
+see [candidate qualification and release gate](docs/release/0.5.0.md).
+
 Version **0.4.0 is released** as `moonrockz/telescope@0.4.0` on Mooncakes and
 matching [native CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.4.0).
 It adds gallery fullscreen/zoom/pan, public styling hooks, local raster adapter

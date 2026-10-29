@@ -976,12 +976,30 @@ select:focus-visible,
 
 .gallery-tabs {
   display: flex;
-  gap: 0.25rem;
-  padding: 0.6rem;
+  gap: 1.25rem;
+  padding: 0 1rem;
   border-bottom: 1px solid var(--border);
 }
 
-.gallery-tab,
+.gallery-tab {
+  padding: .8rem .1rem .65rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gallery-tab:hover { color: var(--accent); }
+.gallery-tab[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
 .gallery-actions button,
 .gallery-empty button,
 .gallery-source button {
@@ -993,12 +1011,6 @@ select:focus-visible,
   font: inherit;
   font-size: 0.875rem;
   cursor: pointer;
-}
-
-.gallery-tab[aria-selected="true"] {
-  color: var(--accent);
-  background: var(--accent-soft);
-  border-color: var(--accent);
 }
 
 .gallery-panel {
@@ -1220,7 +1232,7 @@ select:focus-visible,
   font-size: 0.875rem;
 }
 
-.gallery-detail[data-enhanced] .gallery-panel > h2 {
+.gallery-workbench[data-enhanced] > .gallery-panel > h2 {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1251,3 +1263,27 @@ select:focus-visible,
 
 .gallery-card-preview.diagram-viewer { aspect-ratio: auto; }
 .gallery-card-preview.diagram-viewer .diagram-viewer__viewport { width: 100%; }
+
+/* Public gallery classes apply to card and detail inspection alike. */
+.gallery-card > .gallery-workbench {
+  margin: 0;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+}
+.gallery-card .gallery-panel { padding: .6rem; min-width: 0; }
+.gallery-card .gallery-source pre { max-height: var(--gallery-card-source-height, 20rem); }
+.gallery-card .gallery-source-file { min-width: 0; }
+.gallery-card .gallery-actions a { overflow-wrap: anywhere; }
+
+.gallery-source-select { display: grid; gap: .4rem; margin-bottom: 1rem; }
+.gallery-source-select select {
+  min-width: 0;
+  max-width: 100%;
+  padding: .5rem;
+  border: 1px solid var(--control-border);
+  border-radius: .45rem;
+  background: var(--surface);
+  color: var(--page-fg);
+  font: inherit;
+}

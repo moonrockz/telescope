@@ -100,7 +100,7 @@ remain `#family-<first-entry-id>` in manifest order. Example routes, artifact UR
 and output copy paths remain stable at root, nested and versioned base paths.
 
 Without JavaScript, the index shows every family and card. Every supplied text
-source appears below the detail preview, with a file heading and download link.
+source appears below its index-card and detail preview, with a file heading and download link.
 Planned examples have a labeled placeholder and no invented preview or player.
 
 The gallery island adds a labeled local filter for title, family and description,
@@ -110,10 +110,13 @@ filters and returns focus to the text field. Direct family links and browser
 back/forward update the family selection. No gallery controls are created on
 pages without a gallery mount.
 
-Detail sections become Preview and Source tabs only after setup succeeds. One
+In 0.5.0, implemented index cards and detail sections become Preview and Source
+tabs only after setup succeeds. Each card has independent state and unique IDs.
+Switching panels keeps viewer nodes mounted, including zoom and pan. One
 tab is in the tab order; Left/Right wrap and Home/End select the first/last tab.
-Both tabs identify their panels, and all source files remain visible together
-in the Source panel. Each inline source has its own Copy source action with
+Both tabs identify their panels. A labeled Source file selector chooses among
+multiple files and retains its selection across tabs and filtering. Without
+scripts all file sections remain visible. Each inline source has its own Copy source action with
 polite success or failure feedback. If clipboard access fails, the island
 selects the literal source for manual copying and keeps its download available.
 SVG downloads and an optional Open offline player link remain separate actions.
@@ -136,3 +139,9 @@ reading. Unsupported media types, invalid UTF-8 and NUL-bearing binary content
 remain labeled downloads. Previews, players and companions still undergo their
 existing local-resource checks. All downloaded artifacts retain their original
 bytes, including line endings; no digest manifest is introduced.
+
+The public `.gallery-workbench`, `.gallery-tabs`, `.gallery-tab`, `.gallery-panel`,
+`.gallery-source`, `.gallery-source-file` and `.gallery-source-select` styling hooks apply to both contexts.
+Override `--gallery-card-source-height` to change the default 20rem source scroll
+height. Source associations always come from the declared manifest; SVG text is
+never used to reconstruct original syntax.

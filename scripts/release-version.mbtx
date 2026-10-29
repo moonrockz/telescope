@@ -9,9 +9,9 @@ import {
 ///|
 async fn main {
   let version = @env.get_env_var("RELEASE_VERSION").unwrap_or("")
-  guard version == "0.4.0" else {
+  guard version == "0.5.0" else {
     eprintln(
-      "Release candidate is 0.4.0; update module, CLI and packaging versions together before another release",
+      "Release candidate is 0.5.0; update module, CLI and packaging versions together before another release",
     )
     @sys.exit(1)
     return

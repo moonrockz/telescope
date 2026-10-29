@@ -115,3 +115,24 @@ including after the page has loaded offline. Direct pure-planner integrations
 can pass the optional `source_text` map with SVG paths and bytes for the same
 behavior. If that map omits an SVG, the generic export control falls back to
 reading the supplied preview URL.
+
+### Index source inspection
+
+Implemented index cards share the detail page's Preview/Source tabs. Tabs act
+independently and preserve each mounted viewer's zoom and pan, including while
+filters hide the card. Left/Right wrap through tabs; Home/End select the first
+or last tab. Without scripts, preview and source sections remain readable.
+
+Each declared file has its filename, media type and download. Eligible source
+text appears exactly as supplied, with per-file copy feedback and a selectable
+fallback when the clipboard is unavailable. Telescope never reconstructs original
+syntax from SVG. Unsupported or unavailable inline text retains its download.
+
+Customize `.gallery-workbench`, `.gallery-tabs`, `.gallery-tab`, `.gallery-panel`,
+`.gallery-source` and `.gallery-source-file` for both card and detail layouts.
+`--gallery-card-source-height` controls the card source scroll height, defaulting
+to `20rem`. Long source lines scroll inside the panel in both themes.
+
+With scripts, a labeled Source file selector chooses among multiple declared
+files and retains its selection across tabs and filtering. Without scripts,
+all files remain visible. `.gallery-source-select` styles the selector.

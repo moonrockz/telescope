@@ -62,6 +62,51 @@ fn previews(
 }
 
 ///|
+fn source_sections(
+  entry : Entry,
+  base_path : String,
+  source_text : Map[String, String],
+  prefix : String,
+) -> String {
+  entry.sources
+  .mapi((i, file) => {
+    let content = match source_text.get(file.path) {
+      Some(text) => {
+        let literal = escape(text)
+          .replace_all(old="\r", new="&#13;")
+          .replace_all(old="(", new="&#40;")
+          .replace_all(old=")", new="&#41;")
+          // Keep literal URLs opaque to version-tree URL rewriting. Browsers
+          // decode this character reference back into the exact source text.
+          .replace_all(old="/", new="&#47;")
+        "<pre tabindex=\"0\" aria-label=\"\{escape(file.path)} source\"><code>\{literal}</code></pre>"
+      }
+      None =>
+        "<p>Inline source unavailable. Download this source to inspect it.</p>"
+    }
+    "<section class=\"gallery-source-file\" aria-labelledby=\"\{prefix}-\{i}\"><h3 class=\"gallery-source-heading\" id=\"\{prefix}-\{i}\">\{escape(file.path)}</h3><p>\{escape(file.media_type)}</p>\{content}<p class=\"gallery-actions\"><a href=\"\{escape(artifact_url(base_path, file))}\" download>Download source: \{escape(file.path)}</a></p></section>"
+  })
+  .join("")
+}
+
+///|
+fn workbench(
+  entry : Entry,
+  base_path : String,
+  source_text : Map[String, String],
+  card~ : Bool = false,
+) -> String {
+  let prefix = if card { "gallery-card-" + entry.id } else { "gallery" }
+  let sources = source_sections(
+    entry,
+    base_path,
+    source_text,
+    prefix + "-source",
+  )
+  "<div class=\"gallery-workbench\" data-gallery-workbench data-gallery-title=\"\{escape(entry.title)}\"><div class=\"gallery-tabs\"></div><section class=\"gallery-panel\" id=\"\{prefix}-preview\"><h2>Preview</h2>\{previews(entry, base_path, card~, canonical=source_text)}</section><section class=\"gallery-panel gallery-source\" id=\"\{prefix}-source\"><h2>Source</h2>\{sources}</section></div>"
+}
+
+///|
 fn detail_body(
   entry : Entry,
   base_path : String,
@@ -81,25 +126,6 @@ fn detail_body(
     return heading +
       "<p>This example is planned. No generated preview or offline player is supplied.</p></article>"
   }
-  let sources = entry.sources
-    .mapi((i, file) => {
-      let content = match source_text.get(file.path) {
-        Some(text) => {
-          let literal = escape(text)
-            .replace_all(old="\r", new="&#13;")
-            .replace_all(old="(", new="&#40;")
-            .replace_all(old=")", new="&#41;")
-            // Keep literal URLs opaque to version-tree URL rewriting. Browsers
-            // decode this character reference back into the exact source text.
-            .replace_all(old="/", new="&#47;")
-          "<pre tabindex=\"0\" aria-label=\"\{escape(file.path)} source\"><code>\{literal}</code></pre>"
-        }
-        None =>
-          "<p>Inline source unavailable. Download this source to inspect it.</p>"
-      }
-      "<section class=\"gallery-source-file\" aria-labelledby=\"gallery-source-\{i}\"><h3 class=\"gallery-source-heading\" id=\"gallery-source-\{i}\">\{escape(file.path)}</h3><p>\{escape(file.media_type)}</p>\{content}<p class=\"gallery-actions\"><a href=\"\{escape(artifact_url(base_path, file))}\" download>Download source: \{escape(file.path)}</a></p></section>"
-    })
-    .join("")
   let downloads = [entry.preview, entry.preview_dark]
     .mapi((i, file) => {
       match file {
@@ -116,7 +142,8 @@ fn detail_body(
     None => ""
   }
   heading +
-  "<div class=\"gallery-workbench\"><div class=\"gallery-tabs\"></div><section class=\"gallery-panel\" id=\"gallery-preview\"><h2>Preview</h2>\{previews(entry, base_path, canonical=source_text)}</section><section class=\"gallery-panel gallery-source\" id=\"gallery-source\"><h2>Source</h2>\{sources}</section></div><p class=\"gallery-actions\">\{downloads} \{player}</p></article>"
+  workbench(entry, base_path, source_text) +
+  "<p class=\"gallery-actions\">\{downloads} \{player}</p></article>"
 }
 
 ///|
@@ -164,7 +191,7 @@ pub fn plan(
           let terms = escape(
             entry.title + " " + entry.family + " " + description,
           )
-          "<li class=\"gallery-card\" data-gallery-search=\"\{terms}\">\{previews(entry, base_path, card=true, canonical=source_text)}<div class=\"gallery-card-body\"><a class=\"gallery-card-link gallery-card-title\" aria-label=\"\{escape(entry.title)}\" href=\"\{base_path}gallery/\{entry.id}/\">\{escape(entry.title)}</a><p class=\"gallery-card-meta\">\{escape(entry.family)} <strong class=\"gallery-badge\">\{status_label(entry.status)}</strong></p><p>\{escape(description)}</p></div></li>"
+          "<li class=\"gallery-card\" data-gallery-search=\"\{terms}\">\{if entry.status == Implemented { workbench(entry, base_path, source_text, card=true) } else { previews(entry, base_path, card=true) }}<div class=\"gallery-card-body\"><a class=\"gallery-card-link gallery-card-title\" aria-label=\"\{escape(entry.title)}\" href=\"\{base_path}gallery/\{entry.id}/\">\{escape(entry.title)}</a><p class=\"gallery-card-meta\">\{escape(entry.family)} <strong class=\"gallery-badge\">\{status_label(entry.status)}</strong></p><p>\{escape(description)}</p></div></li>"
         })
         .join("")
       "<section class=\"gallery-group\" id=\"\{family_ids[family]}\"><h2>\{escape(family)}</h2><ul class=\"gallery-grid\">\{cards}</ul></section>"

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add gallery index source tabs</title>
+<meta name="color-scheme" content="light dark">
+<style>
+:root { color-scheme: light dark; --bg: #fafafa; --fg: #18212f; --muted: #526071;
+  --line: #cbd5e1; --panel: #eef2f6; --link: #075caa; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111827; --fg: #e5e7eb; --muted: #b0bdce;
+    --line: #475569; --panel: #1e293b; --link: #8cc8ff; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 1rem/1.6 system-ui, sans-serif; }
+main { max-width: 70rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+h1, h2, h3 { line-height: 1.25; overflow-wrap: anywhere; }
+h2 { margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+a { color: var(--link); }
+a:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.meta { color: var(--muted); }
+.toc, pre, details { background: var(--panel); border: 1px solid var(--line);
+  border-radius: .4rem; padding: 1rem; }
+code { font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+pre { overflow-x: auto; } pre code { overflow-wrap: normal; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--line); padding: .6rem; text-align: left;
+  overflow-wrap: anywhere; }
+svg { max-width: 100%; height: auto; }
+@media print { main { max-width: none; padding: 0; } pre, tr { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main>
+<h1>Add gallery index source tabs</h1>
+<p class="meta">Approved implementation | 2026-10-29 | <a href="proposal.md">Proposal</a> | <a href="tasks.md">Tasks</a></p>
+<nav class="toc" aria-label="Contents"><ul><li><a href="#context">Context</a></li><li><a href="#goals">Goals and non-goals</a></li><li><a href="#decisions">Decisions</a></li><li><a href="#risks">Risks and trade-offs</a></li><li><a href="#migration">Migration plan</a></li></ul></nav>
+<h2 id="context">Context</h2>
+<p>The pure gallery planner already receives source_text. Detail pages render exact escaped source, while index cards render only previews. The host supplies declared UTF-8 source and canonical SVG independently. Existing viewer islands own their state and the native CLI embeds the shared assets.</p>
+<h2 id="goals">Goals and non-goals</h2>
+<p>Use the same renderer and controller for both contexts. Keep the manifest and public plan signature compatible. Consumers own source associations and domain syntax; Telescope never reconstructs syntax from SVG or executes a renderer.</p>
+<h2 id="decisions">Decisions</h2>
+<h3 id="src-1">SRC-1. Shared source and workbench renderer</h3>
+<p>Extract detail source sections into a helper and render an implemented card workbench. Prefix index panel and file IDs with the validated entry ID; retain detail panel IDs for compatibility. Preserve source order and unavailable-source downloads. Add a labeled filename selector for multiple files only when scripted; retain selection in each mounted workbench and keep every file visible without scripts. Escaping includes carriage returns and URL delimiters to survive version-tree rewriting. Duplicating the renderer would allow detail and index behavior to drift.</p>
+<h3 id="tab-1">TAB-1. Enhance each mounted workbench</h3>
+<p>Initialize all workbenches independently with tabs and roving arrow/Home/End keyboard handling. Hide panels only after setup and toggle hidden without replacing DOM nodes. Static pages show both sections and no inactive tabs. This retains viewer transforms and avoids a whole-site application.</p>
+<h3 id="css-1">CSS-1. Reuse public classes</h3>
+<p>Keep gallery-workbench, gallery-tabs, gallery-tab, gallery-panel, gallery-source and gallery-source-file hooks. Use text tabs with an active underline, card-scoped spacing and source-height limits; use existing palette and focus tokens. Wrap viewer toolbar actions inside narrow cards. Source scroll stays inside each card.</p>
+<h2 id="risks">Risks and trade-offs</h2>
+<table><thead><tr><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>More index HTML for large sources</td><td>Reuse host text eligibility checks and declared inputs. Accept static duplication for offline and no-script reading.</td></tr><tr><td>Repeated source paths across cards</td><td>Per-entry file IDs and browser duplicate-ID assertions.</td></tr><tr><td>Hidden viewer loses state</td><td>Retain DOM identity and test repeated toggle, pan, theme changes, filtering and actions.</td></tr></tbody></table>
+<h2 id="migration">Migration plan</h2>
+<p>Prepare additive 0.5.0 library and matching CLI, then qualify packaged independent consumers. The coordinator owns the combined implementation/release-preparation PR. Owner approval must name the concrete merged SHA and version before publication. Actual publication and both-platform public install evidence precede downstream adoption and final archive. A rollback pins the prior published version.</p>
+</main>
+</body>
+</html>

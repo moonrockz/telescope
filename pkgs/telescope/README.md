@@ -1,5 +1,9 @@
 # Telescope library
 
+The 0.5.0 candidate adds independent index-card source inspection with retained
+filename selection. See [candidate notes](../../docs/release/0.5.0.md) for
+qualification and the publication gate.
+
 `moonrockz/telescope@0.4.0` is published with a matching native CLI. It provides
 gallery viewports, local raster adapter hooks and optional brand assets.
 Direct `SiteConfig` literals must supply the three new asset fields described in
