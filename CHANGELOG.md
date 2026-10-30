@@ -1,13 +1,14 @@
 # Changelog
 
-## 0.5.1, candidate
+## 0.5.1, 2026-10-29
 
 - Fix native Windows drive and UNC canonical paths, containment and sibling staging.
 - Qualify native host builds, output checks, assembly and loopback preview on Windows.
 - Require Windows host qualification before publication alongside Linux/macOS distribution checks.
 - Install fresh macOS tools after restored yamllint environments could not execute.
 
-Publication remains subject to owner approval of the exact source and version.
+Owner-approved Actions publication and clean Linux/macOS public consumers passed.
+See [release evidence](docs/release/0.5.1.md).
 
 ## 0.5.0, candidate
 

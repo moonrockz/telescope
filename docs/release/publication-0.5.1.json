@@ -1,0 +1,57 @@
+{
+  "version": "0.5.1",
+  "library": "moonrockz/telescope@0.5.1",
+  "published": true,
+  "approved_source_commit": "1b0808634f9a173f6368e5e3b9ac6edde662dc16",
+  "release_pr": "https://github.com/moonrockz/telescope/pull/22",
+  "implementation_pr": "https://github.com/moonrockz/telescope/pull/21",
+  "actions_run": "https://github.com/moonrockz/telescope/actions/runs/40970873832",
+  "actions_actor": "DamianReeves",
+  "release_url": "https://github.com/moonrockz/telescope/releases/tag/v0.5.1",
+  "published_at": "2026-10-29T23:14:00Z",
+  "validated_tree": "cd1d10715896aae630b360debe3b1ac71df87eb1",
+  "candidate_ci": "https://github.com/moonrockz/telescope/actions/runs/40927615823",
+  "library_archive": {
+    "url": "https://download.mooncakes.io/user/moonrockz/telescope/0.5.1.zip",
+    "sha256": "91d383c32e7d761c2514b70802431252d340898cb81ff6b2e7c7e3fa23683188",
+    "matches_qualified_linux_library": true
+  },
+  "windows_host_qualification": {
+    "name": "windows-host / Windows host paths and boundaries",
+    "url": "https://github.com/moonrockz/telescope/actions/runs/40970873832/job/123787001559",
+    "conclusion": "success"
+  },
+  "platforms": {
+    "linux-x64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.5.1/telescope-0.5.1-linux-x64.tar.gz",
+      "cli_sha256": "b33eff464de094291b47b85d549305efb0b31ebbce48f65c4fec376289fa560d",
+      "matches_qualified_artifact": true,
+      "consumer_report": "consumer-0.5.1-linux-x64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.5.1-linux-x64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Actions published consumer step"
+    },
+    "macos-arm64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.5.1/telescope-0.5.1-macos-arm64.tar.gz",
+      "cli_sha256": "4eb0883be8e6f7853675343389f14424943bf5e1f45d92e44f9719a3122b6122",
+      "matches_qualified_artifact": true,
+      "consumer_report": "consumer-0.5.1-macos-arm64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.5.1-macos-arm64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Local mise run test:consumer -- --published 0.5.1"
+    },
+    "windows-x64": {
+      "library_only": true,
+      "cli_archive": null,
+      "consumer_report": "consumer-0.5.1-windows-x64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "https://github.com/moonrockz/moon-lander/actions/runs/40975690319/job/123803342642",
+      "verified_step": "Test native",
+      "step_conclusion": "success",
+      "consumer_commit": "061a7c98e99381ccdd62da2491069b7014337b7c"
+    }
+  }
+}
