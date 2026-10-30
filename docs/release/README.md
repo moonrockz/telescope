@@ -1,7 +1,13 @@
 # Release procedure
 
-The [0.5.1 candidate](0.5.1.md) prepares the Windows native-library host repair.
-Its concrete source and version require owner approval before publication.
+Telescope [0.5.1](0.5.1.md) is published from owner-approved source
+`1b0808634f9a173f6368e5e3b9ac6edde662dc16` through
+[release PR 22](https://github.com/moonrockz/telescope/pull/22).
+[Actions run 40970873832](https://github.com/moonrockz/telescope/actions/runs/40970873832)
+passed Windows host qualification, both distribution qualifiers, the exact
+owner/admin gate and actual Linux public consumer. Independent macOS public
+qualification also passed. [Publication metadata](publication-0.5.1.json)
+records the approved source, public downloads, verified hashes and reports.
 
 Telescope [0.5.0](0.5.0.md) is published from owner-approved repaired source
 `4116b2d51da5ff8999ca8437e4aa0a973e7babdf` through [PR 19](https://github.com/moonrockz/telescope/pull/19).

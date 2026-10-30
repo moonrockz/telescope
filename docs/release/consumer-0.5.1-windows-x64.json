@@ -1,0 +1,40 @@
+{
+  "version": "0.5.1",
+  "platform": "windows-x64",
+  "published": true,
+  "library": "moonrockz/telescope@0.5.1",
+  "package_source": "public Mooncakes registry",
+  "workspace_overrides": false,
+  "library_only": true,
+  "cli_archive": null,
+  "consumer": "moonrockz/moon-lander-site",
+  "consumer_pr": "https://github.com/moonrockz/moon-lander/pull/138",
+  "consumer_commit": "061a7c98e99381ccdd62da2491069b7014337b7c",
+  "dependency_manifest": "https://github.com/moonrockz/moon-lander/blob/061a7c98e99381ccdd62da2491069b7014337b7c/apps/site/moon.mod",
+  "workspace_manifest": "https://github.com/moonrockz/moon-lander/blob/061a7c98e99381ccdd62da2491069b7014337b7c/moon.work",
+  "actions_run": "https://github.com/moonrockz/moon-lander/actions/runs/40975690319",
+  "actions_job": "https://github.com/moonrockz/moon-lander/actions/runs/40975690319/job/123803342642",
+  "verified_steps": [
+    {
+      "name": "Build native",
+      "conclusion": "success",
+      "started_at": "2026-10-29T23:53:29Z",
+      "completed_at": "2026-10-29T23:57:09Z"
+    },
+    {
+      "name": "Test native",
+      "conclusion": "success",
+      "started_at": "2026-10-29T23:57:09Z",
+      "completed_at": "2026-10-29T23:59:03Z"
+    }
+  ],
+  "host_checks": [
+    "native source containment and symlink escape rejection",
+    "root and nested base builds with generated-link checks",
+    "custom Mermaid and layers providers",
+    "ignored source policy and source diagnostics",
+    "API-index route compatibility adapter",
+    "retained release assembly and binary asset preservation"
+  ],
+  "scope": "Published native library host consumed in the Moon-Lander workspace; no Windows CLI distribution."
+}

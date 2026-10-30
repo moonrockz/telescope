@@ -19,6 +19,11 @@ Bead: telescope-dpa.2
 
 Bead: telescope-dpa.3
 
-- [ ] 3.1 Prepare a concrete patch release PR and qualify it; request owner approval for the exact source/version before publication.
-- [ ] 3.2 Publish through the owner-approved Actions workflow and record real package, archive and qualification evidence.
-- [ ] 3.3 Verify an actual published Windows host consumer before downstream adoption, archive this change in its final evidence PR and close/sync local beads only after merge.
+- [x] 3.1 Prepare a concrete patch release PR and qualify it; request owner approval for the exact source/version before publication.
+- [x] 3.2 Publish through the owner-approved Actions workflow and record real package, archive and qualification evidence.
+- [x] 3.3 Verify an actual published Windows host consumer and record its version, dependency source, host checks and evidence links before downstream adoption.
+
+## Workflow follow-up
+
+- Archive this completed change in the final publication-evidence pull request.
+- After merge, close the release story with its PR and merge SHA, close the finished epic and sync this repository tracker.
