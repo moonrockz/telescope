@@ -14,7 +14,7 @@ runs:
       run: |
         export MOON_HOME="$(mise where http:moonbit)"
         curl --fail --silent --show-error --location https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moonbit.sh"
-        bash "$RUNNER_TEMP/install-moonbit.sh" '0.10.17+093cb8f9c'
+        bash "$RUNNER_TEMP/install-moonbit.sh" '0.10.18+6c83a7f62'
         echo "MOON_HOME=$(mise where http:moonbit)" >> "$GITHUB_ENV"
         mise where http:moonbit | sed 's|$|/bin|' >> "$GITHUB_PATH"
         "$(mise where http:moonbit)/bin/moonc" -v
@@ -26,7 +26,7 @@ runs:
         $ErrorActionPreference = 'Stop'
         $moonbitDir = (mise where http:moonbit).Trim()
         $env:MOON_HOME = $moonbitDir
-        $env:MOONBIT_INSTALL_VERSION = '0.10.17+093cb8f9c'
+        $env:MOONBIT_INSTALL_VERSION = '0.10.18+6c83a7f62'
         Invoke-RestMethod https://cli.moonbitlang.com/install/powershell.ps1 | Invoke-Expression
         "$moonbitDir\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
         "MOON_HOME=$moonbitDir" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8

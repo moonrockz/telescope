@@ -155,7 +155,7 @@ See `extensions/README.md` and `gallery/README.md` for those contracts.
 
 `model.ApiPackage::parse(file, text)` reads compiler `package_data.json`, and
 `model.api_index_packages(file, text)` reads `module_index.json` in package order.
-The supported format is pinned to MoonBit `0.10.17+093cb8f9c`. Unsupported required
+The supported format is pinned to MoonBit `0.10.18+6c83a7f62`. Unsupported required
 shapes raise source diagnostics rather than silently emitting incomplete pages.
 `site.ApiSite` contains the supplied commit and `ApiModule` values, each with
 module directory, module name, packages and package README text.
