@@ -7,7 +7,7 @@ license = "Apache-2.0"
 import {
   "moonrockz/telescope@0.5.1",
   "qualification/tutorial-engine@1.0.0",
-  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.7",
 }
 
 preferred_target = "native"

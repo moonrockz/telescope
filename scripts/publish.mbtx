@@ -1,16 +1,17 @@
-///|
-/// Publication runs only in the owner-approved Actions job, never on a workstation.
+----
 import {
-  "moonbitlang/async@0.22.5",
-  "moonbitlang/async@0.22.5/fs",
-  "moonbitlang/async@0.22.5/process",
-  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/async@0.22.7",
+  "moonbitlang/async@0.22.7/fs",
+  "moonbitlang/async@0.22.7/process",
+  "moonbitlang/async@0.22.7/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/json",
   "moonbitlang/x@0.5.5/sys",
 }
+----
 
 ///|
+/// Publication runs only in the owner-approved Actions job, never on a workstation.
 async fn main {
   guard @env.get_env_var("GITHUB_ACTIONS") == Some("true") &&
     @env.get_env_var("RUNNER_ENVIRONMENT") == Some("github-hosted") else {
