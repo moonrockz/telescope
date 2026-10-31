@@ -269,7 +269,7 @@ test "unknown compiler self types fail with the supported format and source" {
     .any(message => {
       message.contains("consumer/package_data.json") &&
       message.contains("unsupported moon doc shape") &&
-      message.contains("0.10.17+093cb8f9c")
+      message.contains("0.10.18+6c83a7f62")
     }),
   )
 }

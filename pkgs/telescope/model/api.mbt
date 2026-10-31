@@ -261,7 +261,7 @@ fn Reader::type_text(
       raise Invalid([
         problem(
           self.file,
-          "unsupported moon doc shape at `\{at}`; supported self-type kinds are constr and param for MoonBit 0.10.17+093cb8f9c",
+          "unsupported moon doc shape at `\{at}`; supported self-type kinds are constr and param for MoonBit 0.10.18+6c83a7f62",
         ),
       ])
   }
