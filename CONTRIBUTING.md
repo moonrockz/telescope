@@ -16,13 +16,13 @@ mise run check:setup
 ```
 
 Tools are pinned in `.config/mise/config.toml`: Node 24.14.1, OpenSpec 1.14.3,
-MoonBit 0.10.17+093cb8f9c, Bun 1.4.3, yamllint 1.38.0 and actionlint 1.7.12. The MoonBit HTTP archive does not
+MoonBit 0.10.18+6c83a7f62, Bun 1.4.3, yamllint 1.38.0 and actionlint 1.7.12. The MoonBit HTTP archive does not
 include its core library. If the installed tool lacks core, complete that exact
 installation using the upstream installer:
 
 ```shell
 curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o /tmp/telescope-install-moonbit.sh
-MOON_HOME="$(mise where http:moonbit)" bash /tmp/telescope-install-moonbit.sh '0.10.17+093cb8f9c'
+MOON_HOME="$(mise where http:moonbit)" bash /tmp/telescope-install-moonbit.sh '0.10.18+6c83a7f62'
 ```
 
 All development scripts use `moonx` with pinned external imports. Use
