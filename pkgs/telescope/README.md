@@ -1,5 +1,9 @@
 # Telescope library
 
+The [0.6.0 candidate](../../docs/release/0.6.0.md) requires MoonBit 0.10.20 or
+later and fixes the search and version-switcher islands on that toolchain. It is
+not published; the actual released version remains 0.5.1 until approval.
+
 `moonrockz/telescope@0.5.1` is published with matching Linux/macOS CLI archives.
 It repairs Windows native-host paths and retains gallery Preview/Source tabs,
 exact original syntax, viewer state, local raster hooks and optional brand assets.
