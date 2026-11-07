@@ -1,4 +1,5 @@
 ///|
+#derive(Eq, Debug)
 pub(all) struct SiteConfig {
   title : String
   description : String
@@ -23,15 +24,16 @@ pub(all) struct SiteConfig {
   header_logo : String
   favicon : String
   gallery_raster_adapter : String
-} derive(Eq, Debug)
+}
 
 ///|
 /// The sub-package pages of one listed package, in sidebar order: each is a directory below the package, such as
 /// `frontend`. A listed page takes its position as its `order`, before front matter.
+#derive(Eq, Debug)
 pub(all) struct ChapterOrder {
   name : String
   chapters : Array[String]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ChapterOrder with Eq::{equal, not_equal}
@@ -63,10 +65,11 @@ pub fn SiteConfig::chapter_order(
 /// One labelled group of the docs sidebar. An item is a top-level page (`NAME.md` or
 /// `NAME.html`) or directory (`NAME/`) below `docs/`, or a glob of one: `*` and `?`
 /// match any characters and one character, but never `/`.
+#derive(Eq, Debug)
 pub(all) struct NavGroup {
   group : String
   items : Array[String]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend NavGroup with Eq::{equal, not_equal}

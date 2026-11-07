@@ -1,25 +1,29 @@
 ///|
 /// A supplied artifact. Paths are normalized, relative to the declared artifact root.
+#derive(Eq, Debug)
 pub(all) struct FileRef {
   path : String
   media_type : String
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum Status {
   Implemented
   Planned
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Producer {
   project : String
   source_ref : String
   pipeline : String
-} derive(Eq, Debug)
+}
 
 ///|
 /// Family and scope are consumer metadata, never renderer capability declarations.
+#derive(Eq, Debug)
 pub(all) struct Entry {
   id : String
   family : String
@@ -32,37 +36,41 @@ pub(all) struct Entry {
   preview_dark : FileRef?
   player : FileRef?
   companions : Array[FileRef]
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Manifest {
   schema_version : Int32
   producer : Producer?
   root : String?
   entries : Array[Entry]
-} derive(Eq, Debug)
+}
 
 ///|
 /// Body is escaped HTML for the shared Rabbita shell, not a standalone document.
+#derive(Eq, Debug)
 pub(all) struct GalleryPage {
   route : String
   title : String
   body_html : String
-} derive(Eq, Debug)
+}
 
 ///|
 /// The host must validate regular files and realpath containment before copying.
+#derive(Eq, Debug)
 pub(all) struct ArtifactCopy {
   source_path : String
   output_path : String
   media_type : String
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct GalleryPlan {
   pages : Array[GalleryPage]
   copies : Array[ArtifactCopy]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend FileRef with Eq::{equal, not_equal}

@@ -1,24 +1,27 @@
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct OutputExpectation {
   id : String
   contains : Array[String]
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct StepExpectation {
   checked : Int32
   complete : Bool
   diagnostic_keys : Array[String]
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Expectation {
   diagnostic_keys : Array[String]
   outputs : Array[OutputExpectation]
   blocked : String?
   verdict : String?
   steps : StepExpectation?
-} derive(Eq, Debug)
+}
 
 ///|
 fn invalid(
@@ -277,19 +280,21 @@ pub fn compare(
 }
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct ReferenceDifference {
   reason : String
   tracking : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct ReferenceEvidence {
   source : String
   source_revision : String
   input_revision : String
   differences : Array[ReferenceDifference]
   required : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 pub(all) struct ReferenceRegistration {
@@ -323,6 +328,7 @@ pub fn reference_problems(
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct CaseReport {
   source : String
   course : String
@@ -334,7 +340,7 @@ pub(all) struct CaseReport {
   passed : Bool
   mismatches : Array[String]
   reference : ReferenceEvidence?
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn reports_text(reports : Array[CaseReport]) -> String {

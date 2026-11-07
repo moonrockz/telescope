@@ -2,6 +2,7 @@
 package "moonrockz/telescope/tutorial/workspace"
 
 import {
+  "moonbitlang/core/json",
   "moonrockz/telescope/editor",
   "moonrockz/telescope/tutorial/model",
 }
@@ -28,7 +29,7 @@ pub fn State::dispose(Self) -> Unit
 pub fn State::edit(Self, String) -> Unit
 pub fn State::new(String) -> Self
 pub fn State::receive(Self, @model.Response) -> Bool
-pub fn State::request(Self, @model.Provider, String, Array[@model.File], Json) -> @model.Request?
+pub fn State::request(Self, @model.Provider, String, Array[@model.File], @json.Json) -> @model.Request?
 pub fn State::reset(Self, String) -> Unit
 pub fn State::timeout(Self) -> Bool
 

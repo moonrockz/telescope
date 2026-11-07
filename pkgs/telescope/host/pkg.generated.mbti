@@ -2,6 +2,7 @@
 package "moonrockz/telescope/host"
 
 import {
+  "moonbitlang/core/json",
   "moonrockz/telescope/extensions",
   "moonrockz/telescope/tutorial/check",
 }
@@ -29,7 +30,7 @@ pub fn relative(String) -> Bool
 
 pub async fn serve(String, String, Int32) -> Unit
 
-pub async fn tutorial_input(String, Json, out? : String) -> TutorialInput?
+pub async fn tutorial_input(String, @json.Json, out? : String) -> TutorialInput?
 
 pub let version : String
 
@@ -63,6 +64,7 @@ pub(all) struct TutorialRunner {
   evaluate : async (@moonrockz/telescope/tutorial/model.Request) -> Result[@moonrockz/telescope/tutorial/model.Response, String]
 }
 
+#derive(@json.ToJson)
 pub(all) struct TutorialSourceReport {
   source : String
   course : String
@@ -74,8 +76,8 @@ pub(all) struct TutorialSourceReport {
   covered : Bool
   verified : Bool
   problems : Array[String]
-} derive(ToJson)
-pub fn TutorialSourceReport::to_json(Self) -> Json
+}
+pub fn TutorialSourceReport::to_json(Self) -> @json.Json
 
 // Type aliases
 

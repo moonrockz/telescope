@@ -1,4 +1,5 @@
 ///|
+#derive(Eq, Debug)
 pub(all) struct Provider {
   id : String
   contract_version : Int32
@@ -7,46 +8,52 @@ pub(all) struct Provider {
   worker : String
   assets : Array[String]
   workbench : String?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct FileSource {
   name : String
   source : String
   language : String
   group : String
   formatter : @editor.Binding?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct File {
   name : String
   text : String
   language : String
   group : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Execution {
   provider : String
   operation : String
   options : Json
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Reference {
   label : String
   url : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct CaseSource {
   id : String
   expect : String
   files : Array[FileSource]
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Lesson {
   slug : String
   title : String
@@ -57,17 +64,19 @@ pub(all) struct Lesson {
   execution : Execution?
   cases : Array[CaseSource]
   editor : String?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Course {
   id : String
   title : String
   route : String
   lessons : Array[Lesson]
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Manifest {
   schema_version : Int32
   root : String
@@ -76,7 +85,7 @@ pub(all) struct Manifest {
   formatters : Array[@editor.FormatterRegistration]
   languages : Map[String, @editor.Binding]
   courses : Array[Course]
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
 pub fn Course::lesson_route(self : Course, lesson : Lesson) -> String {
@@ -105,6 +114,7 @@ pub fn Course::neighbors(self : Course, slug : String) -> (Lesson?, Lesson?) {
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Diagnostic {
   key : String
   code : String
@@ -115,34 +125,38 @@ pub(all) struct Diagnostic {
   column : Int32?
   end_line : Int32?
   end_column : Int32?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Output {
   id : String
   label : String
   language : String
   text : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct StepRow {
   id : String
   label : String
   diagnostics : Array[Diagnostic]
   text : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Steps {
   session : String
   rows : Array[StepRow]
   checked : Int32
   complete : Bool
   summary : String?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Request {
   contract_version : Int32
   provider : String
@@ -155,9 +169,10 @@ pub(all) struct Request {
   options : Json
   session : String?
   position : Int32?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Response {
   contract_version : Int32
   provider : String
@@ -171,13 +186,14 @@ pub(all) struct Response {
   blocked : String?
   verdict : String?
   steps : Steps?
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct EvaluationError {
   code : String
   message : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
 pub(open) trait Evaluator {

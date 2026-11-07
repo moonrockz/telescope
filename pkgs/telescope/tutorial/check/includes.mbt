@@ -1,13 +1,15 @@
 ///|
+#derive(Eq, Debug)
 pub(all) struct SourceEvidence {
   runner : String
   source_revision : String
   input_revision : String
   success : Bool
   required : Bool
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct SourcePolicy {
   source : String
   regions : Array[String]
@@ -17,15 +19,17 @@ pub(all) struct SourcePolicy {
   marker_end : String
   evidence : SourceEvidence?
   evidence_by_input : Map[String, SourceEvidence]
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct IncludedBlock {
   language : String
   text : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct IncludedRegion {
   source : String
   region : String
@@ -35,15 +39,16 @@ pub(all) struct IncludedRegion {
   runner : String
   source_revision : String
   verified : Bool
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Include {
   label : String
   path : String
   region : String
   line : Int32
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
 pub fn source_policy(

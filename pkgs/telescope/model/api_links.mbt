@@ -1,10 +1,11 @@
 ///|
 /// One part of a signature: text, or a link with its `moon doc` target and its text.
+#derive(Eq, Debug)
 pub(all) enum SignaturePart {
   Text(String)
   /// `Link(target, text)`: the target is `<package path>` or `<package path>#<item>`.
   Link(String, String)
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend SignaturePart with Eq::{equal, not_equal}

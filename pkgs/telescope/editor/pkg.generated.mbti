@@ -12,7 +12,7 @@ pub let contract_version : Int32
 
 pub fn empty_registry() -> Registry
 
-pub fn[F : Formatter] formatter_reply(F, Json) -> Json
+pub fn[F : Formatter] formatter_reply(F, @json.Json) -> @json.Json
 
 pub fn request_is_current(FormatRequest, String, Int32, FormatterRegistration, Array[DocumentState]) -> Bool
 
@@ -27,26 +27,28 @@ pub fn validate_registry(Registry) -> Array[@model.Problem]
 // Errors
 
 // Types and methods
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct Binding {
   provider : String
-  options : Json
-} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+  options : @json.Json
+}
 pub fn Binding::equal(Self, Self) -> Bool
-pub fn Binding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Binding::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Binding::not_equal(Self, Self) -> Bool
-pub fn Binding::to_json(Self) -> Json
+pub fn Binding::to_json(Self) -> @json.Json
 pub fn Binding::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct Document {
   id : String
   name : String
   text : String
   language : String
-} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+}
 pub fn Document::equal(Self, Self) -> Bool
-pub fn Document::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Document::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Document::not_equal(Self, Self) -> Bool
-pub fn Document::to_json(Self) -> Json
+pub fn Document::to_json(Self) -> @json.Json
 pub fn Document::to_repr(Self) -> @debug.Repr
 
 pub struct DocumentState {
@@ -69,6 +71,7 @@ pub fn DocumentState::set_language(Self, String) -> Unit
 pub fn DocumentState::set_selection(Self, Selection) -> Unit
 pub fn DocumentState::undo(Self) -> Bool
 
+#derive(Eq, @debug.Debug)
 pub(all) struct EditorRegistration {
   id : String
   contract_version : Int32
@@ -76,45 +79,49 @@ pub(all) struct EditorRegistration {
   module_path : String
   languages : Array[String]
   assets : Array[String]
-} derive(Eq, @debug.Debug)
+}
 pub fn EditorRegistration::equal(Self, Self) -> Bool
-pub fn EditorRegistration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EditorRegistration::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn EditorRegistration::not_equal(Self, Self) -> Bool
-pub fn EditorRegistration::to_json(Self) -> Json
+pub fn EditorRegistration::to_json(Self) -> @json.Json
 pub fn EditorRegistration::to_repr(Self) -> @debug.Repr
-pub impl ToJson for EditorRegistration
 pub impl @json.FromJson for EditorRegistration
+pub impl @json.ToJson for EditorRegistration
 
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct FormatError {
   code : String
   message : String
-} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+}
 pub fn FormatError::equal(Self, Self) -> Bool
-pub fn FormatError::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatError::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn FormatError::not_equal(Self, Self) -> Bool
-pub fn FormatError::to_json(Self) -> Json
+pub fn FormatError::to_json(Self) -> @json.Json
 pub fn FormatError::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct FormatInput {
   target : Document
   context : Array[Document]
-  options : Json
-} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+  options : @json.Json
+}
 pub fn FormatInput::equal(Self, Self) -> Bool
-pub fn FormatInput::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatInput::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn FormatInput::not_equal(Self, Self) -> Bool
-pub fn FormatInput::to_json(Self) -> Json
+pub fn FormatInput::to_json(Self) -> @json.Json
 pub fn FormatInput::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct FormatOutput {
   text : String
-} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+}
 pub fn FormatOutput::equal(Self, Self) -> Bool
-pub fn FormatOutput::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatOutput::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn FormatOutput::not_equal(Self, Self) -> Bool
-pub fn FormatOutput::to_json(Self) -> Json
+pub fn FormatOutput::to_json(Self) -> @json.Json
 pub fn FormatOutput::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) struct FormatRequest {
   contract_version : Int32
   instance : String
@@ -125,19 +132,21 @@ pub(all) struct FormatRequest {
   target : String
   revisions : Array[InputRevision]
   input : FormatInput
-} derive(Eq, @debug.Debug)
+}
 pub fn FormatRequest::equal(Self, Self) -> Bool
 pub fn FormatRequest::not_equal(Self, Self) -> Bool
 pub fn FormatRequest::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) struct FormatResult {
   request : FormatRequest
   output : Result[FormatOutput, FormatError]
-} derive(Eq, @debug.Debug)
+}
 pub fn FormatResult::equal(Self, Self) -> Bool
 pub fn FormatResult::not_equal(Self, Self) -> Bool
 pub fn FormatResult::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct FormatterRegistration {
   id : String
   contract_version : Int32
@@ -145,17 +154,18 @@ pub(all) struct FormatterRegistration {
   languages : Array[String]
   worker : String
   assets : Array[String]
-} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+}
 pub fn FormatterRegistration::equal(Self, Self) -> Bool
-pub fn FormatterRegistration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FormatterRegistration::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn FormatterRegistration::not_equal(Self, Self) -> Bool
-pub fn FormatterRegistration::to_json(Self) -> Json
+pub fn FormatterRegistration::to_json(Self) -> @json.Json
 pub fn FormatterRegistration::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) struct InputRevision {
   id : String
   revision : Int32
-} derive(Eq, @debug.Debug)
+}
 pub fn InputRevision::equal(Self, Self) -> Bool
 pub fn InputRevision::not_equal(Self, Self) -> Bool
 pub fn InputRevision::to_repr(Self) -> @debug.Repr
@@ -166,10 +176,11 @@ pub(all) struct Registry {
   languages : Map[String, Binding]
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Selection {
   anchor : Int32
   head : Int32
-} derive(Eq, @debug.Debug)
+}
 pub fn Selection::equal(Self, Self) -> Bool
 pub fn Selection::not_equal(Self, Self) -> Bool
 pub fn Selection::to_repr(Self) -> @debug.Repr

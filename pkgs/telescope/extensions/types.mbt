@@ -3,20 +3,23 @@
 pub let contract_version : Int32 = 1
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Artifact {
   path : String
   media_type : String
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Heading {
   id : String
   text : String
   level : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 /// Text and paths are supplied explicitly. Adapters receive no ambient IO handle.
+#derive(Eq, Debug)
 pub(all) struct RenderInput {
   source : String
   route : String
@@ -25,23 +28,25 @@ pub(all) struct RenderInput {
   language : String
   /// One-based occurrence within a fence adapter in this document; zero for pages.
   ordinal : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 /// Reviewed body HTML follows the same trust model as repository HTML inputs.
+#derive(Eq, Debug)
 pub(all) struct RenderOutput {
   body_html : String
   text : String
   headings : Array[Heading]
   assets : Array[Artifact]
   problems : Array[@model.Problem]
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct AdapterError {
   message : String
   stage : String
-} derive(Eq, Debug)
+}
 
 ///|
 pub(all) struct PageAdapter {
@@ -61,6 +66,7 @@ pub(all) struct FenceAdapter {
 
 ///|
 /// A route-local script, mount and readable no-JS fallback. Assets are root-relative files.
+#derive(Eq, Debug)
 pub(all) struct IslandAdapter {
   id : String
   contract_version : Int32
@@ -69,7 +75,7 @@ pub(all) struct IslandAdapter {
   script : Artifact
   stylesheet : Artifact?
   fallback_html : String
-} derive(Eq, Debug)
+}
 
 ///|
 pub(all) struct Registry {

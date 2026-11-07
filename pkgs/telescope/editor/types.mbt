@@ -3,36 +3,41 @@
 pub let contract_version : Int32 = 1
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Document {
   id : String
   name : String
   text : String
   language : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Selection {
   anchor : Int32
   head : Int32
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct FormatInput {
   target : Document
   context : Array[Document]
   options : Json
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct FormatOutput {
   text : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct FormatError {
   code : String
   message : String
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
 pub(open) trait Formatter {
@@ -40,6 +45,7 @@ pub(open) trait Formatter {
 }
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct FormatterRegistration {
   id : String
   contract_version : Int32
@@ -47,15 +53,17 @@ pub(all) struct FormatterRegistration {
   languages : Array[String]
   worker : String
   assets : Array[String]
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug, ToJson, FromJson)
 pub(all) struct Binding {
   provider : String
   options : Json
-} derive(Eq, Debug, ToJson, FromJson)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct EditorRegistration {
   id : String
   contract_version : Int32
@@ -63,7 +71,7 @@ pub(all) struct EditorRegistration {
   module_path : String
   languages : Array[String]
   assets : Array[String]
-} derive(Eq, Debug)
+}
 
 ///|
 pub(all) struct Registry {
@@ -78,12 +86,14 @@ pub fn empty_registry() -> Registry {
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct InputRevision {
   id : String
   revision : Int32
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct FormatRequest {
   contract_version : Int32
   instance : String
@@ -94,13 +104,14 @@ pub(all) struct FormatRequest {
   target : String
   revisions : Array[InputRevision]
   input : FormatInput
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct FormatResult {
   request : FormatRequest
   output : Result[FormatOutput, FormatError]
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn resolve_binding(
