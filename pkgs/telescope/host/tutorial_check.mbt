@@ -317,6 +317,7 @@ pub async fn check_tutorials(
 
 ///|
 /// Structural source coverage and runner evidence are separate from case results.
+#derive(ToJson)
 pub(all) struct TutorialSourceReport {
   source : String
   course : String
@@ -328,7 +329,7 @@ pub(all) struct TutorialSourceReport {
   covered : Bool
   verified : Bool
   problems : Array[String]
-} derive(ToJson)
+}
 
 ///|
 pub extend TutorialSourceReport with ToJson::{to_json}

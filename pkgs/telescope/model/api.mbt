@@ -1,11 +1,12 @@
 ///|
 /// The source position of an API item: the package path, the file name in the package directory and
 /// the line.
+#derive(Eq, Debug)
 pub(all) struct ApiLoc {
   path : String
   file : String
   line : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ApiLoc with Eq::{equal, not_equal}
@@ -16,12 +17,13 @@ pub extend ApiLoc with @debug.Debug::{to_repr}
 ///|
 /// A method, a value or a type alias: a name, a docstring, the signature HTML of `moon doc` and the
 /// source position.
+#derive(Eq, Debug)
 pub(all) struct ApiEntry {
   name : String
   docstring : String
   signature : String
   loc : ApiLoc
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ApiEntry with Eq::{equal, not_equal}
@@ -32,12 +34,13 @@ pub extend ApiEntry with @debug.Debug::{to_repr}
 ///|
 /// The implementation of a trait for a type, with its methods. `self_type` is the type as text, such
 /// as `Map[String, T]`.
+#derive(Eq, Debug)
 pub(all) struct ApiImpl {
   trait_name : String
   trait_path : String
   self_type : String
   methods : Array[ApiEntry]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ApiImpl with Eq::{equal, not_equal}
@@ -47,11 +50,12 @@ pub extend ApiImpl with @debug.Debug::{to_repr}
 
 ///|
 /// A type, an error type or a trait, with its methods and its trait implementations.
+#derive(Eq, Debug)
 pub(all) struct ApiItem {
   entry : ApiEntry
   methods : Array[ApiEntry]
   impls : Array[ApiImpl]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ApiItem with Eq::{equal, not_equal}
@@ -61,6 +65,7 @@ pub extend ApiItem with @debug.Debug::{to_repr}
 
 ///|
 /// The public API of one package, from its `package_data.json`.
+#derive(Eq, Debug)
 pub(all) struct ApiPackage {
   path : String
   types : Array[ApiItem]
@@ -68,7 +73,7 @@ pub(all) struct ApiPackage {
   traits : Array[ApiItem]
   aliases : Array[ApiEntry]
   values : Array[ApiEntry]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ApiPackage with Eq::{equal, not_equal}
@@ -261,7 +266,7 @@ fn Reader::type_text(
       raise Invalid([
         problem(
           self.file,
-          "unsupported moon doc shape at `\{at}`; supported self-type kinds are constr and param for MoonBit 0.10.18+6c83a7f62",
+          "unsupported moon doc shape at `\{at}`; supported self-type kinds are constr and param for MoonBit 0.10.20+65efd5b93",
         ),
       ])
   }

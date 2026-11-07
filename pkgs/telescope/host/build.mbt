@@ -63,8 +63,10 @@ async fn promote_uncancelled(stage : String, out : String) -> Unit {
   if existed {
     @fs.rename(out, backup)
   }
-  errdefer (if existed && @fs.exists(backup) && !@fs.exists(out) {
-    @fs.rename(backup, out)
+  errdefer @async.protect_from_cancel(() => {
+    if existed && @fs.exists(backup) && !@fs.exists(out) {
+      @fs.rename(backup, out)
+    }
   })
   @fs.rename(stage, out)
   if existed {
@@ -341,7 +343,11 @@ pub async fn build(
     }
   }
   let stage = stage_for(out)
-  defer (if @fs.exists(stage) { @fs.rmdir(stage, recursive=true) })
+  defer @async.protect_from_cancel(() => {
+    if @fs.exists(stage) {
+      @fs.rmdir(stage, recursive=true)
+    }
+  })
   for output in outputs {
     match output {
       Text(path, text) => write("\{stage}/\{path}", text)

@@ -28,6 +28,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: mise run format && git diff --exit-code
       - run: mise run check:setup
+      - run: mission-control-tools openspec check --bundle
       - run: mise run check
       - run: mise run test:consumer-environment
       - run: mise run package

@@ -162,11 +162,12 @@ pub fn switch_url(
 /// The file `versions.json` at the root of an assembled site (design D22): the newest release line,
 /// whether the `next` tree exists, and each kept minor line, newest first. `latest` is `None` before
 /// the first release.
+#derive(Eq, Debug)
 pub(all) struct VersionsFile {
   latest : String?
   next : Bool
   versions : Array[String]
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend VersionsFile with Eq::{equal, not_equal}

@@ -64,6 +64,7 @@ pub(all) struct Built {
   warnings : Array[@model.Problem]
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Kind {
   Doc(String)
   Article(String)
@@ -72,7 +73,7 @@ pub(all) enum Kind {
   PackagePart(String, String)
   Forbidden
   Other
-} derive(Eq, @debug.Debug)
+}
 pub fn Kind::equal(Self, Self) -> Bool
 pub fn Kind::not_equal(Self, Self) -> Bool
 pub fn Kind::to_repr(Self) -> @debug.Repr

@@ -10,7 +10,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "document.mbt",
-        "line": 16,
+        "line": 17,
         "column": 17
       },
       "methods": [],
@@ -23,7 +23,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "front_matter.mbt",
-        "line": 2,
+        "line": 3,
         "column": 15
       },
       "methods": [
@@ -34,7 +34,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "front_matter.mbt",
-            "line": 8,
+            "line": 9,
             "column": 33
           }
         },
@@ -45,7 +45,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "front_matter.mbt",
-            "line": 8,
+            "line": 9,
             "column": 40
           }
         },
@@ -56,7 +56,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "front_matter.mbt",
-            "line": 11,
+            "line": 12,
             "column": 43
           }
         }
@@ -70,7 +70,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "front_matter.mbt",
-        "line": 16,
+        "line": 17,
         "column": 17
       },
       "methods": [
@@ -81,7 +81,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "front_matter.mbt",
-            "line": 152,
+            "line": 153,
             "column": 21
           }
         },
@@ -92,7 +92,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "front_matter.mbt",
-            "line": 143,
+            "line": 144,
             "column": 21
           }
         },
@@ -103,7 +103,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "front_matter.mbt",
-            "line": 135,
+            "line": 136,
             "column": 21
           }
         }
@@ -117,7 +117,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "document.mbt",
-        "line": 2,
+        "line": 3,
         "column": 17
       },
       "methods": [
@@ -128,7 +128,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "document.mbt",
-            "line": 9,
+            "line": 10,
             "column": 30
           }
         },
@@ -139,7 +139,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "document.mbt",
-            "line": 9,
+            "line": 10,
             "column": 37
           }
         },
@@ -150,7 +150,7 @@
           "loc": {
             "path": "moonrockz/telescope/content",
             "file": "document.mbt",
-            "line": 12,
+            "line": 13,
             "column": 40
           }
         }
@@ -180,7 +180,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "document.mbt",
-        "line": 28,
+        "line": 29,
         "column": 8
       }
     },
@@ -213,7 +213,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "document.mbt",
-        "line": 117,
+        "line": 118,
         "column": 8
       }
     },
@@ -246,7 +246,7 @@
       "loc": {
         "path": "moonrockz/telescope/content",
         "file": "front_matter.mbt",
-        "line": 31,
+        "line": 32,
         "column": 8
       }
     },
