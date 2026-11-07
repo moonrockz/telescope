@@ -1,7 +1,14 @@
 # Release procedure
 
-The [0.6.0 candidate](0.6.0.md) prepares the MoonBit 0.10.20 upgrade and the
-island fix. Its concrete source and version require owner approval before publication.
+Telescope [0.6.0](0.6.0.md) is published from owner-approved source
+`3bc7acf1a050188ecbe5ba06e3d024af4a54b18d` through
+[release PR 26](https://github.com/moonrockz/telescope/pull/26).
+[Actions run 42413714875](https://github.com/moonrockz/telescope/actions/runs/42413714875)
+passed Windows host qualification, both distribution qualifiers, the exact
+owner/admin gate and actual Linux public consumer. Independent macOS public
+qualification also passed. [Publication metadata](publication-0.6.0.json)
+records the approved source, public downloads, verified hashes and reports.
+It requires MoonBit 0.10.20 or later.
 
 Telescope [0.5.1](0.5.1.md) is published from owner-approved source
 `1b0808634f9a173f6368e5e3b9ac6edde662dc16` through
