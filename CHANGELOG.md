@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0, candidate
+
+- Require MoonBit 0.10.20 (`0.10.20+65efd5b93`) or later; 0.10.18 and older are no longer supported.
+- Fix the search and version-switcher islands on MoonBit 0.10.20: JavaScript arrays now cross the FFI as `FixedArray`, because a MoonBit `Array` is no longer a raw JavaScript array on the js target.
+- Support the 0.10.20 `moon doc` format, where `Json` links to `moonbitlang/core/json`.
+- Protect native host staging cleanup and output rollback from cancellation.
+- Check the shared OpenSpec schema with the pinned `mission-control-tools` CLI in CI.
+
+Publication remains subject to owner approval of the exact source and version;
+see [candidate notes](docs/release/0.6.0.md).
+
 ## 0.5.1, 2026-10-29
 
 - Fix native Windows drive and UNC canonical paths, containment and sibling staging.

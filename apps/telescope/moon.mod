@@ -1,9 +1,9 @@
 name = "moonrockz/telescope-cli"
 
-version = "0.5.1"
+version = "0.6.0"
 
 import {
-  "moonrockz/telescope@0.5.1",
+  "moonrockz/telescope@0.6.0",
   "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.5",
 }
