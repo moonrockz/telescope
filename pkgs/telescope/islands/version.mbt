@@ -6,10 +6,11 @@ extern "js" fn site_root_of(base : String) -> String =
 ///|
 /// Loads `versions.json` with the browser's `fetch`, and passes the latest line (empty before the
 /// first release), whether `next` exists, and the kept lines. A site without the file, such as a
-/// local build, gets no call, so the switcher stays empty.
+/// local build, gets no call, so the switcher stays empty. A JavaScript array is a `FixedArray` on
+/// the js target; a MoonBit `Array` is not.
 extern "js" fn fetch_versions(
   url : String,
-  done : (String, Bool, Array[String]) -> Unit,
+  done : (String, Bool, FixedArray[String]) -> Unit,
 ) -> Unit =
   #| (url, done) => {
   #|   fetch(url)
@@ -62,6 +63,7 @@ fn version_switcher(id : String, base : String) -> Unit {
   let root = site_root_of(base)
   fetch_versions(root + "versions.json", (latest, next, versions) => {
     let latest = if latest == "" { None } else { Some(latest) }
+    let versions = Array::from_fixed_array(versions)
     let file : @model.VersionsFile = { latest, next, versions, }
     let choices = file.choices()
     let current = @model.current_choice(root, base, latest)

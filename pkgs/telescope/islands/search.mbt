@@ -21,9 +21,10 @@ priv struct SearchState {
 /// entry as `[route, title, section, summary, text, ...headings]`. Entries with a field of
 /// the wrong type are dropped, and other keys of an entry are ignored. The island does not use
 /// `rabbita/http` or `@json`: together they would triple the size of `islands.js` (design D11).
+/// A JavaScript array is a `FixedArray` on the js target; a MoonBit `Array` is not.
 extern "js" fn fetch_search_index(
   url : String,
-  done : (Array[Array[String]]) -> Unit,
+  done : (FixedArray[FixedArray[String]]) -> Unit,
   failed : () -> Unit,
 ) -> Unit =
   #| (url, done, failed) => {
@@ -156,7 +157,9 @@ fn search_box(id : String, base : String) -> Unit {
           @model.search_index_url(base),
           rows => {
             state.index = Ready(
-              rows.filter_map(@model.SearchEntry::from_fields),
+              Array::from_fixed_array(rows).filter_map(row => {
+                @model.SearchEntry::from_fields(Array::from_fixed_array(row))
+              }),
             )
             render(state)
           },
