@@ -113,7 +113,11 @@ pub async fn assemble(manifest_path : String, out : String) -> Unit {
     ])
   }
   let stage = stage_for(out)
-  defer (if @fs.exists(stage) { @fs.rmdir(stage, recursive=true) })
+  defer @async.protect_from_cancel(() => {
+    if @fs.exists(stage) {
+      @fs.rmdir(stage, recursive=true)
+    }
+  })
   let lines = trees
     .map(tree => string_field(tree, "id", ""))
     .filter(id => id != "next")
