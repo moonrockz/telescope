@@ -1,2 +1,4 @@
 # Preserve the CRLF source fixture used to verify exact browser text and downloads.
 tests/browser/fixture/examples/sources/signal.txt -text whitespace=cr-at-eol
+# Managed OpenSpec files are compared byte for byte; keep LF on every platform.
+openspec/schemas/html-design/** text eol=lf
