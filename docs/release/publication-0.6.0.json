@@ -1,0 +1,49 @@
+{
+  "version": "0.6.0",
+  "library": "moonrockz/telescope@0.6.0",
+  "published": true,
+  "approved_source_commit": "3bc7acf1a050188ecbe5ba06e3d024af4a54b18d",
+  "release_pr": "https://github.com/moonrockz/telescope/pull/26",
+  "implementation_pr": "https://github.com/moonrockz/telescope/pull/25",
+  "actions_run": "https://github.com/moonrockz/telescope/actions/runs/42413714875",
+  "actions_actor": "DamianReeves",
+  "release_url": "https://github.com/moonrockz/telescope/releases/tag/v0.6.0",
+  "published_at": "2026-11-07T21:07:14Z",
+  "validated_tree": "761237fc70b7eed80635162df18fb4f80b0f059a",
+  "candidate_ci": "https://github.com/moonrockz/telescope/actions/runs/42413249920",
+  "minimum_toolchain": "0.10.20+65efd5b93",
+  "mooncakes_latest_version": "0.6.0",
+  "library_archive": {
+    "url": "https://download.mooncakes.io/user/moonrockz/telescope/0.6.0.zip",
+    "sha256": "21a4f3228749afbecd31fe9eb57617a13826ad84b4167dcb743cdf31ab70252f",
+    "matches_qualified_linux_library": true
+  },
+  "windows_host_qualification": {
+    "name": "windows-host / Windows host paths and boundaries",
+    "url": "https://github.com/moonrockz/telescope/actions/runs/42413714875/job/128527164505",
+    "conclusion": "success"
+  },
+  "platforms": {
+    "linux-x64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.6.0/telescope-0.6.0-linux-x64.tar.gz",
+      "cli_sha256": "8d944df86dfeee5b89bc1836f98a0f3fbc0b2409ee61de64b46288238ea32b7a",
+      "matches_qualified_artifact": true,
+      "consumer_report": "consumer-0.6.0-linux-x64.json",
+      "tutorial_consumer_report": null,
+      "tutorial_consumer_log": "https://github.com/moonrockz/telescope/actions/runs/42413714875/job/128528810820",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Actions published consumer step (report printed in the job log)"
+    },
+    "macos-arm64": {
+      "cli_archive": "https://github.com/moonrockz/telescope/releases/download/v0.6.0/telescope-0.6.0-macos-arm64.tar.gz",
+      "cli_sha256": "834460add3631024267708d5527bae9fecb19c74561e1ef720b8a5bc7b567d5b",
+      "matches_qualified_artifact": true,
+      "consumer_report": "consumer-0.6.0-macos-arm64.json",
+      "tutorial_consumer_report": "tutorial-consumer-0.6.0-macos-arm64.json",
+      "published_consumer": true,
+      "workspace_overrides": false,
+      "evidence_source": "Local mise run test:consumer -- --published 0.6.0"
+    }
+  }
+}

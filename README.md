@@ -6,14 +6,11 @@ site planning, with reusable native IO in `moonrockz/telescope/host`. The matchi
 native `telescope` CLI builds, checks, previews and assembles consumer-supplied
 version trees. Consumers own their domain engines and reviewed content.
 
-Version **0.5.1 is released** as `moonrockz/telescope@0.5.1`, with matching
-[Linux/macOS CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.5.1).
-It repairs Windows native-library host paths, containment and output staging.
-See [installation and verified public consumers](docs/release/0.5.1.md).
-
-The [0.6.0 candidate](docs/release/0.6.0.md) requires MoonBit 0.10.20 or later
-and fixes the search and version-switcher islands on that toolchain. It awaits
-exact owner approval and publication; 0.5.1 remains the latest published version.
+Version **0.6.0 is released** as `moonrockz/telescope@0.6.0`, with matching
+[Linux/macOS CLI archives](https://github.com/moonrockz/telescope/releases/tag/v0.6.0).
+It requires MoonBit 0.10.20 or later and fixes the search and version-switcher
+islands on that toolchain.
+See [installation and verified public consumers](docs/release/0.6.0.md).
 
 It also provides opt-in [TOML tutorials](docs/tutorials.md), consumer-owned local evaluation
 and the general [editor/Formatter](docs/editor.md). The rich editor ships MoonBit
@@ -21,7 +18,7 @@ highlighting for `moonbit` and `mbt`. Existing themes, gallery previews and
 accessible source inspection remain available; see [default presentation](docs/presentation.md).
 
 Clean public installs pass on Linux x64 and macOS arm64 without workspace
-overrides. See [installation and compatibility](docs/release/0.5.1.md).
+overrides. See [installation and compatibility](docs/release/0.6.0.md).
 
 ```sh
 mise trust
